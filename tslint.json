@@ -1,15 +1,36 @@
 {
-	"rules": {
-		"no-string-throw": true,
-		"no-unused-expression": true,
-		"no-duplicate-variable": true,
-		"curly": true,
-		"class-name": true,
-		"semicolon": [
-			true,
-			"always"
-		],
-		"triple-equals": true
-	},
-	"defaultSeverity": "warning"
+    "defaultSeverity": "error",
+    "extends": [
+        "tslint:recommended"
+    ],
+    "jsRules": {},
+    "rules": {
+        "forin": false,
+        "object-literal-sort-keys": false,
+        "indent": [
+            true,
+            "spaces"
+        ],
+        "no-string-literal": false,
+        "no-namespace": false,
+        "max-line-length": [
+            false,
+            120
+        ],
+        "typedef": [
+            true,
+            "call-signature",
+            "arrow-call-signature",
+            "parameter",
+            "arrow-parameter",
+            "property-declaration",
+            "variable-declaration",
+            "member-variable-declaration"
+        ],
+        "variable-name": [
+            true,
+            "allow-leading-underscore"
+        ]
+    },
+    "rulesDirectory": []
 }
