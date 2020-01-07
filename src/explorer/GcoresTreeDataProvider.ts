@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
+import { getArticlesData } from "../api";
 import { GcoresNode } from "./GcoresNode";
-import { getGcoresData } from "../api"
 
 export class GcoresTreeDataProvider implements vscode.TreeDataProvider<GcoresNode> {
 
@@ -21,23 +21,24 @@ export class GcoresTreeDataProvider implements vscode.TreeDataProvider<GcoresNod
     public getTreeItem(element: GcoresNode): vscode.TreeItem | Thenable<vscode.TreeItem> {
 
         return {
-            label: element.name,
-            tooltip: "99999999",
-            // description: "abcaaa",
-            // collapsibleState: vscode.TreeItemCollapsibleState.Collapsed,
-            // iconPath: "",
-            command: undefined,
-            // contextValue: "see",
+            label: element.isGcoresElement ? `[${element.id}] ${element.name}` : element.name,
+            collapsibleState: element.isGcoresElement ? vscode.TreeItemCollapsibleState.None : vscode.TreeItemCollapsibleState.Collapsed,
+            command: element.isGcoresElement ? element.previewCommand : element.previewCommand,
+            contextValue: element.id,
         };
     }
 
     public async getChildren(element?: GcoresNode | undefined): vscode.ProviderResult<GcoresNode[]> {
-        let data = await getGcoresData()
-        let nodes = [];
-        for (let d of data.data) {
-            nodes.push(new GcoresNode(d.attributes.title), true)
+        if (!element) {
+            return [new GcoresNode("name", "id", false)];
+        } else {
+            const data = await getArticlesData();
+            let nodes = [];
+            for (const d of data.data) {
+                nodes.push(new GcoresNode(d.attributes.title, d.id, true))
+            }
+            return nodes;
         }
-        return nodes;
     }
 }
 

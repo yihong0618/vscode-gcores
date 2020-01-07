@@ -11,6 +11,7 @@
 	],
 	"activationEvents": [
 		"onCommand:extension.helloWorld",
+		"onCommand:gcores.previewArticle",
 		"onView:gcoresExplorer"
 	],
 	"main": "./out/extension.js",
@@ -33,12 +34,24 @@
 			]
 		},
 		"menus": {
-			"view/title": []
+			"view/title": [],
+			"view/item/context": [
+				{
+				  "command": "gcores.previewArticle",
+				  "when": "view == gcoresExplorer && viewItem == see",
+				  "group": "gcores@1"
+				}
+			  ]
 		},
 		"commands": [
 			{
 				"command": "extension.helloWorld",
 				"title": "Hello World"
+			},
+			{
+				"command": "gcores.previewArticle",
+				"title": "Preview Article",
+				"category": "Gcores"
 			}
 		]
 	},

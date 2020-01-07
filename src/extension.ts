@@ -1,7 +1,9 @@
 import * as vscode from "vscode";
 import { gcoresTreeDataProvider } from "./explorer/GcoresTreeDataProvider";
+import { previewArticle } from "./commands/show"
 
-export async function activate(context: vscode.ExtensionContext): void {
+
+export function activate(context: vscode.ExtensionContext): void {
 
     const disposable: vscode.Disposable = vscode.commands.registerCommand("extension.helloWorld", () => {
         vscode.window.showInformationMessage("Hello World!");
@@ -11,6 +13,7 @@ export async function activate(context: vscode.ExtensionContext): void {
     context.subscriptions.push(
         disposable,
         vscode.window.createTreeView("gcoresExplorer", { treeDataProvider: gcoresTreeDataProvider, showCollapseAll: true }),
+        vscode.commands.registerCommand("gcores.previewArticle", (node) => previewArticle(node)),
     );
 }
 
