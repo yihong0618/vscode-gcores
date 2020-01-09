@@ -37,11 +37,11 @@
 			"view/title": [],
 			"view/item/context": [
 				{
-				  "command": "gcores.previewArticle",
-				  "when": "view == gcoresExplorer && viewItem == see",
-				  "group": "gcores@1"
+					"command": "gcores.previewArticle",
+					"when": "view == gcoresExplorer && viewItem == see",
+					"group": "gcores@1"
 				}
-			  ]
+			]
 		},
 		"commands": [
 			{
@@ -64,6 +64,7 @@
 	},
 	"devDependencies": {
 		"@types/glob": "^7.1.1",
+		"@types/markdown-it": "0.0.9",
 		"@types/mocha": "^5.2.7",
 		"@types/node": "^12.11.7",
 		"@types/vscode": "^1.41.0",
@@ -73,5 +74,8 @@
 		"tslint": "^5.20.0",
 		"typescript": "^3.6.4",
 		"vscode-test": "^1.2.2"
+	},
+	"dependencies": {
+		"markdown-it": "^10.0.0"
 	}
 }

@@ -11,7 +11,7 @@ const headers: object = {
     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36",
 };
 
-const apiRecnet: string = "https://www.gcores.com/gapi/v1/articles?page[limit]=10&page[offset]=0&sort=-published-at&include=category,user&filter[is-news]=0&fields[articles]=title,desc,is-published,thumb,app-cover,cover,comments-count,likes-count,bookmarks-count,is-verified,published-at,option-is-official,option-is-focus-showcase,duration,category,user";
+const apiRecnet: string = "https://www.gcores.com/gapi/v1/articles?page[limit]=30&page[offset]=0&sort=-published-at&include=category,user&filter[is-news]=0&fields[articles]=title,desc,is-published,thumb,app-cover,cover,comments-count,likes-count,bookmarks-count,is-verified,published-at,option-is-official,option-is-focus-showcase,duration,category,user";
 // tslint:disable-next-line: typedef
 const apiSingleArticleTemplate = (articleId: string): string => `https://www.gcores.com/gapi/v1/articles/${articleId}?include=category,user,user.role,tags,entities,entries,similarities.user,similarities.djs,similarities.category,collections&preview=1`;
 

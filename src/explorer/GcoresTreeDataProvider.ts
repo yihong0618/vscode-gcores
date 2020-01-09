@@ -21,16 +21,16 @@ export class GcoresTreeDataProvider implements vscode.TreeDataProvider<GcoresNod
     public getTreeItem(element: GcoresNode): vscode.TreeItem | Thenable<vscode.TreeItem> {
 
         return {
-            label: element.isGcoresElement ? `[${element.id}] ${element.name}` : element.name,
+            label: element.isGcoresElement ? `${element.name}` : element.name,
             collapsibleState: element.isGcoresElement ? vscode.TreeItemCollapsibleState.None : vscode.TreeItemCollapsibleState.Collapsed,
-            command: element.isGcoresElement ? element.previewCommand : element.previewCommand,
+            command: element.isGcoresElement ? element.previewCommand : undefined,
             contextValue: element.id,
         };
     }
 
     public async getChildren(element?: GcoresNode | undefined): vscode.ProviderResult<GcoresNode[]> {
         if (!element) {
-            return [new GcoresNode("name", "id", false)];
+            return [new GcoresNode("最近文章", "id", false)];
         } else {
             const data = await getArticlesData();
             let nodes = [];
