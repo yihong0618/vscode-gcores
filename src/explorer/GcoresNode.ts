@@ -1,15 +1,16 @@
 import { Command } from "vscode";
+import { IArticle } from "../shared";
 
 export class GcoresNode {
 
-    constructor(private data: string, private articleId: string, private isGcoresElementNode: boolean = true) { }
+    constructor(private data: IArticle, private isGcoresElementNode: boolean = true) { }
 
     public get name(): string {
-        return this.data;
+        return this.data.name;
     }
 
     public get id(): string {
-        return this.articleId;
+        return this.data.id;
     }
 
     public get isGcoresElement(): boolean {

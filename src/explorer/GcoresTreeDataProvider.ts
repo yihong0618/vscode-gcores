@@ -1,5 +1,6 @@
 import * as vscode from "vscode";
-import { getArticlesData } from "../api";
+import { articleTagsMapping, Category, authorNamesMapping } from "../shared";
+import { explorerNodeManager } from "./explorerNodeManager";
 import { GcoresNode } from "./GcoresNode";
 
 export class GcoresTreeDataProvider implements vscode.TreeDataProvider<GcoresNode> {
@@ -30,16 +31,29 @@ export class GcoresTreeDataProvider implements vscode.TreeDataProvider<GcoresNod
 
     public async getChildren(element?: GcoresNode | undefined): vscode.ProviderResult<GcoresNode[]> {
         if (!element) {
-            return [new GcoresNode("最近文章", "id", false)];
+            return explorerNodeManager.getRootNodes();
         } else {
-            const data = await getArticlesData();
-            let nodes = [];
-            for (const d of data.data) {
-                nodes.push(new GcoresNode(d.attributes.title, d.id, true))
+            switch (element.id) {
+                case Category.Recent:
+                    return explorerNodeManager.GetRecentArticlesNodes();
+                case Category.News:
+                    return explorerNodeManager.GetRecentNewsNodes();
+                case Category.Tag:
+                    return explorerNodeManager.GetTagsNodes();
+                case Category.Author:
+                    return explorerNodeManager.GetAuthorsNodes()
+                default:
+                    break;
             }
-            return nodes;
+            if (articleTagsMapping.has(element.id)) {
+                return explorerNodeManager.getOneTagArticlesNodes(element.id);
+            }
+            if (authorNamesMapping.has(element.id)) {
+                return explorerNodeManager.getOneAuthorArticlesNodes(element.id);
+            }
         }
     }
+
 }
 
 export const gcoresTreeDataProvider: GcoresTreeDataProvider = new GcoresTreeDataProvider();

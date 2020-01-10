@@ -1,7 +1,6 @@
 import * as vscode from "vscode";
+import { previewArticle } from "./commands/show";
 import { gcoresTreeDataProvider } from "./explorer/GcoresTreeDataProvider";
-import { previewArticle } from "./commands/show"
-
 
 export function activate(context: vscode.ExtensionContext): void {
 

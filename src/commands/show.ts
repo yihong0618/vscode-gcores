@@ -3,7 +3,7 @@ import { WebviewPanel } from "vscode";
 import { getOneArticleData } from "../api";
 import { markdownEngine } from "../webview/markdownEngine";
 
-const baseImgUrl = "https://image.gcores.com/";
+const baseImgUrl: string = "https://image.gcores.com/";
 
 const articleStyleMapping: Map<any, any> = new Map([
     ["unstyled", (toRenderText) => `${toRenderText}`],
@@ -17,9 +17,9 @@ function getWebviewContent(content: string): string {
     <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <title>1212</title>
+        <title>Gcors Article</title>
         <style>
-        .img{
+        .img {
             width:50px;
             height:50px;
          }
@@ -41,7 +41,6 @@ function parseContent(dataBloks: any | undefined): string {
         let toRenderText = textFunc(element.text);
         if (element.type === "atomic") {
             toRenderText = textFunc(entityMap[index].data.path);
-            console.log(toRenderText);
             index++;
         }
         result += markdownEngine.render(toRenderText);
