@@ -2,6 +2,7 @@ import * as vscode from "vscode";
 import { WebviewPanel } from "vscode";
 import { getOneArticleData } from "../api";
 import { markdownEngine } from "../webview/markdownEngine";
+import { GcoresNode } from "../explorer/GcoresNode";
 
 const baseImgUrl: string = "https://image.gcores.com/";
 
@@ -38,7 +39,7 @@ function parseContent(dataBloks: any | undefined): string {
     let index: number = 0;
     dataArray.forEach(element => {
         const textFunc = articleStyleMapping.get(element.type);
-        let toRenderText = textFunc(element.text);
+        let toRenderText: string = textFunc(element.text);
         if (element.type === "atomic") {
             toRenderText = textFunc(entityMap[index].data.path);
             index++;
@@ -48,11 +49,11 @@ function parseContent(dataBloks: any | undefined): string {
     return result;
 }
 
-export async function previewArticle(node): Promise<void> {
+export async function previewArticle(node: GcoresNode): Promise<void> {
     const articleData: any = await getOneArticleData(node.id);
     const articleContent: string = articleData.data.attributes.content;
     const dataBlocks: any | undefined = JSON.parse(articleContent);
-    const bodyData = parseContent(dataBlocks);
+    const bodyData: any = parseContent(dataBlocks);
     const panel: WebviewPanel | undefined = vscode.window.createWebviewPanel(node.name, node.name, vscode.ViewColumn.One, {});
     panel.webview.html = getWebviewContent(bodyData);
 }

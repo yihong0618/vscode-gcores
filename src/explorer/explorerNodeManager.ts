@@ -63,6 +63,7 @@ class ExplorerNodeManager implements Disposable {
         return res;
     }
 
+    // TODO add new author method
     public GetAuthorsNodes(): GcoresNode[] {
         const res: GcoresNode[] = [];
         for (const authorName of authorNamesMapping.keys()) {
@@ -74,17 +75,8 @@ class ExplorerNodeManager implements Disposable {
         return res;
     }
 
-    public async getOneTagArticlesNodes(nodeId: string): Promise<GcoresNode[]> {
-        const articlesData: any = await getArticlesDataByTag(nodeId);
-        const res: GcoresNode[] = [];
-        for (const article of articlesData.data) {
-            res.push(this.parseToGcoresNode(article));
-        }
-        return res;
-    }
-
-    public async getOneAuthorArticlesNodes(nodeId: string): Promise<GcoresNode[]> {
-        const articlesData: any = await getArticlesDataByAuthor(nodeId);
+    public async getOneLabelArticlesNodes(nodeId: string, apiFunc: any): Promise<GcoresNode[]> {
+        const articlesData: any = await apiFunc(nodeId);
         const res: GcoresNode[] = [];
         for (const article of articlesData.data) {
             res.push(this.parseToGcoresNode(article));

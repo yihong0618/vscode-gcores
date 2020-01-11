@@ -62,7 +62,6 @@ export async function getArticlesDataByTag(tagName: string): Promise<any[]> {
 
 export async function getArticlesDataByAuthor(authorName: string): Promise<any[]> {
   let authorId: string | undefined = authorNamesMapping.get(authorName);
-  console.log(authorId);
   if ( !authorId ) {
     authorId = "3"; // 西蒙
   }

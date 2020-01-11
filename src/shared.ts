@@ -1,10 +1,10 @@
 
 // add new Category here
 export enum Category {
-    Recent = "Recent",
-    News = "News",
-    Tag = "Tag",
-    Author = "Author",
+    Recent = "近期文章",
+    News = "近期新闻",
+    Tag = "分类文章",
+    Author = "作者专题",
 }
 
 export interface IArticle {

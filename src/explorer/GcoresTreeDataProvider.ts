@@ -1,5 +1,7 @@
+import * as path from "path";
 import * as vscode from "vscode";
-import { articleTagsMapping, Category, authorNamesMapping } from "../shared";
+import { getArticlesDataByAuthor, getArticlesDataByTag } from "../api";
+import { articleTagsMapping, authorNamesMapping, Category } from "../shared";
 import { explorerNodeManager } from "./explorerNodeManager";
 import { GcoresNode } from "./GcoresNode";
 
@@ -25,11 +27,12 @@ export class GcoresTreeDataProvider implements vscode.TreeDataProvider<GcoresNod
             label: element.isGcoresElement ? `${element.name}` : element.name,
             collapsibleState: element.isGcoresElement ? vscode.TreeItemCollapsibleState.None : vscode.TreeItemCollapsibleState.Collapsed,
             command: element.isGcoresElement ? element.previewCommand : undefined,
+            iconPath: element.isHotElement ? this.context.asAbsolutePath(path.join("resources", "hot.png")) : "",
             contextValue: element.id,
         };
     }
 
-    public async getChildren(element?: GcoresNode | undefined): vscode.ProviderResult<GcoresNode[]> {
+    public getChildren(element?: GcoresNode | undefined): vscode.ProviderResult<GcoresNode[]> {
         if (!element) {
             return explorerNodeManager.getRootNodes();
         } else {
@@ -41,15 +44,15 @@ export class GcoresTreeDataProvider implements vscode.TreeDataProvider<GcoresNod
                 case Category.Tag:
                     return explorerNodeManager.GetTagsNodes();
                 case Category.Author:
-                    return explorerNodeManager.GetAuthorsNodes()
+                    return explorerNodeManager.GetAuthorsNodes();
                 default:
                     break;
             }
             if (articleTagsMapping.has(element.id)) {
-                return explorerNodeManager.getOneTagArticlesNodes(element.id);
+                return explorerNodeManager.getOneLabelArticlesNodes(element.id, getArticlesDataByTag);
             }
             if (authorNamesMapping.has(element.id)) {
-                return explorerNodeManager.getOneAuthorArticlesNodes(element.id);
+                return explorerNodeManager.getOneLabelArticlesNodes(element.id, getArticlesDataByAuthor);
             }
         }
     }

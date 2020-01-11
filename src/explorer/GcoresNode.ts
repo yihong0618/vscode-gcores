@@ -17,6 +17,13 @@ export class GcoresNode {
         return this.isGcoresElementNode;
     }
 
+    public get isHotElement(): boolean {
+        if  (!this.isGcoresElement) {
+            return false;
+        }
+        return this.data.likesCount >= 100 ||  this.data.commentsCount >= 100 || this.data.bookmarksCount >= 100;
+    }
+
     public get previewCommand(): Command {
         return {
             title: "Preview Article",
