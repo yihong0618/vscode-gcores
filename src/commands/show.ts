@@ -1,23 +1,30 @@
 import * as vscode from "vscode";
 import { WebviewPanel } from "vscode";
 import { getOneArticleData } from "../api";
-import { markdownEngine } from "../webview/markdownEngine";
 import { GcoresNode } from "../explorer/GcoresNode";
-
-const baseImgUrl: string = "https://image.gcores.com/";
+import { baseArticleUrl, baseImgUrl } from "../shared";
+import { markdownEngine } from "../webview/markdownEngine";
 
 const articleStyleMapping: Map<any, any> = new Map([
-    ["unstyled", (toRenderText) => `${toRenderText}`],
-    ["atomic", (toRenderText) => `![](${baseImgUrl}${toRenderText})`],
-    ["header-one", (toRenderText) => `# ${toRenderText}`],
-    ["unordered-list-item", (toRenderText) => `- ${toRenderText}`],
+    // Logic is wrong!!!
+    ["unstyled", (toRenderText: string): string => `${toRenderText}`],
+    ["atomic", (toRenderText: string): string => `![](${baseImgUrl}${toRenderText})`],
+    ["header-one", (toRenderText: string): string => `# ${toRenderText}`],
+    ["header-two", (toRenderText: string): string => `## ${toRenderText}`],
+    ["header-three", (toRenderText: string): string => `### ${toRenderText}`],
+    ["unordered-list-item", (toRenderText: string): string => `- ${toRenderText}`],
+    // ToDo this is a skip need to refactor
+    ["ordered-list-item", (toRenderText: string): string => `- ${toRenderText}`],
+    ["blockquote", (toRenderText: string): string => `> ${toRenderText}`],
 ]);
 
-function getWebviewContent(content: string): string {
-    return `<!DOCTYPE html>
+function getWebviewContent(head: string, info: string, content: string): string {
+    return `
+    <!DOCTYPE html>
     <html lang="en">
     <head>
-        <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src https:; script-src vscode-resource: 'unsafe-inline'; style-src vscode-resource: 'unsafe-inline';"/>
+        ${markdownEngine.getStyles()}
         <title>Gcors Article</title>
         <style>
         .img {
@@ -27,9 +34,13 @@ function getWebviewContent(content: string): string {
         </style>
     </head>
     <body>
+        ${head}
         ${content}
+        <hr />
+        ${info}
     </body>
-    </html>`;
+    </html>
+    `;
 }
 
 function parseContent(dataBloks: any | undefined): string {
@@ -37,9 +48,14 @@ function parseContent(dataBloks: any | undefined): string {
     const dataArray: any = dataBloks.blocks;
     const entityMap: any = dataBloks.entityMap;
     let index: number = 0;
-    dataArray.forEach(element => {
-        const textFunc = articleStyleMapping.get(element.type);
+    dataArray.forEach((element: any): void => {
+        // const textFunc = articleStyleMapping.get(element.type);
+        let textFunc: any = articleStyleMapping.get(element.type);
+        if (!textFunc) {
+            textFunc = (text: string): string => `{$text}`;
+        }
         let toRenderText: string = textFunc(element.text);
+        // Wrong Logic need to change 2020.01.11
         if (element.type === "atomic") {
             toRenderText = textFunc(entityMap[index].data.path);
             index++;
@@ -54,6 +70,12 @@ export async function previewArticle(node: GcoresNode): Promise<void> {
     const articleContent: string = articleData.data.attributes.content;
     const dataBlocks: any | undefined = JSON.parse(articleContent);
     const bodyData: any = parseContent(dataBlocks);
+    const head: string = markdownEngine.render(`# [${node.name}](${baseArticleUrl}${node.id})`);
+    const info: string = markdownEngine.render([
+        `| Likes | Comments | Bookmarks |`,
+        `| :---: | :------: | :-------: |`,
+        `| ${node.likes} | ${node.comments} | ${node.bookmarks} |`,
+    ].join("\n"));
     const panel: WebviewPanel | undefined = vscode.window.createWebviewPanel(node.name, node.name, vscode.ViewColumn.One, {});
-    panel.webview.html = getWebviewContent(bodyData);
+    panel.webview.html = getWebviewContent(head, info, bodyData);
 }

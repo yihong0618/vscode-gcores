@@ -13,6 +13,18 @@ export class GcoresNode {
         return this.data.id;
     }
 
+    public get likes(): number {
+        return this.data.likesCount;
+    }
+
+    public get comments(): number {
+        return this.data.commentsCount;
+    }
+
+    public get bookmarks(): number {
+        return this.data.bookmarksCount;
+    }
+
     public get isGcoresElement(): boolean {
         return this.isGcoresElementNode;
     }

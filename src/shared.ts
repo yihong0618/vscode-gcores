@@ -1,4 +1,7 @@
 
+export const baseArticleUrl: string = "https://www.gcores.com/articles/";
+export const baseImgUrl: string = "https://image.gcores.com/";
+
 // add new Category here
 export enum Category {
     Recent = "近期文章",
