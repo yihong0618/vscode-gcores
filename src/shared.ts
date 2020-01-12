@@ -65,3 +65,5 @@ export const authorNamesMapping: Map<string, string> = new Map([
     ["NJBK", "12865"],
     ["Hardy", "385"],
 ]);
+
+export const globalStateGcoresAuthorKey: string = "gcores.authors";

@@ -12,6 +12,7 @@
 	"activationEvents": [
 		"onCommand:extension.helloWorld",
 		"onCommand:gcores.previewArticle",
+		"onCommand:gcores.addAuthor",
 		"onView:gcoresExplorer"
 	],
 	"main": "./out/extension.js",
@@ -51,6 +52,11 @@
 			{
 				"command": "gcores.previewArticle",
 				"title": "Preview Article",
+				"category": "Gcores"
+			},
+			{
+				"command": "gcores.addAuthor",
+				"title": "Add Author",
 				"category": "Gcores"
 			}
 		]

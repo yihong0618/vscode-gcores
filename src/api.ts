@@ -1,7 +1,6 @@
 import axios, { AxiosError, AxiosInstance } from "axios";
-import * as vscode from "vscode";
 import { window } from "vscode";
-import { articleTagsMapping, authorNamesMapping } from "./shared"
+import { articleTagsMapping, authorNamesMapping } from "./shared";
 
 const headers: object = {
   "Accept" :
@@ -14,8 +13,9 @@ const headers: object = {
 
 const apiArticlesOrNewsTemplate: any = (limit: number = 30, isNews: number = 0): string => `https://www.gcores.com/gapi/v1/articles?page[limit]=${limit}&page[offset]=0&sort=-published-at&include=category,user&filter[is-news]=${isNews}&fields[articles]=title,desc,is-published,thumb,app-cover,cover,comments-count,likes-count,bookmarks-count,is-verified,published-at,option-is-official,option-is-focus-showcase,duration,category,user`;
 const apiSingleArticleTemplate: any = (articleId: string): string => `https://www.gcores.com/gapi/v1/articles/${articleId}?include=category,user,user.role,tags,entities,entries,similarities.user,similarities.djs,similarities.category,collections&preview=1`;
-const apiArticleTagTemplate: any = (limit: number = 30, tagNum: string, isNews: number = 0): string => `https://www.gcores.com/gapi/v1/categories/${tagNum}/articles?page[limit]=${limit}&page[offset]=0&sort=-published-at&include=category,user&filter[is-news]=${isNews}&fields[articles]=title,desc,is-published,thumb,app-cover,cover,comments-count,likes-count,bookmarks-count,is-verified,published-at,option-is-official,option-is-focus-showcase,duration,category,user`
+const apiArticleTagTemplate: any = (limit: number = 30, tagNum: string, isNews: number = 0): string => `https://www.gcores.com/gapi/v1/categories/${tagNum}/articles?page[limit]=${limit}&page[offset]=0&sort=-published-at&include=category,user&filter[is-news]=${isNews}&fields[articles]=title,desc,is-published,thumb,app-cover,cover,comments-count,likes-count,bookmarks-count,is-verified,published-at,option-is-official,option-is-focus-showcase,duration,category,user`;
 const apiArticlesByAuthorTemplate: any = (limit: number = 30, authorId: string, isNews: number = 0): string => `https://www.gcores.com/gapi/v1/users/${authorId}/articles?page[limit]=${limit}&page[offset]=0&sort=-published-at&include=category,user&filter[is-news]=${isNews}&fields[articles]=title,desc,is-published,thumb,app-cover,cover,comments-count,likes-count,bookmarks-count,is-verified,published-at,option-is-official,option-is-focus-showcase,duration,category,user`;
+const apiAuthorInfotemplate: any = (authorId: string): string => `https://www.gcores.com/gapi/v1/users/${authorId}`;
 
 const http: AxiosInstance = axios.create({
   headers,
@@ -76,6 +76,15 @@ export async function getOneArticleData(arcicleId: string): Promise<any[]> {
   const apiSingleArticle: string = apiSingleArticleTemplate(arcicleId);
   const { data } = await http
     .get(apiSingleArticle, {
+    })
+    .catch(errorHandler);
+  return data;
+}
+
+export async function getAuthorInfo(authorId: string): Promise<any> {
+  const apiAuthorInfo: string = apiAuthorInfotemplate(authorId);
+  const { data } = await http
+    .get(apiAuthorInfo, {
     })
     .catch(errorHandler);
   return data;
