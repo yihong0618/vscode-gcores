@@ -1,9 +1,10 @@
 // Copyright (c) jdneo. All rights reserved.
 // Licensed under the MIT license.
 
+import * as vscode from "vscode";
 import { Disposable } from "vscode";
-import { getArticlesDataByAuthor, getArticlesDataByTag, getRecentArticlesData, getRecentNewsData } from "../api";
-import { articleTagsMapping, authorNamesMapping, Category, defaultArticle } from "../shared";
+import { getRecentArticlesData, getRecentNewsData } from "../api";
+import { articleTagsMapping, authorNamesMapping, Category, defaultArticle, globalStateGcoresAuthorKey } from "../shared";
 import { GcoresNode } from "./GcoresNode";
 
 class ExplorerNodeManager implements Disposable {
@@ -64,9 +65,9 @@ class ExplorerNodeManager implements Disposable {
     }
 
     // TODO add new author method
-    public GetAuthorsNodes(): GcoresNode[] {
+    public GetAuthorsNodes(mapping: any): GcoresNode[] {
         const res: GcoresNode[] = [];
-        for (const authorName of authorNamesMapping.keys()) {
+        for (const authorName of mapping.keys()) {
             res.push(new GcoresNode(Object.assign({}, defaultArticle, {
                 id: authorName,
                 name: authorName,
@@ -107,6 +108,11 @@ class ExplorerNodeManager implements Disposable {
             bookmarksCount: attributes["bookmarks-count"],
             createdAt: attributes["published-at"].split("T")[0],
         }, true);
+    }
+
+    private getNewAuthorsMapping(context: vscode.ExtensionContext): any {
+        const authors: any = context.globalState.get(globalStateGcoresAuthorKey);
+        return authors;
     }
 }
 

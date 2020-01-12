@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { addAuthor } from "./commands/add-author";
+import { addAuthor } from "./commands/author";
 import { previewArticle } from "./commands/show";
 import { GcoresNode } from "./explorer/GcoresNode";
 import { gcoresTreeDataProvider } from "./explorer/GcoresTreeDataProvider";

@@ -1,6 +1,5 @@
 import axios, { AxiosError, AxiosInstance } from "axios";
 import { window } from "vscode";
-import { articleTagsMapping, authorNamesMapping } from "./shared";
 
 const headers: object = {
   "Accept" :
@@ -48,8 +47,9 @@ export async function getRecentNewsData(): Promise<any[]> {
   return data;
 }
 
-export async function getArticlesDataByTag(tagName: string): Promise<any[]> {
-  let tagNum: string | undefined = articleTagsMapping.get(tagName);
+// TODO any to change type
+export async function getArticlesDataByTag(mapping: any, tagName: string): Promise<any[]> {
+  let tagNum: string | undefined = mapping.get(tagName);
   if ( !tagNum ) {
     tagNum = "1";
   }
@@ -60,8 +60,8 @@ export async function getArticlesDataByTag(tagName: string): Promise<any[]> {
   return data;
 }
 
-export async function getArticlesDataByAuthor(authorName: string): Promise<any[]> {
-  let authorId: string | undefined = authorNamesMapping.get(authorName);
+export async function getArticlesDataByAuthor(mapping: any, authorName: string): Promise<any[]> {
+  let authorId: string | undefined = mapping.get(authorName);
   if ( !authorId ) {
     authorId = "3"; // 西蒙
   }

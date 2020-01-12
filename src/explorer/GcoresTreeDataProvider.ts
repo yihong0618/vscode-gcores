@@ -1,7 +1,7 @@
 import * as path from "path";
 import * as vscode from "vscode";
 import { getArticlesDataByAuthor, getArticlesDataByTag } from "../api";
-import { articleTagsMapping, authorNamesMapping, Category } from "../shared";
+import { articleTagsMapping, authorNamesMapping, Category, globalStateGcoresAuthorKey } from "../shared";
 import { explorerNodeManager } from "./explorerNodeManager";
 import { GcoresNode } from "./GcoresNode";
 
@@ -44,19 +44,24 @@ export class GcoresTreeDataProvider implements vscode.TreeDataProvider<GcoresNod
                 case Category.Tag:
                     return explorerNodeManager.GetTagsNodes();
                 case Category.Author:
-                    return explorerNodeManager.GetAuthorsNodes();
+                    return explorerNodeManager.GetAuthorsNodes(this.nowAuthorNamesMapping);
                 default:
                     break;
             }
             if (articleTagsMapping.has(element.id)) {
-                return explorerNodeManager.getOneLabelArticlesNodes(element.id, getArticlesDataByTag);
+                return explorerNodeManager.getOneLabelArticlesNodes(element.id, getArticlesDataByTag.bind(null, articleTagsMapping));
             }
-            if (authorNamesMapping.has(element.id)) {
-                return explorerNodeManager.getOneLabelArticlesNodes(element.id, getArticlesDataByAuthor);
+            if (this.nowAuthorNamesMapping.has(element.id)) {
+                return explorerNodeManager.getOneLabelArticlesNodes(element.id, getArticlesDataByAuthor.bind(null, this.nowAuthorNamesMapping));
             }
         }
     }
 
+    private get nowAuthorNamesMapping(): any {
+        const baseAuthors: any = new Map(authorNamesMapping);
+        const newAuthors: any = this.context.globalState.get(globalStateGcoresAuthorKey);
+        return new Map([...baseAuthors, ...Object.entries(newAuthors)]);
+    }
 }
 
 export const gcoresTreeDataProvider: GcoresTreeDataProvider = new GcoresTreeDataProvider();

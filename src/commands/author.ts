@@ -22,14 +22,14 @@ export async function addAuthor(context: vscode.ExtensionContext): Promise<void>
         });
         if (authorId) {
             const authorData: any = await getAuthorInfo(authorId);
-            let authors = context.globalState.get(globalStateGcoresAuthorKey);
+            let authors: any = context.globalState.get(globalStateGcoresAuthorKey);
             if (!authors) {
                 authors = {};
             }
             const authorName: string = authorData.data.attributes.nickname;
             authors[authorName] = authorId;
             await context.globalState.update(globalStateGcoresAuthorKey, authors);
-            vscode.window.showInformationMessage(`Successfully add author.`);
+            vscode.window.showInformationMessage(`Successfully add author ${authorName}.`);
         }
     } catch (error) {
         vscode.window.showInformationMessage(`Failed to add author. Please open the output channel for details`);
