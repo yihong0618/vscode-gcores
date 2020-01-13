@@ -7,8 +7,8 @@ import * as vscode from "vscode";
 
 class MarkdownEngine implements vscode.Disposable {
 
-    private engine: MarkdownIt;
-    private config: MarkdownConfiguration;
+    private engine!: MarkdownIt;
+    private config!: MarkdownConfiguration;
     private listener: vscode.Disposable;
 
     public constructor() {

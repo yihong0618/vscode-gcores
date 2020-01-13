@@ -6,9 +6,7 @@ import { baseArticleUrl, baseImgUrl } from "../shared";
 import { markdownEngine } from "../webview/markdownEngine";
 
 const articleStyleMapping: Map<any, any> = new Map([
-    // Logic is wrong!!!
     ["unstyled", (toRenderText: string): string => `${toRenderText}`],
-    ["atomic", (toRenderText: string): string => `![](${baseImgUrl}${toRenderText})`],
     ["header-one", (toRenderText: string): string => `# ${toRenderText}`],
     ["header-two", (toRenderText: string): string => `## ${toRenderText}`],
     ["header-three", (toRenderText: string): string => `### ${toRenderText}`],
@@ -47,18 +45,28 @@ function parseContent(dataBloks: any | undefined): string {
     let result: string = "";
     const dataArray: any = dataBloks.blocks;
     const entityMap: any = dataBloks.entityMap;
-    let index: number = 0;
     dataArray.forEach((element: any): void => {
-        // const textFunc = articleStyleMapping.get(element.type);
-        let textFunc: any = articleStyleMapping.get(element.type);
-        if (!textFunc) {
-            textFunc = (text: string): string => `{$text}`;
+        const textFunc: any = articleStyleMapping.get(element.type);
+        let toRenderText: string = "";
+        if (element.entityRanges.length !== 0) {
+            for (const i of element.entityRanges) {
+                const entity: any = entityMap[i.key];
+                if (entity.type === "IMAGE") {
+                    toRenderText += `![](${baseImgUrl}${entity.data.path})`;
+                }
+                if (entity.type === "LINK") {
+                    const text: string = element.text;
+                    const textI: string = text.slice(i["offset"], i["offset"] + i["length"]);
+                    toRenderText = text.replace(text, `[${text}](${entity.data.url.trim()})`);
+                    // g-cores change to gcores but some link didn't change
+                    toRenderText = toRenderText.replace("g-cores", "gcores");
+                }
+            }
+        } else {
+            toRenderText = element.text;
         }
-        let toRenderText: string = textFunc(element.text);
-        // Wrong Logic need to change 2020.01.11
-        if (element.type === "atomic") {
-            toRenderText = textFunc(entityMap[index].data.path);
-            index++;
+        if (textFunc) {
+            toRenderText = textFunc(toRenderText);
         }
         result += markdownEngine.render(toRenderText);
     });

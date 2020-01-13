@@ -4,7 +4,7 @@ import { previewArticle } from "./commands/show";
 import { GcoresNode } from "./explorer/GcoresNode";
 import { gcoresTreeDataProvider } from "./explorer/GcoresTreeDataProvider";
 
-export function activate(context: vscode.ExtensionContext): void {
+export async function activate(context: vscode.ExtensionContext): Promise<void> {
 
     const disposable: vscode.Disposable = vscode.commands.registerCommand("extension.helloWorld", () => {
         vscode.window.showInformationMessage("Hello World!");

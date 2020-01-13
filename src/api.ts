@@ -10,10 +10,10 @@ const headers: object = {
     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36",
 };
 
-const apiArticlesOrNewsTemplate: any = (limit: number = 30, isNews: number = 0): string => `https://www.gcores.com/gapi/v1/articles?page[limit]=${limit}&page[offset]=0&sort=-published-at&include=category,user&filter[is-news]=${isNews}&fields[articles]=title,desc,is-published,thumb,app-cover,cover,comments-count,likes-count,bookmarks-count,is-verified,published-at,option-is-official,option-is-focus-showcase,duration,category,user`;
+const apiArticlesOrNewsTemplate: any = (limit: number = 50, isNews: number = 0): string => `https://www.gcores.com/gapi/v1/articles?page[limit]=${limit}&page[offset]=0&sort=-published-at&include=category,user&filter[is-news]=${isNews}&fields[articles]=title,desc,is-published,thumb,app-cover,cover,comments-count,likes-count,bookmarks-count,is-verified,published-at,option-is-official,option-is-focus-showcase,duration,category,user`;
 const apiSingleArticleTemplate: any = (articleId: string): string => `https://www.gcores.com/gapi/v1/articles/${articleId}?include=category,user,user.role,tags,entities,entries,similarities.user,similarities.djs,similarities.category,collections&preview=1`;
-const apiArticleTagTemplate: any = (limit: number = 30, tagNum: string, isNews: number = 0): string => `https://www.gcores.com/gapi/v1/categories/${tagNum}/articles?page[limit]=${limit}&page[offset]=0&sort=-published-at&include=category,user&filter[is-news]=${isNews}&fields[articles]=title,desc,is-published,thumb,app-cover,cover,comments-count,likes-count,bookmarks-count,is-verified,published-at,option-is-official,option-is-focus-showcase,duration,category,user`;
-const apiArticlesByAuthorTemplate: any = (limit: number = 30, authorId: string, isNews: number = 0): string => `https://www.gcores.com/gapi/v1/users/${authorId}/articles?page[limit]=${limit}&page[offset]=0&sort=-published-at&include=category,user&filter[is-news]=${isNews}&fields[articles]=title,desc,is-published,thumb,app-cover,cover,comments-count,likes-count,bookmarks-count,is-verified,published-at,option-is-official,option-is-focus-showcase,duration,category,user`;
+const apiArticleTagTemplate: any = (limit: number = 50, tagNum: string, isNews: number = 0): string => `https://www.gcores.com/gapi/v1/categories/${tagNum}/articles?page[limit]=${limit}&page[offset]=0&sort=-published-at&include=category,user&filter[is-news]=${isNews}&fields[articles]=title,desc,is-published,thumb,app-cover,cover,comments-count,likes-count,bookmarks-count,is-verified,published-at,option-is-official,option-is-focus-showcase,duration,category,user`;
+const apiArticlesByAuthorTemplate: any = (limit: number = 50, authorId: string, isNews: number = 0): string => `https://www.gcores.com/gapi/v1/users/${authorId}/articles?page[limit]=${limit}&page[offset]=0&sort=-published-at&include=category,user&filter[is-news]=${isNews}&fields[articles]=title,desc,is-published,thumb,app-cover,cover,comments-count,likes-count,bookmarks-count,is-verified,published-at,option-is-official,option-is-focus-showcase,duration,category,user`;
 const apiAuthorInfotemplate: any = (authorId: string): string => `https://www.gcores.com/gapi/v1/users/${authorId}`;
 
 const http: AxiosInstance = axios.create({
@@ -41,7 +41,7 @@ export async function getRecentArticlesData(): Promise<any[]> {
 
 export async function getRecentNewsData(): Promise<any[]> {
   const { data } = await http
-    .get(apiArticlesOrNewsTemplate(30, 1), {
+    .get(apiArticlesOrNewsTemplate(50, 1), {
     })
     .catch(errorHandler);
   return data;
@@ -54,7 +54,7 @@ export async function getArticlesDataByTag(mapping: any, tagName: string): Promi
     tagNum = "1";
   }
   const { data } = await http
-    .get(apiArticleTagTemplate(30, tagNum, 0), {
+    .get(apiArticleTagTemplate(50, tagNum, 0), {
     })
     .catch(errorHandler);
   return data;
@@ -66,7 +66,7 @@ export async function getArticlesDataByAuthor(mapping: any, authorName: string):
     authorId = "3"; // 西蒙
   }
   const { data } = await http
-    .get(apiArticlesByAuthorTemplate(30, authorId, 0), {
+    .get(apiArticlesByAuthorTemplate(50, authorId, 0), {
     })
     .catch(errorHandler);
   return data;

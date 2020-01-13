@@ -7,7 +7,7 @@ import { GcoresNode } from "./GcoresNode";
 
 export class GcoresTreeDataProvider implements vscode.TreeDataProvider<GcoresNode> {
 
-    private context: vscode.ExtensionContext;
+    private context!: vscode.ExtensionContext;
 
     private onDidChangeTreeDataEvent: vscode.EventEmitter<GcoresNode | undefined | null> = new vscode.EventEmitter<GcoresNode | undefined | null>();
     // tslint:disable-next-line:member-ordering
