@@ -1,5 +1,6 @@
 import * as vscode from "vscode";
 import { getAuthorInfo } from "../api";
+import { gcoresTreeDataProvider } from "../explorer/GcoresTreeDataProvider";
 import { globalStateGcoresAuthorKey } from "../shared";
 
 export async function addAuthor(context: vscode.ExtensionContext): Promise<void> {
@@ -30,8 +31,36 @@ export async function addAuthor(context: vscode.ExtensionContext): Promise<void>
             authors[authorName] = authorId;
             await context.globalState.update(globalStateGcoresAuthorKey, authors);
             vscode.window.showInformationMessage(`Successfully add author ${authorName}.`);
+            gcoresTreeDataProvider.refresh();
         }
     } catch (error) {
         vscode.window.showInformationMessage(`Failed to add author. Please open the output channel for details`);
+    }
+}
+
+export async function deleteAuthor(context: vscode.ExtensionContext): Promise<void> {
+    try {
+        const authorName: string | undefined = await new Promise(async (resolve: (res: string | undefined) => void, reject: (e: Error) => void): Promise<void> => {
+
+            const name: string | undefined = await vscode.window.showInputBox({
+                prompt: "Enter gcores author name from the category.",
+                validateInput: (s: string): string | undefined => s && s.trim() ? undefined : "The input must not be empty",
+            });
+            if (!name) {
+                return resolve(undefined);
+            }
+            return resolve(name);
+        });
+        if (authorName) {
+            const authors: any = context.globalState.get(globalStateGcoresAuthorKey);
+            if (authors && authors[authorName]) {
+                delete authors[authorName];
+            }
+            await context.globalState.update(globalStateGcoresAuthorKey, authors);
+            vscode.window.showInformationMessage(`Successfully delete author ${authorName}.`);
+            gcoresTreeDataProvider.refresh();
+        }
+    } catch (error) {
+        vscode.window.showInformationMessage(`Failed to delete author. Please open the output channel for details`);
     }
 }
