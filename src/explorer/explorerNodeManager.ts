@@ -102,7 +102,7 @@ class ExplorerNodeManager implements Disposable {
         return new GcoresNode({
             id: data.id,
             name: attributes.title,
-            author: data.relationships.user.data.id,
+            authorId: data.relationships.user.data.id,
             likesCount: attributes["likes-count"],
             commentsCount: attributes["comments-count"],
             bookmarksCount: attributes["bookmarks-count"],

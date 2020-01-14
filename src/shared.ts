@@ -1,6 +1,8 @@
 
 export const baseArticleUrl: string = "https://www.gcores.com/articles/";
+export const baseAuthorUrl: string = "https://www.gcores.com/users/";
 export const baseImgUrl: string = "https://image.gcores.com/";
+export const baseLimit: number = 50;
 
 // add new Category here
 export enum Category {
@@ -13,7 +15,7 @@ export enum Category {
 export interface IArticle {
     id: string;
     name: string;
-    author: string;
+    authorId: string;
     likesCount: number;
     commentsCount: number;
     bookmarksCount: number;
@@ -23,7 +25,7 @@ export interface IArticle {
 export const defaultArticle: IArticle = {
     id: "",
     name: "",
-    author: "",
+    authorId: "",
     likesCount: 0,
     commentsCount: 0,
     bookmarksCount: 0,

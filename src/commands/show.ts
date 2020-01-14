@@ -1,8 +1,8 @@
 import * as vscode from "vscode";
 import { WebviewPanel } from "vscode";
-import { getOneArticleData } from "../api";
+import { getAuthorInfo, getOneArticleData } from "../api";
 import { GcoresNode } from "../explorer/GcoresNode";
-import { baseArticleUrl, baseImgUrl } from "../shared";
+import { baseArticleUrl, baseAuthorUrl, baseImgUrl } from "../shared";
 import { markdownEngine } from "../webview/markdownEngine";
 
 const articleStyleMapping: Map<any, any> = new Map([
@@ -16,7 +16,7 @@ const articleStyleMapping: Map<any, any> = new Map([
     ["blockquote", (toRenderText: string): string => `> ${toRenderText}`],
 ]);
 
-function getWebviewContent(head: string, info: string, content: string): string {
+function getWebviewContent(head: string, author: string, info: string, content: string): string {
     return `
     <!DOCTYPE html>
     <html lang="en">
@@ -33,6 +33,8 @@ function getWebviewContent(head: string, info: string, content: string): string 
     </head>
     <body>
         ${head}
+        ${author}
+        <hr />
         ${content}
         <hr />
         ${info}
@@ -75,15 +77,18 @@ function parseContent(dataBloks: any | undefined): string {
 
 export async function previewArticle(node: GcoresNode): Promise<void> {
     const articleData: any = await getOneArticleData(node.id);
+    const authorData: any = await getAuthorInfo(node.authorId);
     const articleContent: string = articleData.data.attributes.content;
+    const authorName: string = authorData.data.attributes.nickname;
     const dataBlocks: any | undefined = JSON.parse(articleContent);
     const bodyData: any = parseContent(dataBlocks);
     const head: string = markdownEngine.render(`# [${node.name}](${baseArticleUrl}${node.id})`);
+    const author: string = markdownEngine.render(`### 作者: [${authorName}](${baseAuthorUrl}${node.authorId})`);
     const info: string = markdownEngine.render([
         `| Likes | Comments | Bookmarks |`,
         `| :---: | :------: | :-------: |`,
         `| ${node.likes} | ${node.comments} | ${node.bookmarks} |`,
     ].join("\n"));
     const panel: WebviewPanel | undefined = vscode.window.createWebviewPanel(node.name, node.name, vscode.ViewColumn.One, {});
-    panel.webview.html = getWebviewContent(head, info, bodyData);
+    panel.webview.html = getWebviewContent(head, author, info, bodyData);
 }

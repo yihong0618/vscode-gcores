@@ -13,6 +13,10 @@ export class GcoresNode {
         return this.data.id;
     }
 
+    public get authorId(): string {
+        return this.data.authorId;
+    }
+
     public get likes(): number {
         return this.data.likesCount;
     }
