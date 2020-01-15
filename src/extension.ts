@@ -15,6 +15,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
     context.subscriptions.push(
         disposable,
         vscode.window.createTreeView("gcoresExplorer", { treeDataProvider: gcoresTreeDataProvider, showCollapseAll: true }),
+        vscode.commands.registerCommand("gcores.refreshExplorer", () => gcoresTreeDataProvider.refresh()),
         vscode.commands.registerCommand("gcores.previewArticle", (node: GcoresNode) => previewArticle(node)),
         vscode.commands.registerCommand("gcores.pickOne", () => pickArticle()),
         vscode.commands.registerCommand("gcores.addAuthor", () => addAuthor(context)),

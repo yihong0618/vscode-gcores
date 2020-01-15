@@ -11,6 +11,7 @@
 	],
 	"activationEvents": [
 		"onCommand:extension.helloWorld",
+        "onCommand:gcores.refreshExplorer",
 		"onCommand:gcores.previewArticle",
 		"onCommand:gcores.addAuthor",
 		"onCommand:gcores.deleteAuthor",
@@ -37,7 +38,23 @@
 			]
 		},
 		"menus": {
-			"view/title": [],
+			"view/title": [
+                {
+                    "command": "gcores.refreshExplorer",
+                    "when": "view == gcoresExplorer",
+                    "group": "navigation@0"
+                },
+                {
+                    "command": "gcores.pickOne",
+                    "when": "view == gcoresExplorer",
+                    "group": "navigation@1"
+                },
+                {
+                    "command": "gcores.addAuthor",
+                    "when": "view == gcoresExplorer",
+                    "group": "navigation@2"
+                }
+			],
 			"view/item/context": [
 				{
 					"command": "gcores.previewArticle",
@@ -59,17 +76,34 @@
 			{
 				"command": "gcores.addAuthor",
 				"title": "Add Author",
-				"category": "Gcores"
+				"category": "Gcores",
+				"icon": {
+                    "light": "resources/light/add-author.svg",
+                    "dark": "resources/dark/add-author.svg"
+                }
 			},
 			{
 				"command": "gcores.deleteAuthor",
-				"title": "elete Author",
+				"title": "Delete Author",
 				"category": "Gcores"
 			},
 			{
 				"command": "gcores.pickOne",
 				"title": "Pick One",
-				"category": "Gcores"
+				"category": "Gcores",
+				"icon": {
+                    "light": "resources/light/dice.svg",
+                    "dark": "resources/dark/dice.svg"
+                }
+			},
+			{
+				"command": "gcores.refreshExplorer",
+				"title": "Refresh",
+				"category": "Gcores",
+				"icon": {
+                    "light": "resources/light/refresh.svg",
+                    "dark": "resources/dark/refresh.svg"
+                }
 			}
 		]
 	},
