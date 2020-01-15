@@ -97,7 +97,7 @@ class ExplorerNodeManager implements Disposable {
         this.explorerNodeMap.clear();
     }
 
-    private parseToGcoresNode(data: any): GcoresNode {
+    public parseToGcoresNode(data: any): GcoresNode {
         const attributes: any = data.attributes;
         return new GcoresNode({
             id: data.id,
@@ -108,11 +108,6 @@ class ExplorerNodeManager implements Disposable {
             bookmarksCount: attributes["bookmarks-count"],
             createdAt: attributes["published-at"].split("T")[0],
         }, true);
-    }
-
-    private getNewAuthorsMapping(context: vscode.ExtensionContext): any {
-        const authors: any = context.globalState.get(globalStateGcoresAuthorKey);
-        return authors;
     }
 }
 

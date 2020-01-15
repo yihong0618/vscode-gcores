@@ -3,6 +3,7 @@ export const baseArticleUrl: string = "https://www.gcores.com/articles/";
 export const baseAuthorUrl: string = "https://www.gcores.com/users/";
 export const baseImgUrl: string = "https://image.gcores.com/";
 export const baseLimit: number = 50;
+export const baseOffset: number = 0;
 
 // add new Category here
 export enum Category {

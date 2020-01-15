@@ -14,6 +14,7 @@
 		"onCommand:gcores.previewArticle",
 		"onCommand:gcores.addAuthor",
 		"onCommand:gcores.deleteAuthor",
+		"onCommand:gcores.pickOne",
 		"onView:gcoresExplorer"
 	],
 	"main": "./out/extension.js",
@@ -62,7 +63,12 @@
 			},
 			{
 				"command": "gcores.deleteAuthor",
-				"title": "delete Author",
+				"title": "elete Author",
+				"category": "Gcores"
+			},
+			{
+				"command": "gcores.pickOne",
+				"title": "Pick One",
 				"category": "Gcores"
 			}
 		]
