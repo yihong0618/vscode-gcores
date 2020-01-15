@@ -19,7 +19,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
         vscode.commands.registerCommand("gcores.previewArticle", (node: GcoresNode) => previewArticle(node)),
         vscode.commands.registerCommand("gcores.pickOne", () => pickArticle()),
         vscode.commands.registerCommand("gcores.addAuthor", () => addAuthor(context)),
-        vscode.commands.registerCommand("gcores.deleteAuthor", () => deleteAuthor(context)),
+        vscode.commands.registerCommand("gcores.deleteAuthor", (input: any) => deleteAuthor(context, input)),
     );
 }
 

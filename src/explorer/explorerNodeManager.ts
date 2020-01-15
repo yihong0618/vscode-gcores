@@ -67,10 +67,11 @@ class ExplorerNodeManager implements Disposable {
     // TODO add new author method
     public GetAuthorsNodes(mapping: any): GcoresNode[] {
         const res: GcoresNode[] = [];
-        for (const authorName of mapping.keys()) {
+        for (const [authorName, authorId] of mapping.entries()) {
             res.push(new GcoresNode(Object.assign({}, defaultArticle, {
                 id: authorName,
                 name: authorName,
+                authorId,
             }), false));
         }
         return res;

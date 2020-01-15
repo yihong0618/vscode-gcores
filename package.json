@@ -10,7 +10,6 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:extension.helloWorld",
         "onCommand:gcores.refreshExplorer",
 		"onCommand:gcores.previewArticle",
 		"onCommand:gcores.addAuthor",
@@ -57,17 +56,13 @@
 			],
 			"view/item/context": [
 				{
-					"command": "gcores.previewArticle",
-					"when": "view == gcoresExplorer && viewItem == see",
+					"command": "gcores.deleteAuthor",
+					"when": "view == gcoresExplorer && viewItem == can-delete",
 					"group": "gcores@1"
 				}
 			]
 		},
 		"commands": [
-			{
-				"command": "extension.helloWorld",
-				"title": "Hello World"
-			},
 			{
 				"command": "gcores.previewArticle",
 				"title": "Preview Article",

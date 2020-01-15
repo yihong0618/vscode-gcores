@@ -23,12 +23,16 @@ export class GcoresTreeDataProvider implements vscode.TreeDataProvider<GcoresNod
 
     public getTreeItem(element: GcoresNode): vscode.TreeItem | Thenable<vscode.TreeItem> {
 
+        let contextValue: string;
+        const newAuthorsid: string[] = Object.values(this.newAuthors);
+        contextValue = !element.isGcoresElement && newAuthorsid.includes(element.authorId) ? "can-delete" : "";
+
         return {
             label: element.isGcoresElement ? `${element.name}` : element.name,
             collapsibleState: element.isGcoresElement ? vscode.TreeItemCollapsibleState.None : vscode.TreeItemCollapsibleState.Collapsed,
             command: element.isGcoresElement ? element.previewCommand : undefined,
             iconPath: element.isHotElement ? this.context.asAbsolutePath(path.join("resources", "hot.png")) : "",
-            contextValue: element.id,
+            contextValue,
         };
     }
 
@@ -58,11 +62,15 @@ export class GcoresTreeDataProvider implements vscode.TreeDataProvider<GcoresNod
     }
 
     private get nowAuthorNamesMapping(): any {
-        const newAuthors: any = this.context.globalState.get(globalStateGcoresAuthorKey);
+        const newAuthors: any = this.newAuthors;
         if (!newAuthors) {
             return authorNamesMapping;
         }
         return new Map([...authorNamesMapping, ...Object.entries(newAuthors)]);
+    }
+
+    private get newAuthors(): any {
+        return this.context.globalState.get(globalStateGcoresAuthorKey) || [];
     }
 }
 

@@ -33,7 +33,7 @@ export const defaultArticle: IArticle = {
     createdAt: "",
 };
 
-// add tag here
+// add new tag here
 export const articleTagsMapping: Map<string, string> = new Map([
     ["知识挖掘机", "20"],
     ["安利大帝", "18"],

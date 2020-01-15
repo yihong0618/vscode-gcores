@@ -10,6 +10,8 @@ const articleStyleMapping: Map<any, any> = new Map([
     ["header-one", (toRenderText: string): string => `# ${toRenderText}`],
     ["header-two", (toRenderText: string): string => `## ${toRenderText}`],
     ["header-three", (toRenderText: string): string => `### ${toRenderText}`],
+    ["header-four", (toRenderText: string): string => `#### ${toRenderText}`],
+    ["header-five", (toRenderText: string): string => `##### ${toRenderText}`],
     ["unordered-list-item", (toRenderText: string): string => `- ${toRenderText}`],
     // ToDo this is a skip need to refactor
     ["ordered-list-item", (toRenderText: string): string => `- ${toRenderText}`],
@@ -59,9 +61,15 @@ function parseContent(dataBloks: any | undefined): string {
                 if (entity.type === "LINK") {
                     const text: string = element.text;
                     const textI: string = text.slice(i["offset"], i["offset"] + i["length"]);
-                    toRenderText = text.replace(text, `[${text}](${entity.data.url.trim()})`);
+                    toRenderText = text.replace(textI, `[${textI}](${entity.data.url.trim()})`);
                     // g-cores change to gcores but some link didn't change
                     toRenderText = toRenderText.replace("g-cores", "gcores");
+                }
+                if (entity.type === "GALLERY") {
+                    const links: any = entity.data.images;
+                    for (const link of links) {
+                        toRenderText += `![](${baseImgUrl}${link.path})`;
+                    }
                 }
             }
         } else {
