@@ -52,17 +52,19 @@ function parseContent(dataBloks: any | undefined): string {
     dataArray.forEach((element: any): void => {
         const textFunc: any = articleStyleMapping.get(element.type);
         let toRenderText: string = "";
+        const isMultiRange: boolean = element.entityRanges.length > 1;
         if (element.entityRanges.length !== 0) {
             for (const i of element.entityRanges) {
                 const entity: any = entityMap[i.key];
                 if (entity.type === "IMAGE") {
-                    toRenderText += `![](${baseImgUrl}${entity.data.path})`;
+                    toRenderText += `![](${baseImgUrl}${entity.data.path} "${entity.data.caption || ""}")`;
                 }
                 if (entity.type === "LINK") {
-                    const text: string = element.text;
-                    const textI: string = text.slice(i["offset"], i["offset"] + i["length"]);
+                    // handle many links
+                    const text: string = isMultiRange ? toRenderText ? toRenderText : element.text : element.text;
+                    const textI: string = element.text.slice(i["offset"], i["offset"] + i["length"]);
                     toRenderText = text.replace(textI, `[${textI}](${entity.data.url.trim()})`);
-                    // g-cores change to gcores but some link didn't change
+                    // g-cores url change to gcores but some link didn't change
                     toRenderText = toRenderText.replace("g-cores", "gcores");
                 }
                 if (entity.type === "GALLERY") {
