@@ -11,6 +11,7 @@ const headers: object = {
     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36",
 };
 
+// TODO maybe move these to shared
 type IApiBaseTemplateFunc = (limit?: number, offset?: number, isNews?: number) => string;
 type IApiTagsOrAuthorsTemplateFunc = (num: string, limit?: number, offset?: number, isNews?: number) => string;
 type IApiOneDataTemplateFunc = (authorId: string) => string;
@@ -20,7 +21,11 @@ const apiArticlesOrNewsTemplate: IApiBaseTemplateFunc = (limit: number = baseLim
 const apiSingleArticleTemplate: IApiOneDataTemplateFunc = (articleId: string): string => `https://www.gcores.com/gapi/v1/articles/${articleId}?include=category,user,user.role,tags,entities,entries,similarities.user,similarities.djs,similarities.category,collections&preview=1`;
 const apiArticleTagTemplate: IApiTagsOrAuthorsTemplateFunc = (tagNum: string, limit: number = baseLimit, offset: number = baseOffset, isNews: number = RecentType.Article): string => `https://www.gcores.com/gapi/v1/categories/${tagNum}/articles?page[limit]=${limit}&page[offset]=${offset}&sort=-published-at&include=category,user&filter[is-news]=${isNews}&fields[articles]=title,desc,is-published,thumb,app-cover,cover,comments-count,likes-count,bookmarks-count,is-verified,published-at,option-is-official,option-is-focus-showcase,duration,category,user`;
 const apiArticlesByAuthorTemplate: IApiTagsOrAuthorsTemplateFunc = (authorId: string, limit: number = baseLimit, offset: number = baseOffset, isNews: number = RecentType.Article): string => `https://www.gcores.com/gapi/v1/users/${authorId}/articles?page[limit]=${limit}&page[offset]=0&sort=-published-at&include=category,user&filter[is-news]=${isNews}&fields[articles]=title,desc,is-published,thumb,app-cover,cover,comments-count,likes-count,bookmarks-count,is-verified,published-at,option-is-official,option-is-focus-showcase,duration,category,user`;
-const apiAuthorInfotemplate: IApiOneDataTemplateFunc = (authorId: string): string => `https://www.gcores.com/gapi/v1/users/${authorId}`;
+const apiAuthorInfoTemplate: IApiOneDataTemplateFunc = (authorId: string): string => `https://www.gcores.com/gapi/v1/users/${authorId}`;
+const apiBookmarkTemplate: IApiTagsOrAuthorsTemplateFunc = (userId: string, limit: number = baseLimit, offset: number = baseOffset): string => `https://www.gcores.com/gapi/v1/users/${userId}/bookmarks?page[limit]=${limit}&page[offset]=${offset}&include=bookmarkable`;
+
+// login releated apis TODO
+const loginApi: string = "https://www.gcores.com/gapi/v1/tokens/refresh";
 
 const http: AxiosInstance = axios.create({
   headers,
@@ -88,7 +93,7 @@ export async function getOneArticleData(arcicleId: string): Promise<AxiosRespons
 }
 
 export async function getAuthorInfo(authorId: string): Promise<AxiosResponse<any>> {
-  const apiAuthorInfo: string = apiAuthorInfotemplate(authorId);
+  const apiAuthorInfo: string = apiAuthorInfoTemplate(authorId);
   const { data } = await http
     .get(apiAuthorInfo, {
     })
