@@ -13,6 +13,11 @@ export enum Category {
     Author = "作者专题",
 }
 
+export enum RecentType {
+    News = 1,
+    Article = 0,
+}
+
 export interface IArticle {
     id: string;
     name: string;

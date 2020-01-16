@@ -61,16 +61,16 @@ export class GcoresTreeDataProvider implements vscode.TreeDataProvider<GcoresNod
         }
     }
 
-    private get nowAuthorNamesMapping(): any {
-        const newAuthors: any = this.newAuthors;
+    private get nowAuthorNamesMapping(): Map<string, string> {
+        const newAuthors: object = this.newAuthors;
         if (!newAuthors) {
             return authorNamesMapping;
         }
         return new Map([...authorNamesMapping, ...Object.entries(newAuthors)]);
     }
 
-    private get newAuthors(): any {
-        return this.context.globalState.get(globalStateGcoresAuthorKey) || [];
+    private get newAuthors(): object {
+        return this.context.globalState.get(globalStateGcoresAuthorKey) || {};
     }
 }
 

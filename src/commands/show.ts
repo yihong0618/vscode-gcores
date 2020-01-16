@@ -5,7 +5,9 @@ import { GcoresNode } from "../explorer/GcoresNode";
 import { baseArticleUrl, baseAuthorUrl, baseImgUrl } from "../shared";
 import { markdownEngine } from "../webview/markdownEngine";
 
-const articleStyleMapping: Map<any, any> = new Map([
+type IRenderText = (text: string) => string;
+
+const articleStyleMapping: Map<string, IRenderText> = new Map([
     ["unstyled", (toRenderText: string): string => `${toRenderText}`],
     ["header-one", (toRenderText: string): string => `# ${toRenderText}`],
     ["header-two", (toRenderText: string): string => `## ${toRenderText}`],
@@ -50,7 +52,10 @@ function parseContent(dataBloks: any | undefined): string {
     const dataArray: any = dataBloks.blocks;
     const entityMap: any = dataBloks.entityMap;
     dataArray.forEach((element: any): void => {
-        const textFunc: any = articleStyleMapping.get(element.type);
+        let textFunc: IRenderText | undefined = articleStyleMapping.get(element.type);
+        if (!textFunc) {
+            textFunc = (text: string): string => `${text}`;
+        }
         let toRenderText: string = "";
         const isMultiRange: boolean = element.entityRanges.length > 1;
         if (element.entityRanges.length !== 0) {

@@ -1,4 +1,3 @@
-// TODO
 import { getPickOneInfo } from "../api";
 import { explorerNodeManager } from "../explorer/explorerNodeManager";
 import { GcoresNode } from "../explorer/GcoresNode";

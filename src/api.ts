@@ -1,6 +1,6 @@
-import axios, { AxiosError, AxiosInstance } from "axios";
+import axios, { AxiosError, AxiosInstance, AxiosResponse } from "axios";
 import { window } from "vscode";
-import { baseLimit, baseOffset } from "./shared";
+import { baseLimit, baseOffset, RecentType } from "./shared";
 
 const headers: object = {
   "Accept" :
@@ -16,10 +16,10 @@ type IApiTagsOrAuthorsTemplateFunc = (num: string, limit?: number, offset?: numb
 type IApiOneDataTemplateFunc = (authorId: string) => string;
 type IRand = (min: number, max: number) => number;
 
-const apiArticlesOrNewsTemplate: IApiBaseTemplateFunc = (limit: number = baseLimit, offset: number = baseOffset, isNews: number = 0): string => `https://www.gcores.com/gapi/v1/articles?page[limit]=${limit}&page[offset]=${offset}&sort=-published-at&include=category,user&filter[is-news]=${isNews}&fields[articles]=title,desc,is-published,thumb,app-cover,cover,comments-count,likes-count,bookmarks-count,is-verified,published-at,option-is-official,option-is-focus-showcase,duration,category,user`;
+const apiArticlesOrNewsTemplate: IApiBaseTemplateFunc = (limit: number = baseLimit, offset: number = baseOffset, isNews: number = RecentType.Article): string => `https://www.gcores.com/gapi/v1/articles?page[limit]=${limit}&page[offset]=${offset}&sort=-published-at&include=category,user&filter[is-news]=${isNews}&fields[articles]=title,desc,is-published,thumb,app-cover,cover,comments-count,likes-count,bookmarks-count,is-verified,published-at,option-is-official,option-is-focus-showcase,duration,category,user`;
 const apiSingleArticleTemplate: IApiOneDataTemplateFunc = (articleId: string): string => `https://www.gcores.com/gapi/v1/articles/${articleId}?include=category,user,user.role,tags,entities,entries,similarities.user,similarities.djs,similarities.category,collections&preview=1`;
-const apiArticleTagTemplate: IApiTagsOrAuthorsTemplateFunc = (tagNum: string, limit: number = baseLimit, offset: number = baseOffset, isNews: number = 0): string => `https://www.gcores.com/gapi/v1/categories/${tagNum}/articles?page[limit]=${limit}&page[offset]=${offset}&sort=-published-at&include=category,user&filter[is-news]=${isNews}&fields[articles]=title,desc,is-published,thumb,app-cover,cover,comments-count,likes-count,bookmarks-count,is-verified,published-at,option-is-official,option-is-focus-showcase,duration,category,user`;
-const apiArticlesByAuthorTemplate: IApiTagsOrAuthorsTemplateFunc = (authorId: string, limit: number = baseLimit, offset: number = baseOffset, isNews: number = 0): string => `https://www.gcores.com/gapi/v1/users/${authorId}/articles?page[limit]=${limit}&page[offset]=0&sort=-published-at&include=category,user&filter[is-news]=${isNews}&fields[articles]=title,desc,is-published,thumb,app-cover,cover,comments-count,likes-count,bookmarks-count,is-verified,published-at,option-is-official,option-is-focus-showcase,duration,category,user`;
+const apiArticleTagTemplate: IApiTagsOrAuthorsTemplateFunc = (tagNum: string, limit: number = baseLimit, offset: number = baseOffset, isNews: number = RecentType.Article): string => `https://www.gcores.com/gapi/v1/categories/${tagNum}/articles?page[limit]=${limit}&page[offset]=${offset}&sort=-published-at&include=category,user&filter[is-news]=${isNews}&fields[articles]=title,desc,is-published,thumb,app-cover,cover,comments-count,likes-count,bookmarks-count,is-verified,published-at,option-is-official,option-is-focus-showcase,duration,category,user`;
+const apiArticlesByAuthorTemplate: IApiTagsOrAuthorsTemplateFunc = (authorId: string, limit: number = baseLimit, offset: number = baseOffset, isNews: number = RecentType.Article): string => `https://www.gcores.com/gapi/v1/users/${authorId}/articles?page[limit]=${limit}&page[offset]=0&sort=-published-at&include=category,user&filter[is-news]=${isNews}&fields[articles]=title,desc,is-published,thumb,app-cover,cover,comments-count,likes-count,bookmarks-count,is-verified,published-at,option-is-official,option-is-focus-showcase,duration,category,user`;
 const apiAuthorInfotemplate: IApiOneDataTemplateFunc = (authorId: string): string => `https://www.gcores.com/gapi/v1/users/${authorId}`;
 
 const http: AxiosInstance = axios.create({
@@ -37,7 +37,7 @@ function errorHandler(err: AxiosError): Promise<never> {
   return Promise.reject(err);
 }
 
-export async function getRecentArticlesData(): Promise<any[]> {
+export async function getRecentArticlesData(): Promise<AxiosResponse<any>> {
   const { data } = await http
     .get(apiArticlesOrNewsTemplate(), {
     })
@@ -45,16 +45,16 @@ export async function getRecentArticlesData(): Promise<any[]> {
   return data;
 }
 
-export async function getRecentNewsData(): Promise<any[]> {
+export async function getRecentNewsData(): Promise<AxiosResponse<any>> {
   const { data } = await http
-    .get(apiArticlesOrNewsTemplate(baseLimit, 1), {
+    .get(apiArticlesOrNewsTemplate(baseLimit, baseOffset, RecentType.News), {
     })
     .catch(errorHandler);
   return data;
 }
 
 // TODO any to change type
-export async function getArticlesDataByTag(mapping: any, tagName: string): Promise<any[]> {
+export async function getArticlesDataByTag(mapping: Map<string, string>, tagName: string): Promise<AxiosResponse<any>> {
   let tagNum: string | undefined = mapping.get(tagName);
   if ( !tagNum ) {
     tagNum = "1";
@@ -66,7 +66,7 @@ export async function getArticlesDataByTag(mapping: any, tagName: string): Promi
   return data;
 }
 
-export async function getArticlesDataByAuthor(mapping: any, authorName: string): Promise<any[]> {
+export async function getArticlesDataByAuthor(mapping: Map<string, string>, authorName: string): Promise<AxiosResponse<any>> {
   let authorId: string | undefined = mapping.get(authorName);
   if ( !authorId ) {
     authorId = "3"; // 西蒙
@@ -78,7 +78,7 @@ export async function getArticlesDataByAuthor(mapping: any, authorName: string):
   return data;
 }
 
-export async function getOneArticleData(arcicleId: string): Promise<any[]> {
+export async function getOneArticleData(arcicleId: string): Promise<AxiosResponse<any>> {
   const apiSingleArticle: string = apiSingleArticleTemplate(arcicleId);
   const { data } = await http
     .get(apiSingleArticle, {
@@ -87,7 +87,7 @@ export async function getOneArticleData(arcicleId: string): Promise<any[]> {
   return data;
 }
 
-export async function getAuthorInfo(authorId: string): Promise<any> {
+export async function getAuthorInfo(authorId: string): Promise<AxiosResponse<any>> {
   const apiAuthorInfo: string = apiAuthorInfotemplate(authorId);
   const { data } = await http
     .get(apiAuthorInfo, {
@@ -96,7 +96,7 @@ export async function getAuthorInfo(authorId: string): Promise<any> {
   return data;
 }
 
-export async function getPickOneInfo(): Promise<any> {
+export async function getPickOneInfo(): Promise<AxiosResponse<any>> {
   const pickData: any = await getRecentArticlesData();
   const totalNum: number = parseInt(pickData.meta["record-count"], 10);
   const rand: IRand = (min: number, max: number): number => {
