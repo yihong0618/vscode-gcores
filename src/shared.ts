@@ -11,6 +11,7 @@ export enum Category {
     News = "近期新闻",
     Tag = "分类文章",
     Author = "作者专题",
+    Bookmark = "我的收藏",
 }
 
 export enum RecentType {

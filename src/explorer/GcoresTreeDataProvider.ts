@@ -1,7 +1,7 @@
 import * as path from "path";
 import * as vscode from "vscode";
-import { getArticlesDataByAuthor, getArticlesDataByTag } from "../api";
-import { articleTagsMapping, authorNamesMapping, Category, globalStateGcoresAuthorKey } from "../shared";
+import { checkTokenWithApi, getArticlesDataByAuthor, getArticlesDataByTag } from "../api";
+import { articleTagsMapping, authorNamesMapping, Category, defaultArticle, globalStateGcoresAuthorKey, globalStateGcoresUserKey } from "../shared";
 import { explorerNodeManager } from "./explorerNodeManager";
 import { GcoresNode } from "./GcoresNode";
 
@@ -49,6 +49,16 @@ export class GcoresTreeDataProvider implements vscode.TreeDataProvider<GcoresNod
                     return explorerNodeManager.GetTagsNodes();
                 case Category.Author:
                     return explorerNodeManager.GetAuthorsNodes(this.nowAuthorNamesMapping);
+                case Category.Bookmark:
+                    if (this.isLogin()) {
+                        return [
+                            new GcoresNode(Object.assign({}, defaultArticle, {
+                                id: "not login",
+                                name: "Please login gcores",
+                            }), false),
+                        ];
+                    }
+                    return explorerNodeManager.GetAuthorsNodes(this.nowAuthorNamesMapping);
                 default:
                     break;
             }
@@ -59,6 +69,22 @@ export class GcoresTreeDataProvider implements vscode.TreeDataProvider<GcoresNod
                 return explorerNodeManager.getOneLabelArticlesNodes(element.id, getArticlesDataByAuthor.bind(null, this.nowAuthorNamesMapping));
             }
         }
+    }
+
+    private async isLogin(): Promise<boolean> {
+        const user: any = this.context.globalState.get(globalStateGcoresUserKey);
+        if (!user) {
+            return false;
+        }
+        const isChecked: boolean = await this.checkToken(user.tokenData);
+        return isChecked;
+    }
+
+    private async checkToken(tokenData: any): Promise<boolean> {
+        const userId: string = tokenData.userId;
+        const token: string = tokenData.token;
+        const isOK: boolean = await checkTokenWithApi(userId, token);
+        return isOK;
     }
 
     private get nowAuthorNamesMapping(): Map<string, string> {
@@ -72,6 +98,7 @@ export class GcoresTreeDataProvider implements vscode.TreeDataProvider<GcoresNod
     private get newAuthors(): object {
         return this.context.globalState.get(globalStateGcoresAuthorKey) || {};
     }
+
 }
 
 export const gcoresTreeDataProvider: GcoresTreeDataProvider = new GcoresTreeDataProvider();

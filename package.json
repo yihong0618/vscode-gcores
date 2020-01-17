@@ -40,19 +40,24 @@
 		"menus": {
 			"view/title": [
                 {
-                    "command": "gcores.refreshExplorer",
+                    "command": "gcores.login",
                     "when": "view == gcoresExplorer",
                     "group": "navigation@0"
                 },
                 {
-                    "command": "gcores.pickOne",
+                    "command": "gcores.refreshExplorer",
                     "when": "view == gcoresExplorer",
                     "group": "navigation@1"
                 },
                 {
-                    "command": "gcores.addAuthor",
+                    "command": "gcores.pickOne",
                     "when": "view == gcoresExplorer",
                     "group": "navigation@2"
+                },
+                {
+                    "command": "gcores.addAuthor",
+                    "when": "view == gcoresExplorer",
+                    "group": "navigation@3"
                 }
 			],
 			"view/item/context": [
@@ -72,7 +77,11 @@
 			{
 				"command": "gcores.login",
 				"title": "Login",
-				"category": "Gcores"
+				"category": "Gcores",
+				"icon": {
+                    "light": "resources/light/login.svg",
+                    "dark": "resources/dark/login.svg"
+                }
 			},
 			{
 				"command": "gcores.addAuthor",

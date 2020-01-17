@@ -28,14 +28,16 @@ export async function userLogin(context: vscode.ExtensionContext): Promise<void>
         if (loginData) {
             const userId: string = loginData["user-id"];
             const userData: any = await getAuthorInfo(userId);
-            let users: any = context.globalState.get(globalStateGcoresUserKey);
-            if (!users) {
-                users = {};
+            let user: any = context.globalState.get(globalStateGcoresUserKey);
+            if (!user) {
+                user = {};
             }
             const userName: string = userData.data.attributes.nickname;
-            users[userName] = userId;
-            users["token"] = loginData["token"];
-            await context.globalState.update(globalStateGcoresUserKey, users);
+            user.tokenData = {};
+            user.tokenData.userId =  userId;
+            user.tokenData.userName = userName;
+            user.tokenData.token = loginData["token"];
+            await context.globalState.update(globalStateGcoresUserKey, user);
             vscode.window.showInformationMessage(`Successfully add author ${userName}.`);
             gcoresTreeDataProvider.refresh();
         }

@@ -14,16 +14,17 @@ const headers: any = {
 
 // TODO maybe move these to shared
 type IApiBaseTemplateFunc = (limit?: number, offset?: number, isNews?: number) => string;
-type IApiTagsOrAuthorsTemplateFunc = (num: string, limit?: number, offset?: number, isNews?: number) => string;
+type IApiTagsOrUsersTemplateFunc = (num: string, limit?: number, offset?: number, isNews?: number) => string;
 type IApiOneDataTemplateFunc = (authorId: string) => string;
 type IRand = (min: number, max: number) => number;
 
 const apiArticlesOrNewsTemplate: IApiBaseTemplateFunc = (limit: number = baseLimit, offset: number = baseOffset, isNews: number = RecentType.Article): string => `https://www.gcores.com/gapi/v1/articles?page[limit]=${limit}&page[offset]=${offset}&sort=-published-at&include=category,user&filter[is-news]=${isNews}&fields[articles]=title,desc,is-published,thumb,app-cover,cover,comments-count,likes-count,bookmarks-count,is-verified,published-at,option-is-official,option-is-focus-showcase,duration,category,user`;
 const apiSingleArticleTemplate: IApiOneDataTemplateFunc = (articleId: string): string => `https://www.gcores.com/gapi/v1/articles/${articleId}?include=category,user,user.role,tags,entities,entries,similarities.user,similarities.djs,similarities.category,collections&preview=1`;
-const apiArticleTagTemplate: IApiTagsOrAuthorsTemplateFunc = (tagNum: string, limit: number = baseLimit, offset: number = baseOffset, isNews: number = RecentType.Article): string => `https://www.gcores.com/gapi/v1/categories/${tagNum}/articles?page[limit]=${limit}&page[offset]=${offset}&sort=-published-at&include=category,user&filter[is-news]=${isNews}&fields[articles]=title,desc,is-published,thumb,app-cover,cover,comments-count,likes-count,bookmarks-count,is-verified,published-at,option-is-official,option-is-focus-showcase,duration,category,user`;
-const apiArticlesByAuthorTemplate: IApiTagsOrAuthorsTemplateFunc = (authorId: string, limit: number = baseLimit, offset: number = baseOffset, isNews: number = RecentType.Article): string => `https://www.gcores.com/gapi/v1/users/${authorId}/articles?page[limit]=${limit}&page[offset]=0&sort=-published-at&include=category,user&filter[is-news]=${isNews}&fields[articles]=title,desc,is-published,thumb,app-cover,cover,comments-count,likes-count,bookmarks-count,is-verified,published-at,option-is-official,option-is-focus-showcase,duration,category,user`;
+const apiArticleTagTemplate: IApiTagsOrUsersTemplateFunc = (tagNum: string, limit: number = baseLimit, offset: number = baseOffset, isNews: number = RecentType.Article): string => `https://www.gcores.com/gapi/v1/categories/${tagNum}/articles?page[limit]=${limit}&page[offset]=${offset}&sort=-published-at&include=category,user&filter[is-news]=${isNews}&fields[articles]=title,desc,is-published,thumb,app-cover,cover,comments-count,likes-count,bookmarks-count,is-verified,published-at,option-is-official,option-is-focus-showcase,duration,category,user`;
+const apiArticlesByAuthorTemplate: IApiTagsOrUsersTemplateFunc = (authorId: string, limit: number = baseLimit, offset: number = baseOffset, isNews: number = RecentType.Article): string => `https://www.gcores.com/gapi/v1/users/${authorId}/articles?page[limit]=${limit}&page[offset]=0&sort=-published-at&include=category,user&filter[is-news]=${isNews}&fields[articles]=title,desc,is-published,thumb,app-cover,cover,comments-count,likes-count,bookmarks-count,is-verified,published-at,option-is-official,option-is-focus-showcase,duration,category,user`;
 const apiAuthorInfoTemplate: IApiOneDataTemplateFunc = (authorId: string): string => `https://www.gcores.com/gapi/v1/users/${authorId}`;
-const apiBookmarkTemplate: IApiTagsOrAuthorsTemplateFunc = (userId: string, limit: number = baseLimit, offset: number = baseOffset): string => `https://www.gcores.com/gapi/v1/users/${userId}/bookmarks?page[limit]=${limit}&page[offset]=${offset}&include=bookmarkable`;
+const apiBookmarkTemplate: IApiTagsOrUsersTemplateFunc = (userId: string, limit: number = baseLimit, offset: number = baseOffset): string => `https://www.gcores.com/gapi/v1/users/${userId}/bookmarks?page[limit]=${limit}&page[offset]=${offset}&include=bookmarkable`;
+const apitokenCheckTemplate: IApiTagsOrUsersTemplateFunc = (userId: string, limit: number = baseLimit, offset: number = baseOffset): string => `https://www.gcores.com/gapi/v1/users/${userId}/bookmarks?page[limit]=${limit}&page[offset]=${offset}`;
 
 // TODO login releated apis
 const loginApi: string = "https://www.gcores.com/gapi/v1/tokens/refresh";
@@ -42,6 +43,17 @@ function errorHandler(err: AxiosError): Promise<never> {
   }
   window.showInformationMessage("Something wrong");
   return Promise.reject(err);
+}
+
+function errorCheckHandler(err: AxiosError): boolean {
+  const { response, config } = err;
+  const data: any = (response as any).data;
+  if (data) {
+    const msg: string = data.errors[0].detail;
+    window.showInformationMessage(msg);
+  }
+  window.showInformationMessage("Something wrong");
+  return false;
 }
 
 export async function getRecentArticlesData(): Promise<AxiosResponse<any>> {
@@ -130,4 +142,17 @@ export async function login(username: string, password: string): Promise<AxiosRe
     .post(loginApi, payload)
     .catch(errorHandler);
   return data;
+}
+
+export async function checkTokenWithApi(userId: string, token: string): Promise<any> {
+  headers["Authorization"] = "Token token=" + token;
+  const { status }: any = await axios
+  .get(apitokenCheckTemplate(userId), {
+    headers,
+  })
+  .catch(errorCheckHandler);
+  if (status === 200) {
+    return true;
+  }
+  return false;
 }

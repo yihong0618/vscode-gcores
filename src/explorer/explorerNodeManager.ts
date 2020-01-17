@@ -1,18 +1,13 @@
 // Copyright (c) jdneo. All rights reserved.
 // Licensed under the MIT license.
 
-import * as vscode from "vscode";
 import { Disposable } from "vscode";
 import { getRecentArticlesData, getRecentNewsData } from "../api";
-import { articleTagsMapping, authorNamesMapping, Category, defaultArticle, globalStateGcoresAuthorKey } from "../shared";
+import { articleTagsMapping, Category, defaultArticle } from "../shared";
 import { GcoresNode } from "./GcoresNode";
 
 class ExplorerNodeManager implements Disposable {
     private explorerNodeMap: Map<string, GcoresNode> = new Map<string, GcoresNode>();
-
-    public async refreshCache(): Promise<void> {
-        this.dispose();
-    }
 
     public getRootNodes(): GcoresNode[] {
         return [
@@ -31,6 +26,10 @@ class ExplorerNodeManager implements Disposable {
             new GcoresNode(Object.assign({}, defaultArticle, {
                 id: Category.Author,
                 name: Category.Author,
+            }), false),
+            new GcoresNode(Object.assign({}, defaultArticle, {
+                id: Category.Bookmark,
+                name: Category.Bookmark,
             }), false),
         ];
     }
@@ -86,14 +85,6 @@ class ExplorerNodeManager implements Disposable {
         return res;
     }
 
-    public getAllNodes(): GcoresNode[] {
-        return Array.from(this.explorerNodeMap.values());
-    }
-
-    public getNodeById(id: string): GcoresNode | undefined {
-        return this.explorerNodeMap.get(id);
-    }
-
     public dispose(): void {
         this.explorerNodeMap.clear();
     }
@@ -110,6 +101,7 @@ class ExplorerNodeManager implements Disposable {
             createdAt: attributes["published-at"].split("T")[0],
         }, true);
     }
+
 }
 
 export const explorerNodeManager: ExplorerNodeManager = new ExplorerNodeManager();
