@@ -2,11 +2,12 @@ import axios, { AxiosError, AxiosInstance, AxiosResponse } from "axios";
 import { window } from "vscode";
 import { baseLimit, baseOffset, RecentType } from "./shared";
 
-const headers: object = {
+const headers: any = {
   "Accept" :
   "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3",
   "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8,zh-HK;q=0.7",
   "Cache-Control": "max-age=0",
+  "Content-Type": "application/vnd.api+json",
   "User-Agent":
     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36",
 };
@@ -24,7 +25,7 @@ const apiArticlesByAuthorTemplate: IApiTagsOrAuthorsTemplateFunc = (authorId: st
 const apiAuthorInfoTemplate: IApiOneDataTemplateFunc = (authorId: string): string => `https://www.gcores.com/gapi/v1/users/${authorId}`;
 const apiBookmarkTemplate: IApiTagsOrAuthorsTemplateFunc = (userId: string, limit: number = baseLimit, offset: number = baseOffset): string => `https://www.gcores.com/gapi/v1/users/${userId}/bookmarks?page[limit]=${limit}&page[offset]=${offset}&include=bookmarkable`;
 
-// login releated apis TODO
+// TODO login releated apis
 const loginApi: string = "https://www.gcores.com/gapi/v1/tokens/refresh";
 
 const http: AxiosInstance = axios.create({
@@ -34,11 +35,12 @@ const http: AxiosInstance = axios.create({
 function errorHandler(err: AxiosError): Promise<never> {
   const { response, config } = err;
   const data: any = (response as any).data;
-  if (data && data.msg) {
-    const msg: string = data.msg;
-    window.showErrorMessage(msg);
+  if (data) {
+    const msg: string = data.errors[0].detail;
+    window.showInformationMessage(msg);
     return Promise.reject(err);
   }
+  window.showInformationMessage("Something wrong");
   return Promise.reject(err);
 }
 
@@ -112,5 +114,20 @@ export async function getPickOneInfo(): Promise<AxiosResponse<any>> {
     .get(apiArticlesOrNewsTemplate(1, offset), {
   })
   .catch(errorHandler);
+  return data;
+}
+
+export async function login(username: string, password: string): Promise<AxiosResponse<any>> {
+  const payload: any = {
+    data: {
+      provider: "identity",
+      remember: true,
+      username,
+      password,
+    },
+  };
+  const { data } = await http
+    .post(loginApi, payload)
+    .catch(errorHandler);
   return data;
 }

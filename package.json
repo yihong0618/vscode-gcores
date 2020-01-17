@@ -12,6 +12,7 @@
 	"activationEvents": [
         "onCommand:gcores.refreshExplorer",
 		"onCommand:gcores.previewArticle",
+		"onCommand:gcores.login",
 		"onCommand:gcores.addAuthor",
 		"onCommand:gcores.deleteAuthor",
 		"onCommand:gcores.pickOne",
@@ -66,6 +67,11 @@
 			{
 				"command": "gcores.previewArticle",
 				"title": "Preview Article",
+				"category": "Gcores"
+			},
+			{
+				"command": "gcores.login",
+				"title": "Login",
 				"category": "Gcores"
 			},
 			{
