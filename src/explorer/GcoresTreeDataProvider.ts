@@ -1,6 +1,6 @@
 import * as path from "path";
 import * as vscode from "vscode";
-import { checkTokenWithApi, getArticlesDataByAuthor, getArticlesDataByTag } from "../api";
+import { checkTokenWithApi, getArticlesDataByAuthor, getArticlesDataByTag, getArticlesDataByUserBookmark } from "../api";
 import { articleTagsMapping, authorNamesMapping, Category, defaultArticle, globalStateGcoresAuthorKey, globalStateGcoresUserKey } from "../shared";
 import { explorerNodeManager } from "./explorerNodeManager";
 import { GcoresNode } from "./GcoresNode";
@@ -8,6 +8,10 @@ import { GcoresNode } from "./GcoresNode";
 export class GcoresTreeDataProvider implements vscode.TreeDataProvider<GcoresNode> {
 
     private context!: vscode.ExtensionContext;
+    // TODO refactor these
+    private isIn!: boolean;
+    private userId!: string;
+    private token!: string;
 
     private onDidChangeTreeDataEvent: vscode.EventEmitter<GcoresNode | undefined | null> = new vscode.EventEmitter<GcoresNode | undefined | null>();
     // tslint:disable-next-line:member-ordering
@@ -15,9 +19,13 @@ export class GcoresTreeDataProvider implements vscode.TreeDataProvider<GcoresNod
 
     public initialize(context: vscode.ExtensionContext): void {
         this.context = context;
+        this.isIn = false;
+        this.userId = "";
+        this.token = "";
     }
 
     public async refresh(): Promise<void> {
+        await this.isLogin();
         this.onDidChangeTreeDataEvent.fire();
     }
 
@@ -50,7 +58,7 @@ export class GcoresTreeDataProvider implements vscode.TreeDataProvider<GcoresNod
                 case Category.Author:
                     return explorerNodeManager.GetAuthorsNodes(this.nowAuthorNamesMapping);
                 case Category.Bookmark:
-                    if (this.isLogin()) {
+                    if (!this.isIn) {
                         return [
                             new GcoresNode(Object.assign({}, defaultArticle, {
                                 id: "not login",
@@ -58,7 +66,7 @@ export class GcoresTreeDataProvider implements vscode.TreeDataProvider<GcoresNod
                             }), false),
                         ];
                     }
-                    return explorerNodeManager.GetAuthorsNodes(this.nowAuthorNamesMapping);
+                    return explorerNodeManager.getBookmarkArticlesNodes(this.userId, this.token);
                 default:
                     break;
             }
@@ -71,13 +79,18 @@ export class GcoresTreeDataProvider implements vscode.TreeDataProvider<GcoresNod
         }
     }
 
-    private async isLogin(): Promise<boolean> {
+    private async isLogin(): Promise<void> {
         const user: any = this.context.globalState.get(globalStateGcoresUserKey);
-        if (!user) {
-            return false;
+        if (Object.entries(user).length === 0 && user.constructor === Object) {
+            this.isIn = false;
+            return;
         }
         const isChecked: boolean = await this.checkToken(user.tokenData);
-        return isChecked;
+        this.isIn = user && isChecked;
+        if (this.isIn) {
+            this.userId = user.tokenData.userId;
+            this.token = user.tokenData.token;
+        }
     }
 
     private async checkToken(tokenData: any): Promise<boolean> {

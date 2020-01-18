@@ -156,3 +156,13 @@ export async function checkTokenWithApi(userId: string, token: string): Promise<
   }
   return false;
 }
+
+export async function getArticlesDataByUserBookmark(userId: string, token: string): Promise<AxiosResponse<any>> {
+  headers["Authorization"] = "Token token=" + token;
+  const { data } = await axios
+    .get(apiBookmarkTemplate(userId), {
+      headers,
+    })
+    .catch(errorHandler);
+  return data;
+}

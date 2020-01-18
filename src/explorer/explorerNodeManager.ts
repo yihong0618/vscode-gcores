@@ -2,7 +2,7 @@
 // Licensed under the MIT license.
 
 import { Disposable } from "vscode";
-import { getRecentArticlesData, getRecentNewsData } from "../api";
+import { getArticlesDataByUserBookmark, getRecentArticlesData, getRecentNewsData } from "../api";
 import { articleTagsMapping, Category, defaultArticle } from "../shared";
 import { GcoresNode } from "./GcoresNode";
 
@@ -85,6 +85,16 @@ class ExplorerNodeManager implements Disposable {
         return res;
     }
 
+    public async getBookmarkArticlesNodes(userId: string, token: string): Promise<GcoresNode[]> {
+        const bookmarkData: any = await getArticlesDataByUserBookmark(userId, token);
+        const articlesData: any = bookmarkData.included.filter((i: any) => i.type === "articles");
+        const res: GcoresNode[] = [];
+        for (const data of articlesData) {
+            res.push(this.parseToGcoresNode(data));
+        }
+        return res;
+    }
+
     public dispose(): void {
         this.explorerNodeMap.clear();
     }
@@ -94,7 +104,7 @@ class ExplorerNodeManager implements Disposable {
         return new GcoresNode({
             id: data.id,
             name: attributes.title,
-            authorId: data.relationships.user.data.id,
+            authorId: data.relationships.user === {} ? data.relationships.user.data.id : "",
             likesCount: attributes["likes-count"],
             commentsCount: attributes["comments-count"],
             bookmarksCount: attributes["bookmarks-count"],

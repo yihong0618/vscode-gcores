@@ -13,6 +13,7 @@
         "onCommand:gcores.refreshExplorer",
 		"onCommand:gcores.previewArticle",
 		"onCommand:gcores.login",
+		"onCommand:gcores.logout",
 		"onCommand:gcores.addAuthor",
 		"onCommand:gcores.deleteAuthor",
 		"onCommand:gcores.pickOne",
@@ -82,6 +83,11 @@
                     "light": "resources/light/login.svg",
                     "dark": "resources/dark/login.svg"
                 }
+			},
+			{
+				"command": "gcores.logout",
+				"title": "Logout",
+				"category": "Gcores"
 			},
 			{
 				"command": "gcores.addAuthor",

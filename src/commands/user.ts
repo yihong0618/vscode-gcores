@@ -38,10 +38,22 @@ export async function userLogin(context: vscode.ExtensionContext): Promise<void>
             user.tokenData.userName = userName;
             user.tokenData.token = loginData["token"];
             await context.globalState.update(globalStateGcoresUserKey, user);
-            vscode.window.showInformationMessage(`Successfully add author ${userName}.`);
+            vscode.window.showInformationMessage(`Successfully login for ${userName}.`);
             gcoresTreeDataProvider.refresh();
         }
     } catch (error) {
         vscode.window.showInformationMessage("Failed to login");
     }
+}
+
+export async function userLogout(context: vscode.ExtensionContext): Promise<void> {
+    let user: any = context.globalState.get(globalStateGcoresUserKey);
+    if (!user) {
+        return;
+    }
+    const userName: string = user.tokenData.userName;
+    user = {};
+    await context.globalState.update(globalStateGcoresUserKey, user);
+    vscode.window.showInformationMessage(`Successfully logout for ${userName}.`);
+    gcoresTreeDataProvider.refresh();
 }

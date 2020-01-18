@@ -92,12 +92,14 @@ function parseContent(dataBloks: any | undefined): string {
 
 export async function previewArticle(node: GcoresNode): Promise<void> {
     const articleData: any = await getOneArticleData(node.id);
-    const authorData: any = await getAuthorInfo(node.authorId);
+    // included[3] is the author data
+    const authorData: any = articleData.included[3];
     const articleContent: string = articleData.data.attributes.content;
-    const authorName: string = authorData.data.attributes.nickname;
+    const authorId: string = authorData.id;
+    const authorName: string = authorData.attributes.nickname;
     const dataBlocks: any | undefined = JSON.parse(articleContent);
     const bodyData: any = parseContent(dataBlocks);
-    const head: string = markdownEngine.render(`# [${node.name}](${baseArticleUrl}${node.id})`);
+    const head: string = markdownEngine.render(`# [${node.name}](${baseArticleUrl}${authorId})`);
     const author: string = markdownEngine.render(`### 作者: [${authorName}](${baseAuthorUrl}${node.authorId})`);
     const info: string = markdownEngine.render([
         `| Likes | Comments | Bookmarks |`,
