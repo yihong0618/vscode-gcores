@@ -47,4 +47,12 @@ export class GcoresNode {
             arguments: [this],
         };
     }
+
+    public get loginCommand(): Command {
+        return {
+            title: "Login",
+            command: "gcores.login",
+            arguments: [this],
+        };
+    }
 }

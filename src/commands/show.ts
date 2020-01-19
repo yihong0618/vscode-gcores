@@ -1,9 +1,10 @@
 import * as vscode from "vscode";
 import { WebviewPanel } from "vscode";
-import { getAuthorInfo, getOneArticleData } from "../api";
+import { getOneArticleData } from "../api";
 import { GcoresNode } from "../explorer/GcoresNode";
 import { baseArticleUrl, baseAuthorUrl, baseImgUrl } from "../shared";
 import { markdownEngine } from "../webview/markdownEngine";
+import { onDidReceiveMessage } from "./utils";
 
 type IRenderText = (text: string) => string;
 
@@ -21,28 +22,55 @@ const articleStyleMapping: Map<string, IRenderText> = new Map([
 ]);
 
 function getWebviewContent(head: string, author: string, info: string, content: string): string {
+    const button: { element: string, script: string, style: string } = {
+        element: `<button id="solve">添加作者</button>`,
+        script: `const button = document.getElementById('solve');
+                button.onclick = () => vscode.postMessage({
+                    command: {
+                        action: 'Add Author',
+                        data: '${author}',
+                    },
+                });`,
+        style: `<style>
+            #solve {
+                display: inline-block;
+                margin: 0.2rem;
+                padding: 0.2rem 0.2rem;
+                border: 0;
+                color: white;
+                background-color: var(--vscode-button-background);
+            }
+            #solve:hover {
+                background-color: var(--vscode-button-hoverBackground);
+            }
+            #solve:active {
+                border: 0;
+            }
+            </style>`,
+    };
     return `
     <!DOCTYPE html>
     <html lang="en">
     <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src https:; script-src vscode-resource: 'unsafe-inline'; style-src vscode-resource: 'unsafe-inline';"/>
         ${markdownEngine.getStyles()}
-        <title>Gcors Article</title>
+        ${button.style}
         <style>
-        .img {
-            width:50px;
-            height:50px;
-         }
+            code { white-space: pre-wrap; }
         </style>
     </head>
     <body>
         ${head}
-        ${author}
+        ${author} ${button.element}
         <hr />
         ${content}
         <hr />
         ${info}
     </body>
+    <script>
+    const vscode = acquireVsCodeApi();
+    ${button.script}
+    </script>
     </html>
     `;
 }
@@ -99,13 +127,17 @@ export async function previewArticle(node: GcoresNode): Promise<void> {
     const authorName: string = authorData.attributes.nickname;
     const dataBlocks: any | undefined = JSON.parse(articleContent);
     const bodyData: any = parseContent(dataBlocks);
-    const head: string = markdownEngine.render(`# [${node.name}](${baseArticleUrl}${authorId})`);
-    const author: string = markdownEngine.render(`### 作者: [${authorName}](${baseAuthorUrl}${node.authorId})`);
+    const head: string = markdownEngine.render(`# [${node.name}](${baseArticleUrl}${node.id})`);
+    const author: string = markdownEngine.renderInline(`作者: [${authorName}](${baseAuthorUrl}${authorId})`);
     const info: string = markdownEngine.render([
         `| Likes | Comments | Bookmarks |`,
         `| :---: | :------: | :-------: |`,
         `| ${node.likes} | ${node.comments} | ${node.bookmarks} |`,
     ].join("\n"));
-    const panel: WebviewPanel | undefined = vscode.window.createWebviewPanel(node.name, node.name, vscode.ViewColumn.One, {});
+    const panel: WebviewPanel | undefined = vscode.window.createWebviewPanel(node.name, node.name, vscode.ViewColumn.One, {
+        enableScripts: true,
+        retainContextWhenHidden: true,
+    });
+    panel.webview.onDidReceiveMessage(onDidReceiveMessage);
     panel.webview.html = getWebviewContent(head, author, info, bodyData);
 }

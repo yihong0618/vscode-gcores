@@ -1,4 +1,4 @@
-// Some code from vscode-leetcode, TODO for future use.
+// TODO Some code from vscode-leetcode for future use.
 // Licensed under the MIT license.
 
 import * as vscode from "vscode";

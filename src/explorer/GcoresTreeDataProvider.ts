@@ -38,7 +38,7 @@ export class GcoresTreeDataProvider implements vscode.TreeDataProvider<GcoresNod
         return {
             label: element.isGcoresElement ? `${element.name}` : element.name,
             collapsibleState: element.isGcoresElement ? vscode.TreeItemCollapsibleState.None : vscode.TreeItemCollapsibleState.Collapsed,
-            command: element.isGcoresElement ? element.previewCommand : undefined,
+            command: element.isGcoresElement ? element.previewCommand : element.id === "not login" ? element.loginCommand : undefined,
             iconPath: element.isHotElement ? this.context.asAbsolutePath(path.join("resources", "hot.png")) : "",
             contextValue,
         };

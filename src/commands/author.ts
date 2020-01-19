@@ -3,14 +3,18 @@ import { getAuthorInfo } from "../api";
 import { gcoresTreeDataProvider } from "../explorer/GcoresTreeDataProvider";
 import { globalStateGcoresAuthorKey } from "../shared";
 
-export async function addAuthor(context: vscode.ExtensionContext): Promise<void> {
+export async function addAuthor(context: vscode.ExtensionContext, input: any): Promise<void> {
     try {
         const authorId: string | undefined = await new Promise(async (resolve: (res: string | undefined) => void, reject: (e: Error) => void): Promise<void> => {
-
-            const name: string | undefined = await vscode.window.showInputBox({
-                prompt: "Enter gcores author url or author id.",
-                validateInput: (s: string): string | undefined => s && s.trim() ? undefined : "The input must not be empty",
-            });
+            let name: string | undefined;
+            if (!input) {
+                name = await vscode.window.showInputBox({
+                    prompt: "Enter gcores author url or author id.",
+                    validateInput: (s: string): string | undefined => s && s.trim() ? undefined : "The input must not be empty",
+                });
+            } else {
+                name = input;
+            }
             if (!name) {
                 return resolve(undefined);
             }

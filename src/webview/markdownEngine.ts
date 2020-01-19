@@ -38,6 +38,9 @@ class MarkdownEngine implements vscode.Disposable {
         return this.engine.render(md, env);
     }
 
+    public renderInline(md: string, env?: any): string {
+        return this.engine.renderInline(md, env);
+    }
     public getStyles(): string {
         return [
             this.getBuiltinStyles(),

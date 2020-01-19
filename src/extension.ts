@@ -17,7 +17,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
         vscode.commands.registerCommand("gcores.pickOne", () => pickArticle()),
         vscode.commands.registerCommand("gcores.login", () => userLogin(context)),
         vscode.commands.registerCommand("gcores.logout", () => userLogout(context)),
-        vscode.commands.registerCommand("gcores.addAuthor", () => addAuthor(context)),
+        vscode.commands.registerCommand("gcores.addAuthor", (data: string) => addAuthor(context, data)),
         vscode.commands.registerCommand("gcores.deleteAuthor", (input: GcoresNode) => deleteAuthor(context, input)),
     );
 }
