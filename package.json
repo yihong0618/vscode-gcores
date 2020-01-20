@@ -3,6 +3,9 @@
 	"displayName": "vscode-gcores",
 	"description": "use vscode to play with gcores",
 	"version": "0.0.1",
+	"author": "Hong Yi",
+    "publisher": "zouzou0208",
+    "license": "MIT",
 	"engines": {
 		"vscode": "^1.41.0"
 	},
