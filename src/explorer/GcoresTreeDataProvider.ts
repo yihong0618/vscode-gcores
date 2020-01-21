@@ -7,11 +7,14 @@ import { GcoresNode } from "./GcoresNode";
 
 export class GcoresTreeDataProvider implements vscode.TreeDataProvider<GcoresNode> {
 
+    // TODO refactor these
     public userId!: string;
     public token!: string;
     private context!: vscode.ExtensionContext;
-    // TODO refactor these
     private isIn!: boolean;
+    private nowAuthorNamesMapping!: Map<string, string>;
+    private newAuthors!: any;
+    private userBookmarks!: string[];
 
     private onDidChangeTreeDataEvent: vscode.EventEmitter<GcoresNode | undefined | null> = new vscode.EventEmitter<GcoresNode | undefined | null>();
     // tslint:disable-next-line:member-ordering
@@ -22,10 +25,15 @@ export class GcoresTreeDataProvider implements vscode.TreeDataProvider<GcoresNod
         this.isIn = false;
         this.userId = "";
         this.token = "";
+        this.nowAuthorNamesMapping = new Map();
+        this.newAuthors = {};
+        this.userBookmarks = [];
     }
 
     public async refresh(): Promise<void> {
         await this.isLogin();
+        this.nowAuthorNamesMapping = this.getNowAuthorNamesMapping();
+        this.newAuthors = this.getNewAuthors();
         this.onDidChangeTreeDataEvent.fire();
     }
 
@@ -33,7 +41,7 @@ export class GcoresTreeDataProvider implements vscode.TreeDataProvider<GcoresNod
 
         let contextValue: string = "";
         const newAuthorsid: string[] = Object.values(this.newAuthors);
-        if (element.isGcoresElement && this.isIn) {
+        if (element.isGcoresElement && this.isIn && !this.userBookmarks.includes(element.id)) {
             contextValue = "can-bookmark";
         }
         if (!element.isGcoresElement && newAuthorsid.includes(element.authorId)) {
@@ -48,7 +56,7 @@ export class GcoresTreeDataProvider implements vscode.TreeDataProvider<GcoresNod
         };
     }
 
-    public getChildren(element?: GcoresNode | undefined): vscode.ProviderResult<GcoresNode[]> {
+    public async getChildren(element?: GcoresNode | undefined): Promise<any> {
         if (!element) {
             return explorerNodeManager.getRootNodes();
         } else {
@@ -70,7 +78,11 @@ export class GcoresTreeDataProvider implements vscode.TreeDataProvider<GcoresNod
                             }), false),
                         ];
                     }
-                    return explorerNodeManager.getBookmarkArticlesNodes(this.userId, this.token);
+                    const res: GcoresNode[] = await explorerNodeManager.getBookmarkArticlesNodes(this.userId, this.token);
+                    res.forEach((node: GcoresNode) => {
+                        this.userBookmarks.push(node.id);
+                    });
+                    return res;
                 default:
                     break;
             }
@@ -104,8 +116,8 @@ export class GcoresTreeDataProvider implements vscode.TreeDataProvider<GcoresNod
         return isOK;
     }
 
-    private get nowAuthorNamesMapping(): Map<string, string> {
-        const newAuthors: object = this.newAuthors;
+    private getNowAuthorNamesMapping(): Map<string, string> {
+        const newAuthors: object = this.getNewAuthors();
         // empty object
         if (newAuthors === undefined || Object.entries(newAuthors).length === 0 && newAuthors.constructor === Object) {
             return authorNamesMapping;
@@ -113,7 +125,7 @@ export class GcoresTreeDataProvider implements vscode.TreeDataProvider<GcoresNod
         return new Map([...authorNamesMapping, ...Object.entries(newAuthors)]);
     }
 
-    private get newAuthors(): any {
+    private getNewAuthors(): any {
         return this.context.globalState.get(globalStateGcoresAuthorKey);
     }
 

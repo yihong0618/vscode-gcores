@@ -193,9 +193,19 @@ export async function addBookmarkById(userId: string, articleId: string, token: 
     headers,
   })
   .catch(errorCheckHandler);
-  // gcors return seems 201 or 200
+  // gcors return status seems 201 or 200 maybe others
   if (Math.floor(status / 100) === 2) {
     return true;
   }
   return false;
+}
+
+export async function getUserBookmarkInfo(userId: string, token: string): Promise<any> {
+  headers["Authorization"] = "Token token=" + token;
+  const { data } = await axios
+    .get(apiBookmarkTemplate(userId), {
+      headers,
+    })
+    .catch(errorHandler);
+  return data;
 }

@@ -63,16 +63,16 @@ export const articleTagsMapping: Map<string, string> = new Map([
 // add new author here
 export const authorNamesMapping: Map<string, string> = new Map([
     ["西蒙", "3"],
-    ["Dagou", "91206"],
-    ["这样重这样轻", "31418"],
-    ["白广大", "21635"],
+    ["Hardy", "385"],
+    ["NJBK", "12865"],
     ["Nadya", "13701"],
+    ["ARNwing", "15368"],
     ["四十二", "20803"],
     ["Ryoma", "21327"],
+    ["白广大", "21635"],
     ["大巴车司机", "28214"],
-    ["ARNwing", "15368"],
-    ["NJBK", "12865"],
-    ["Hardy", "385"],
+    ["这样重这样轻", "31418"],
+    ["Dagou", "91206"],
 ]);
 
 export const globalStateGcoresAuthorKey: string = "gcores.authors";
