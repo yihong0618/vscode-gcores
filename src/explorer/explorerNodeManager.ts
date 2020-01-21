@@ -107,6 +107,7 @@ class ExplorerNodeManager implements Disposable {
             likesCount: attributes["likes-count"],
             commentsCount: attributes["comments-count"],
             bookmarksCount: attributes["bookmarks-count"],
+            bookmarkId: data.meta["bookmark-id"] || "",
             createdAt: attributes["published-at"].split("T")[0],
         }, true);
     }

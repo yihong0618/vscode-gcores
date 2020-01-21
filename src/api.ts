@@ -24,6 +24,7 @@ const apiArticleTagTemplate: IApiTagsOrUsersTemplateFunc = (tagNum: string, limi
 const apiArticlesByAuthorTemplate: IApiTagsOrUsersTemplateFunc = (authorId: string, limit: number = baseLimit, offset: number = baseOffset, isNews: number = RecentType.Article): string => `https://www.gcores.com/gapi/v1/users/${authorId}/articles?page[limit]=${limit}&page[offset]=0&sort=-published-at&include=category,user&filter[is-news]=${isNews}&fields[articles]=title,desc,is-published,thumb,app-cover,cover,comments-count,likes-count,bookmarks-count,is-verified,published-at,option-is-official,option-is-focus-showcase,duration,category,user`;
 const apiAuthorInfoTemplate: IApiOneDataTemplateFunc = (authorId: string): string => `https://www.gcores.com/gapi/v1/users/${authorId}`;
 const apiBookmarkTemplate: IApiTagsOrUsersTemplateFunc = (userId: string, limit: number = baseLimit, offset: number = baseOffset): string => `https://www.gcores.com/gapi/v1/users/${userId}/bookmarks?page[limit]=${limit}&page[offset]=${offset}&include=bookmarkable`;
+const apiSingleBookmarkTemplate: (bookmarkId: string) => string = (bookmarkId: string): string => `https://www.gcores.com/gapi/v1/bookmarks/${bookmarkId}`;
 const apitokenCheckTemplate: IApiTagsOrUsersTemplateFunc = (userId: string, limit: number = baseLimit, offset: number = baseOffset): string => `https://www.gcores.com/gapi/v1/users/${userId}/bookmarks?page[limit]=${limit}&page[offset]=${offset}`;
 
 // TODO login releated apis
@@ -168,7 +169,7 @@ export async function getArticlesDataByUserBookmark(userId: string, token: strin
   return data;
 }
 
-export async function addBookmarkById(userId: string, articleId: string, token: string): Promise<any> {
+export async function addBookmarkById(userId: string, articleId: string, token: string): Promise<boolean> {
   headers["Authorization"] = "Token token=" + token;
   const payload: any = {
       data: {
@@ -208,4 +209,18 @@ export async function getUserBookmarkInfo(userId: string, token: string): Promis
     })
     .catch(errorHandler);
   return data;
+}
+
+export async function deleteBookmarkArticle(bookmarkId: string, token: string): Promise<boolean> {
+  headers["Authorization"] = "Token token=" + token;
+  const { status }: any = await axios
+  .delete(apiSingleBookmarkTemplate(bookmarkId), {
+    headers,
+  })
+  .catch(errorCheckHandler);
+  // gcors return status seems 201 or 200 maybe others
+  if (Math.floor(status / 100) === 2) {
+    return true;
+  }
+  return false;
 }

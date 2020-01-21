@@ -10,11 +10,12 @@ export class GcoresTreeDataProvider implements vscode.TreeDataProvider<GcoresNod
     // TODO refactor these
     public userId!: string;
     public token!: string;
+    public userBookmarks!: string[];
+    // private
     private context!: vscode.ExtensionContext;
     private isIn!: boolean;
     private nowAuthorNamesMapping!: Map<string, string>;
     private newAuthors!: any;
-    private userBookmarks!: string[];
 
     private onDidChangeTreeDataEvent: vscode.EventEmitter<GcoresNode | undefined | null> = new vscode.EventEmitter<GcoresNode | undefined | null>();
     // tslint:disable-next-line:member-ordering
@@ -41,8 +42,12 @@ export class GcoresTreeDataProvider implements vscode.TreeDataProvider<GcoresNod
 
         let contextValue: string = "";
         const newAuthorsid: string[] = Object.values(this.newAuthors);
-        if (element.isGcoresElement && this.isIn && !this.userBookmarks.includes(element.id)) {
-            contextValue = "can-bookmark";
+        if (element.isGcoresElement && this.isIn) {
+            if (!this.userBookmarks.includes(element.id)) {
+                contextValue = "can-bookmark";
+            } else {
+                contextValue = "can-delete-bookmark";
+            }
         }
         if (!element.isGcoresElement && newAuthorsid.includes(element.authorId)) {
             contextValue = "can-delete";

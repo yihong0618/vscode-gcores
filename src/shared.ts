@@ -26,6 +26,7 @@ export interface IArticle {
     likesCount: number;
     commentsCount: number;
     bookmarksCount: number;
+    bookmarkId: string;
     createdAt: string;
 }
 
@@ -36,6 +37,7 @@ export const defaultArticle: IArticle = {
     likesCount: 0,
     commentsCount: 0,
     bookmarksCount: 0,
+    bookmarkId: "",
     createdAt: "",
 };
 

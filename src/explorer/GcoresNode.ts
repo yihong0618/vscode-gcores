@@ -29,6 +29,10 @@ export class GcoresNode {
         return this.data.bookmarksCount;
     }
 
+    public get bookmarkId(): string {
+        return this.data.bookmarkId;
+    }
+
     public get isGcoresElement(): boolean {
         return this.isGcoresElementNode;
     }

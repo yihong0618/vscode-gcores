@@ -76,6 +76,11 @@
 					"group": "gcores@1"
 				},
 				{
+					"command": "gcores.deleteBookmark",
+					"when": "view == gcoresExplorer && viewItem == can-delete-bookmark",
+					"group": "gcores@2"
+				},
+				{
                     "command": "gcores.addBookmark",
                     "when": "view == gcoresExplorer && viewItem == can-bookmark",
                     "group": "inline"
@@ -114,6 +119,11 @@
 			{
 				"command": "gcores.deleteAuthor",
 				"title": "Delete Author",
+				"category": "Gcores"
+			},
+			{
+				"command": "gcores.deleteBookmark",
+				"title": "Delete Bookmark",
 				"category": "Gcores"
 			},
             {
