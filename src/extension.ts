@@ -1,5 +1,6 @@
 import * as vscode from "vscode";
 import { addAuthor, deleteAuthor } from "./commands/author";
+import { addbookmark } from "./commands/bookmark";
 import { pickArticle } from "./commands/pick";
 import { previewArticle } from "./commands/show";
 import { userLogin, userLogout } from "./commands/user";
@@ -19,6 +20,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
         vscode.commands.registerCommand("gcores.logout", () => userLogout(context)),
         vscode.commands.registerCommand("gcores.addAuthor", (data: string) => addAuthor(context, data)),
         vscode.commands.registerCommand("gcores.deleteAuthor", (input: GcoresNode) => deleteAuthor(context, input)),
+        vscode.commands.registerCommand("gcores.addBookmark", (node: GcoresNode) => addbookmark(node)),
     );
 }
 

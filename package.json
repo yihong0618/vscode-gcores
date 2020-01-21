@@ -74,7 +74,12 @@
 					"command": "gcores.deleteAuthor",
 					"when": "view == gcoresExplorer && viewItem == can-delete",
 					"group": "gcores@1"
-				}
+				},
+				{
+                    "command": "gcores.addBookmark",
+                    "when": "view == gcoresExplorer && viewItem == can-bookmark",
+                    "group": "inline"
+                }
 			]
 		},
 		"commands": [
@@ -111,6 +116,15 @@
 				"title": "Delete Author",
 				"category": "Gcores"
 			},
+            {
+                "command": "gcores.addBookmark",
+                "title": "Add Bookmark to This Article",
+                "category": "Gcores",
+                "icon": {
+                    "light": "resources/light/bookmark.svg",
+                    "dark": "resources/dark/bookmark.svg"
+                }
+            },
 			{
 				"command": "gcores.pickOne",
 				"title": "Pick One",

@@ -7,11 +7,11 @@ import { GcoresNode } from "./GcoresNode";
 
 export class GcoresTreeDataProvider implements vscode.TreeDataProvider<GcoresNode> {
 
+    public userId!: string;
+    public token!: string;
     private context!: vscode.ExtensionContext;
     // TODO refactor these
     private isIn!: boolean;
-    private userId!: string;
-    private token!: string;
 
     private onDidChangeTreeDataEvent: vscode.EventEmitter<GcoresNode | undefined | null> = new vscode.EventEmitter<GcoresNode | undefined | null>();
     // tslint:disable-next-line:member-ordering
@@ -31,10 +31,14 @@ export class GcoresTreeDataProvider implements vscode.TreeDataProvider<GcoresNod
 
     public getTreeItem(element: GcoresNode): vscode.TreeItem | Thenable<vscode.TreeItem> {
 
-        let contextValue: string;
+        let contextValue: string = "";
         const newAuthorsid: string[] = Object.values(this.newAuthors);
-        contextValue = !element.isGcoresElement && newAuthorsid.includes(element.authorId) ? "can-delete" : "";
-
+        if (element.isGcoresElement && this.isIn) {
+            contextValue = "can-bookmark";
+        }
+        if (!element.isGcoresElement && newAuthorsid.includes(element.authorId)) {
+            contextValue = "can-delete";
+        }
         return {
             label: element.isGcoresElement ? `${element.name}` : element.name,
             collapsibleState: element.isGcoresElement ? vscode.TreeItemCollapsibleState.None : vscode.TreeItemCollapsibleState.Collapsed,

@@ -28,6 +28,7 @@ const apitokenCheckTemplate: IApiTagsOrUsersTemplateFunc = (userId: string, limi
 
 // TODO login releated apis
 const loginApi: string = "https://www.gcores.com/gapi/v1/tokens/refresh";
+const bookmarksApi: string = "https://www.gcores.com/gapi/v1/bookmarks";
 
 const http: AxiosInstance = axios.create({
   headers,
@@ -165,4 +166,36 @@ export async function getArticlesDataByUserBookmark(userId: string, token: strin
     })
     .catch(errorHandler);
   return data;
+}
+
+export async function addBookmarkById(userId: string, articleId: string, token: string): Promise<any> {
+  headers["Authorization"] = "Token token=" + token;
+  const payload: any = {
+      data: {
+        type: "bookmarks",
+        relationships: {
+          user: { data: {
+            type: "users",
+            id: userId,
+          },
+        },
+        bookmarkable: {
+          data: {
+            type: "articles",
+            id: articleId,
+          },
+        },
+      },
+    },
+  };
+  const { status }: any = await axios
+  .post(bookmarksApi, payload, {
+    headers,
+  })
+  .catch(errorCheckHandler);
+  // gcors return seems 201 or 200
+  if (Math.floor(status / 100) === 2) {
+    return true;
+  }
+  return false;
 }
