@@ -136,7 +136,7 @@ export class GcoresTreeDataProvider implements vscode.TreeDataProvider<GcoresNod
     }
 
     private getNewAuthors(): any {
-        return this.context.globalState.get(globalStateGcoresAuthorKey);
+        return this.context.globalState.get(globalStateGcoresAuthorKey) || {};
     }
 
 }
