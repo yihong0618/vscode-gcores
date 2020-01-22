@@ -3,7 +3,7 @@
 
 import { Disposable } from "vscode";
 import { getArticlesDataByUserBookmark, getRecentArticlesData, getRecentNewsData } from "../api";
-import { articleTagsMapping, Category, defaultArticle } from "../shared";
+import { articleTagsMapping, Category, defaultArticle, topNamesMapping } from "../shared/shared";
 import { GcoresNode } from "./GcoresNode";
 
 class ExplorerNodeManager implements Disposable {
@@ -26,6 +26,10 @@ class ExplorerNodeManager implements Disposable {
             new GcoresNode(Object.assign({}, defaultArticle, {
                 id: Category.Author,
                 name: Category.Author,
+            }), false),
+            new GcoresNode(Object.assign({}, defaultArticle, {
+                id: Category.Top,
+                name: Category.Top,
             }), false),
             new GcoresNode(Object.assign({}, defaultArticle, {
                 id: Category.Bookmark,
@@ -58,6 +62,17 @@ class ExplorerNodeManager implements Disposable {
             res.push(new GcoresNode(Object.assign({}, defaultArticle, {
                 id: tagName,
                 name: tagName,
+            }), false));
+        }
+        return res;
+    }
+
+    public GetTopsNodes(): GcoresNode[] {
+        const res: GcoresNode[] = [];
+        for (const topName of topNamesMapping.keys()) {
+            res.push(new GcoresNode(Object.assign({}, defaultArticle, {
+                id: topName,
+                name: topName,
             }), false));
         }
         return res;
@@ -112,6 +127,13 @@ class ExplorerNodeManager implements Disposable {
         }, true);
     }
 
+    public parseGcoresNodeFromJson(data: any): GcoresNode[] {
+        const res: GcoresNode[] = [];
+        for (const d of data.data) {
+            res.push(new GcoresNode(Object.assign({}, defaultArticle, d, true)));
+        }
+        return res;
+    }
 }
 
 export const explorerNodeManager: ExplorerNodeManager = new ExplorerNodeManager();

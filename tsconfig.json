@@ -3,6 +3,7 @@
 		"module": "commonjs",
 		"target": "es6",
 		"outDir": "out",
+		"resolveJsonModule": true,
 		"lib": [
 			"es6"
 		],

@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 import { WebviewPanel } from "vscode";
 import { getOneArticleData } from "../api";
 import { GcoresNode } from "../explorer/GcoresNode";
-import { baseArticleUrl, baseAuthorUrl, baseImgUrl } from "../shared";
+import { baseArticleUrl, baseAuthorUrl, baseImgUrl } from "../shared/shared";
 import { markdownEngine } from "../webview/markdownEngine";
 import { onDidReceiveMessage } from "./utils";
 

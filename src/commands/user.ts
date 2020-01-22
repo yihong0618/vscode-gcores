@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import { getAuthorInfo, login } from "../api";
 import { gcoresTreeDataProvider } from "../explorer/GcoresTreeDataProvider";
-import { globalStateGcoresUserKey } from "../shared";
+import { globalStateGcoresUserKey } from "../shared/shared";
 
 export async function userLogin(context: vscode.ExtensionContext): Promise<void> {
     try {

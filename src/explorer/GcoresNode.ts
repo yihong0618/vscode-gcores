@@ -1,5 +1,5 @@
 import { Command } from "vscode";
-import { IArticle } from "../shared";
+import { IArticle } from "../shared/shared";
 
 export class GcoresNode {
 

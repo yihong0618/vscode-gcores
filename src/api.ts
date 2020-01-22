@@ -1,6 +1,6 @@
 import axios, { AxiosError, AxiosInstance, AxiosResponse } from "axios";
 import { window } from "vscode";
-import { baseLimit, baseOffset, RecentType } from "./shared";
+import { baseLimit, baseOffset, RecentType } from "./shared/shared";
 
 const headers: any = {
   "Accept" :

@@ -1,7 +1,7 @@
 import * as path from "path";
 import * as vscode from "vscode";
-import { checkTokenWithApi, getArticlesDataByAuthor, getArticlesDataByTag, getArticlesDataByUserBookmark } from "../api";
-import { articleTagsMapping, authorNamesMapping, Category, defaultArticle, globalStateGcoresAuthorKey, globalStateGcoresUserKey } from "../shared";
+import { checkTokenWithApi, getArticlesDataByAuthor, getArticlesDataByTag } from "../api";
+import { articleTagsMapping, authorNamesMapping, Category, defaultArticle, globalStateGcoresAuthorKey, globalStateGcoresUserKey, topNamesMapping } from "../shared/shared";
 import { explorerNodeManager } from "./explorerNodeManager";
 import { GcoresNode } from "./GcoresNode";
 
@@ -74,6 +74,8 @@ export class GcoresTreeDataProvider implements vscode.TreeDataProvider<GcoresNod
                     return explorerNodeManager.GetTagsNodes();
                 case Category.Author:
                     return explorerNodeManager.GetAuthorsNodes(this.nowAuthorNamesMapping);
+                case Category.Top:
+                    return explorerNodeManager.GetTopsNodes();
                 case Category.Bookmark:
                     if (!this.isIn) {
                         return [
@@ -96,6 +98,9 @@ export class GcoresTreeDataProvider implements vscode.TreeDataProvider<GcoresNod
             }
             if (this.nowAuthorNamesMapping.has(element.id)) {
                 return explorerNodeManager.getOneLabelArticlesNodes(element.id, getArticlesDataByAuthor.bind(null, this.nowAuthorNamesMapping));
+            }
+            if (topNamesMapping.has(element.id)) {
+                return explorerNodeManager.parseGcoresNodeFromJson(topNamesMapping.get(element.id));
             }
         }
     }

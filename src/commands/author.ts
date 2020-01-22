@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import { getAuthorInfo } from "../api";
 import { gcoresTreeDataProvider } from "../explorer/GcoresTreeDataProvider";
-import { globalStateGcoresAuthorKey } from "../shared";
+import { globalStateGcoresAuthorKey } from "../shared/shared";
 
 export async function addAuthor(context: vscode.ExtensionContext, input: any): Promise<void> {
     try {

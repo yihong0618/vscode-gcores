@@ -1,4 +1,9 @@
 
+import * as TopBookmarks from "./top-bookmarks.json";
+import * as topComments from "./top-comments.json";
+import * as topLikes from "./top-likes.json";
+
+// TODO format these
 export const baseArticleUrl: string = "https://www.gcores.com/articles/";
 export const baseAuthorUrl: string = "https://www.gcores.com/users/";
 export const baseImgUrl: string = "https://image.gcores.com/";
@@ -11,6 +16,7 @@ export enum Category {
     News = "近期新闻",
     Tag = "分类文章",
     Author = "作者专题",
+    Top = "最热排行",
     Bookmark = "我的收藏",
 }
 
@@ -77,5 +83,12 @@ export const authorNamesMapping: Map<string, string> = new Map([
     ["Dagou", "91206"],
 ]);
 
+export const topNamesMapping: Map<string, any> = new Map([
+    ["点赞TOP100", topLikes],
+    ["收藏TOP100", TopBookmarks],
+    ["评论TOP100", topComments],
+]);
+
+// context global values
 export const globalStateGcoresAuthorKey: string = "gcores.authors";
 export const globalStateGcoresUserKey: string = "gcores.user";
