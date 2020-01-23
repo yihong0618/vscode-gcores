@@ -24,6 +24,7 @@
 		"onCommand:gcores.logout",
 		"onCommand:gcores.addAuthor",
 		"onCommand:gcores.deleteAuthor",
+		"onCommand:gcores.toggleBossKey",
 		"onCommand:gcores.pickOne",
 		"onView:gcoresExplorer"
 	],
@@ -64,7 +65,7 @@
                     "group": "navigation@2"
                 },
                 {
-                    "command": "gcores.addAuthor",
+                    "command": "gcores.toggleBossKey",
                     "when": "view == gcoresExplorer",
                     "group": "navigation@3"
                 }
@@ -114,6 +115,15 @@
 				"icon": {
                     "light": "resources/light/add-author.svg",
                     "dark": "resources/dark/add-author.svg"
+                }
+			},
+			{
+				"command": "gcores.toggleBossKey",
+				"title": "Toggle Boss Key",
+				"category": "Gcores",
+				"icon": {
+                    "light": "resources/light/boss.svg",
+                    "dark": "resources/dark/boss.svg"
                 }
 			},
 			{

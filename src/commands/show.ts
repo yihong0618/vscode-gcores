@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 import { WebviewPanel } from "vscode";
 import { getOneArticleData } from "../api";
 import { GcoresNode } from "../explorer/GcoresNode";
-import { baseArticleUrl, baseAuthorUrl, baseImgUrl } from "../shared/shared";
+import { baseArticleUrl, baseAuthorUrl, baseImgUrl, globalStateGcoresBossKey } from "../shared/shared";
 import { markdownEngine } from "../webview/markdownEngine";
 import { onDidReceiveMessage } from "./utils";
 
@@ -75,11 +75,12 @@ function getWebviewContent(head: string, author: string, info: string, content: 
     `;
 }
 
-function parseContent(dataBloks: any | undefined): string {
+function parseContent(dataBloks: any | undefined, isBoss: boolean = false): string {
     let result: string = "";
     const dataArray: any = dataBloks.blocks;
     const entityMap: any = dataBloks.entityMap;
     dataArray.forEach((element: any): void => {
+        let detailsFlag: boolean = false;
         let textFunc: IRenderText | undefined = articleStyleMapping.get(element.type);
         if (!textFunc) {
             textFunc = (text: string): string => `${text}`;
@@ -91,6 +92,7 @@ function parseContent(dataBloks: any | undefined): string {
                 const entity: any = entityMap[i.key];
                 if (entity.type === "IMAGE") {
                     toRenderText += `![](${baseImgUrl}${entity.data.path} "${entity.data.caption || ""}")`;
+                    detailsFlag = true && isBoss;
                 }
                 if (entity.type === "LINK") {
                     // handle many links
@@ -104,21 +106,20 @@ function parseContent(dataBloks: any | undefined): string {
                     const links: any = entity.data.images;
                     for (const link of links) {
                         toRenderText += `![](${baseImgUrl}${link.path})`;
+                        detailsFlag = true && isBoss;
                     }
                 }
             }
         } else {
             toRenderText = element.text;
         }
-        if (textFunc) {
-            toRenderText = textFunc(toRenderText);
-        }
-        result += markdownEngine.render(toRenderText);
+        toRenderText = textFunc(toRenderText);
+        result += detailsFlag === true ? `<details>${markdownEngine.render(toRenderText)}</details>` : markdownEngine.render(toRenderText);
     });
     return result;
 }
 
-export async function previewArticle(node: GcoresNode): Promise<void> {
+export async function previewArticle(context: vscode.ExtensionContext, node: GcoresNode): Promise<void> {
     const articleData: any = await getOneArticleData(node.id);
     // included[3] is the author data
     const authorData: any = articleData.included[3];
@@ -126,7 +127,14 @@ export async function previewArticle(node: GcoresNode): Promise<void> {
     const authorId: string = authorData.id;
     const authorName: string = authorData.attributes.nickname;
     const dataBlocks: any | undefined = JSON.parse(articleContent);
-    const bodyData: any = parseContent(dataBlocks);
+    // test if the boss key open
+
+    let isBoss: boolean = false;
+    const bosskeyInfo: any = context.globalState.get(globalStateGcoresBossKey);
+    if (bosskeyInfo) {
+        isBoss = bosskeyInfo.isBoss;
+    }
+    const bodyData: any = parseContent(dataBlocks, isBoss);
     const head: string = markdownEngine.render(`# [${node.name}](${baseArticleUrl}${node.id})`);
     const author: string = markdownEngine.renderInline(`作者: [${authorName}](${baseAuthorUrl}${authorId})`);
     const info: string = markdownEngine.render([

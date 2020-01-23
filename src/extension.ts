@@ -1,6 +1,7 @@
 import * as vscode from "vscode";
 import { addAuthor, deleteAuthor } from "./commands/author";
 import { addBookmark, deleteBookmark } from "./commands/bookmark";
+import { toggleBossKey } from "./commands/boss";
 import { pickArticle } from "./commands/pick";
 import { previewArticle } from "./commands/show";
 import { userLogin, userLogout } from "./commands/user";
@@ -14,10 +15,11 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
     context.subscriptions.push(
         vscode.window.createTreeView("gcoresExplorer", { treeDataProvider: gcoresTreeDataProvider, showCollapseAll: true }),
         vscode.commands.registerCommand("gcores.refreshExplorer", () => gcoresTreeDataProvider.refresh()),
-        vscode.commands.registerCommand("gcores.previewArticle", (node: GcoresNode) => previewArticle(node)),
-        vscode.commands.registerCommand("gcores.pickOne", () => pickArticle()),
+        vscode.commands.registerCommand("gcores.previewArticle", (node: GcoresNode) => previewArticle(context, node)),
+        vscode.commands.registerCommand("gcores.pickOne", () => pickArticle(context)),
         vscode.commands.registerCommand("gcores.login", () => userLogin(context)),
         vscode.commands.registerCommand("gcores.logout", () => userLogout(context)),
+        vscode.commands.registerCommand("gcores.toggleBossKey", () => toggleBossKey(context)),
         vscode.commands.registerCommand("gcores.addAuthor", (data: string) => addAuthor(context, data)),
         vscode.commands.registerCommand("gcores.deleteAuthor", (input: GcoresNode) => deleteAuthor(context, input)),
         vscode.commands.registerCommand("gcores.addBookmark", (node: GcoresNode) => addBookmark(node)),

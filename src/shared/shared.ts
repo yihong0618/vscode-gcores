@@ -92,3 +92,4 @@ export const topNamesMapping: Map<string, any> = new Map([
 // context global values
 export const globalStateGcoresAuthorKey: string = "gcores.authors";
 export const globalStateGcoresUserKey: string = "gcores.user";
+export const globalStateGcoresBossKey: string = "gcores.boss";
