@@ -1,13 +1,13 @@
-// Copyright (c) jdneo. All rights reserved.
-// Licensed under the MIT license.
-
 import { Disposable } from "vscode";
 import { getArticlesDataByUserBookmark, getRecentArticlesData, getRecentNewsData } from "../api";
-import { articleTagsMapping, Category, defaultArticle, topNamesMapping } from "../shared/shared";
+import { articleTagsMapping, baseLimit, baseOffset, Category, defaultArticle, topNamesMapping } from "../shared/shared";
 import { GcoresNode } from "./GcoresNode";
 
+// TODO refactor this after v1.0
 class ExplorerNodeManager implements Disposable {
     private explorerNodeMap: Map<string, GcoresNode> = new Map<string, GcoresNode>();
+    private limit: number = baseLimit;
+    private offsetMapping: Map<string, number> = new Map();
 
     public getRootNodes(): GcoresNode[] {
         return [
@@ -38,11 +38,22 @@ class ExplorerNodeManager implements Disposable {
         ];
     }
 
-    public async GetRecentArticlesNodes(): Promise<GcoresNode[]> {
-        const articlesData: any = await getRecentArticlesData();
+    public async GetRecentArticlesNodes(nodeId: string): Promise<GcoresNode[]> {
+        const articlesData: any = await getRecentArticlesData(this.limit, this.offsetMapping.get(nodeId) || 0);
         const res: GcoresNode[] = [];
+        const dataLength: number = articlesData.data.length;
+        if (dataLength === 0) {
+            return res;
+        }
         for (const article of articlesData.data) {
             res.push(this.parseToGcoresNode(article));
+        }
+        if (dataLength === baseLimit) {
+            res.push(new GcoresNode(Object.assign({}, defaultArticle, {
+                id: nodeId,
+                name: "更多文章",
+            }), false));
+            this.offsetMapping.set(nodeId, (this.offsetMapping.get(nodeId) || 0) + baseLimit);
         }
         return res;
     }
@@ -91,20 +102,42 @@ class ExplorerNodeManager implements Disposable {
     }
 
     public async getOneLabelArticlesNodes(nodeId: string, apiFunc: any): Promise<GcoresNode[]> {
-        const articlesData: any = await apiFunc(nodeId);
+        const articlesData: any = await apiFunc(nodeId, this.limit, this.offsetMapping.get(nodeId) || 0);
         const res: GcoresNode[] = [];
+        const dataLength: number = articlesData.data.length;
+        if (dataLength === 0) {
+            return res;
+        }
         for (const article of articlesData.data) {
             res.push(this.parseToGcoresNode(article));
+        }
+        if (dataLength === baseLimit) {
+            res.push(new GcoresNode(Object.assign({}, defaultArticle, {
+                id: nodeId,
+                name: "更多文章",
+            }), false));
+            this.offsetMapping.set(nodeId, (this.offsetMapping.get(nodeId) || 0) + baseLimit);
         }
         return res;
     }
 
-    public async getBookmarkArticlesNodes(userId: string, token: string): Promise<GcoresNode[]> {
-        const bookmarkData: any = await getArticlesDataByUserBookmark(userId, token);
+    public async getBookmarkArticlesNodes(nodeId: string, userId: string, token: string): Promise<GcoresNode[]> {
+        const bookmarkData: any = await getArticlesDataByUserBookmark(userId, token, this.limit, this.offsetMapping.get(nodeId) || 0);
         const articlesData: any = bookmarkData.included.filter((i: any) => i.type === "articles");
         const res: GcoresNode[] = [];
+        const dataLength: number = articlesData.data.length;
+        if (dataLength === 0) {
+            return res;
+        }
         for (const data of articlesData) {
             res.push(this.parseToGcoresNode(data));
+        }
+        if (dataLength === baseLimit) {
+            res.push(new GcoresNode(Object.assign({}, defaultArticle, {
+                id: nodeId,
+                name: "更多文章",
+            }), false));
+            this.offsetMapping.set(nodeId, (this.offsetMapping.get(nodeId) || 0) + baseLimit);
         }
         return res;
     }

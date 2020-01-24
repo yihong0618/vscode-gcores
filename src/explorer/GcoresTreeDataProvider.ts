@@ -67,7 +67,7 @@ export class GcoresTreeDataProvider implements vscode.TreeDataProvider<GcoresNod
         } else {
             switch (element.id) {
                 case Category.Recent:
-                    return explorerNodeManager.GetRecentArticlesNodes();
+                    return explorerNodeManager.GetRecentArticlesNodes(element.id);
                 case Category.News:
                     return explorerNodeManager.GetRecentNewsNodes();
                 case Category.Tag:
@@ -85,7 +85,7 @@ export class GcoresTreeDataProvider implements vscode.TreeDataProvider<GcoresNod
                             }), false),
                         ];
                     }
-                    const res: GcoresNode[] = await explorerNodeManager.getBookmarkArticlesNodes(this.userId, this.token);
+                    const res: GcoresNode[] = await explorerNodeManager.getBookmarkArticlesNodes(element.id, this.userId, this.token);
                     res.forEach((node: GcoresNode) => {
                         this.userBookmarks.push(node.id);
                     });

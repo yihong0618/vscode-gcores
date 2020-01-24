@@ -21,7 +21,7 @@ type IRand = (min: number, max: number) => number;
 const apiArticlesOrNewsTemplate: IApiBaseTemplateFunc = (limit: number = baseLimit, offset: number = baseOffset, isNews: number = RecentType.Article): string => `https://www.gcores.com/gapi/v1/articles?page[limit]=${limit}&page[offset]=${offset}&sort=-published-at&include=category,user&filter[is-news]=${isNews}&fields[articles]=title,desc,is-published,thumb,app-cover,cover,comments-count,likes-count,bookmarks-count,is-verified,published-at,option-is-official,option-is-focus-showcase,duration,category,user`;
 const apiSingleArticleTemplate: IApiOneDataTemplateFunc = (articleId: string): string => `https://www.gcores.com/gapi/v1/articles/${articleId}?include=category,user,user.role,tags,entities,entries,similarities.user,similarities.djs,similarities.category,collections&preview=1`;
 const apiArticleTagTemplate: IApiTagsOrUsersTemplateFunc = (tagNum: string, limit: number = baseLimit, offset: number = baseOffset, isNews: number = RecentType.Article): string => `https://www.gcores.com/gapi/v1/categories/${tagNum}/articles?page[limit]=${limit}&page[offset]=${offset}&sort=-published-at&include=category,user&filter[is-news]=${isNews}&fields[articles]=title,desc,is-published,thumb,app-cover,cover,comments-count,likes-count,bookmarks-count,is-verified,published-at,option-is-official,option-is-focus-showcase,duration,category,user`;
-const apiArticlesByAuthorTemplate: IApiTagsOrUsersTemplateFunc = (authorId: string, limit: number = baseLimit, offset: number = baseOffset, isNews: number = RecentType.Article): string => `https://www.gcores.com/gapi/v1/users/${authorId}/articles?page[limit]=${limit}&page[offset]=0&sort=-published-at&include=category,user&filter[is-news]=${isNews}&fields[articles]=title,desc,is-published,thumb,app-cover,cover,comments-count,likes-count,bookmarks-count,is-verified,published-at,option-is-official,option-is-focus-showcase,duration,category,user`;
+const apiArticlesByAuthorTemplate: IApiTagsOrUsersTemplateFunc = (authorId: string, limit: number = baseLimit, offset: number = baseOffset, isNews: number = RecentType.Article): string => `https://www.gcores.com/gapi/v1/users/${authorId}/articles?page[limit]=${limit}&page[offset]=${offset}&sort=-published-at&include=category,user&filter[is-news]=${isNews}&fields[articles]=title,desc,is-published,thumb,app-cover,cover,comments-count,likes-count,bookmarks-count,is-verified,published-at,option-is-official,option-is-focus-showcase,duration,category,user`;
 const apiAuthorInfoTemplate: IApiOneDataTemplateFunc = (authorId: string): string => `https://www.gcores.com/gapi/v1/users/${authorId}`;
 const apiBookmarkTemplate: IApiTagsOrUsersTemplateFunc = (userId: string, limit: number = baseLimit, offset: number = baseOffset): string => `https://www.gcores.com/gapi/v1/users/${userId}/bookmarks?page[limit]=${limit}&page[offset]=${offset}&include=bookmarkable`;
 const apiSingleBookmarkTemplate: (bookmarkId: string) => string = (bookmarkId: string): string => `https://www.gcores.com/gapi/v1/bookmarks/${bookmarkId}`;
@@ -58,9 +58,9 @@ function errorCheckHandler(err: AxiosError): boolean {
   return false;
 }
 
-export async function getRecentArticlesData(): Promise<AxiosResponse<any>> {
+export async function getRecentArticlesData(limit: number = 50, offset: number = 50): Promise<AxiosResponse<any>> {
   const { data } = await http
-    .get(apiArticlesOrNewsTemplate(), {
+    .get(apiArticlesOrNewsTemplate(limit, offset), {
     })
     .catch(errorHandler);
   return data;
@@ -75,25 +75,25 @@ export async function getRecentNewsData(): Promise<AxiosResponse<any>> {
 }
 
 // TODO any to change type
-export async function getArticlesDataByTag(mapping: Map<string, string>, tagName: string): Promise<AxiosResponse<any>> {
+export async function getArticlesDataByTag(mapping: Map<string, string>, tagName: string, limit: number, offset: number): Promise<AxiosResponse<any>> {
   let tagNum: string | undefined = mapping.get(tagName);
   if ( !tagNum ) {
     tagNum = "1";
   }
   const { data } = await http
-    .get(apiArticleTagTemplate(tagNum), {
+    .get(apiArticleTagTemplate(tagNum, limit, offset), {
     })
     .catch(errorHandler);
   return data;
 }
 
-export async function getArticlesDataByAuthor(mapping: Map<string, string>, authorName: string): Promise<AxiosResponse<any>> {
+export async function getArticlesDataByAuthor(mapping: Map<string, string>, authorName: string, limit: number, offset: number): Promise<AxiosResponse<any>> {
   let authorId: string | undefined = mapping.get(authorName);
   if ( !authorId ) {
     authorId = "3"; // 西蒙
   }
   const { data } = await http
-    .get(apiArticlesByAuthorTemplate(authorId), {
+    .get(apiArticlesByAuthorTemplate(authorId, limit, offset), {
     })
     .catch(errorHandler);
   return data;
@@ -159,10 +159,10 @@ export async function checkTokenWithApi(userId: string, token: string): Promise<
   return false;
 }
 
-export async function getArticlesDataByUserBookmark(userId: string, token: string): Promise<AxiosResponse<any>> {
+export async function getArticlesDataByUserBookmark(userId: string, token: string, limit: number, offset: number): Promise<AxiosResponse<any>> {
   headers["Authorization"] = "Token token=" + token;
   const { data } = await axios
-    .get(apiBookmarkTemplate(userId), {
+    .get(apiBookmarkTemplate(userId, limit, offset), {
       headers,
     })
     .catch(errorHandler);
