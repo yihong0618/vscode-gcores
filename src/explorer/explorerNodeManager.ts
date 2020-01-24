@@ -125,7 +125,7 @@ class ExplorerNodeManager implements Disposable {
         const bookmarkData: any = await getArticlesDataByUserBookmark(userId, token, this.limit, this.offsetMapping.get(nodeId) || 0);
         const articlesData: any = bookmarkData.included.filter((i: any) => i.type === "articles");
         const res: GcoresNode[] = [];
-        const dataLength: number = articlesData.data.length;
+        const dataLength: number = articlesData.length;
         if (dataLength === 0) {
             return res;
         }
