@@ -17,7 +17,7 @@ const articleStyleMapping: Map<string, IRenderText> = new Map([
     ["header-five", (toRenderText: string): string => `##### ${toRenderText}`],
     ["unordered-list-item", (toRenderText: string): string => `- ${toRenderText}`],
     // ToDo this is a skip need to refactor
-    ["ordered-list-item", (toRenderText: string): string => `- ${toRenderText}`],
+    ["ordered-list-item", (toRenderText: string): string => `${toRenderText}`],
     ["blockquote", (toRenderText: string): string => `> ${toRenderText}`],
 ]);
 
@@ -79,8 +79,17 @@ function parseContent(dataBloks: any | undefined, isBoss: boolean = false): stri
     let result: string = "";
     const dataArray: any = dataBloks.blocks;
     const entityMap: any = dataBloks.entityMap;
+    const orderListStack: string[] = [];
+    let orderListIndex: number = 1;
     dataArray.forEach((element: any): void => {
         let detailsFlag: boolean = false;
+        // TODO order list seems have a better way
+        if (orderListStack.pop() === "ordered-list-item") {
+            orderListIndex++;
+        } else {
+            orderListIndex = 1;
+        }
+        orderListStack.push(element.type);
         let textFunc: IRenderText | undefined = articleStyleMapping.get(element.type);
         if (!textFunc) {
             textFunc = (text: string): string => `${text}`;
@@ -112,8 +121,13 @@ function parseContent(dataBloks: any | undefined, isBoss: boolean = false): stri
             }
         } else {
             toRenderText = element.text;
+            // ordered-list-item
+            if (element.type === "ordered-list-item") {
+                toRenderText = `${orderListIndex}. ${toRenderText}`;
+            }
         }
         toRenderText = textFunc(toRenderText);
+        // test if the boss key open.
         result += detailsFlag === true ? `<details>${markdownEngine.render(toRenderText)}</details>` : markdownEngine.render(toRenderText);
     });
     return result;

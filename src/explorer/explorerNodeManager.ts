@@ -5,9 +5,10 @@ import { GcoresNode } from "./GcoresNode";
 
 // TODO refactor this after v1.0
 class ExplorerNodeManager implements Disposable {
+
+    public offsetMapping: Map<string, number> = new Map();
     private explorerNodeMap: Map<string, GcoresNode> = new Map<string, GcoresNode>();
     private limit: number = baseLimit;
-    private offsetMapping: Map<string, number> = new Map();
 
     public getRootNodes(): GcoresNode[] {
         return [

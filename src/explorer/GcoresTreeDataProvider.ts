@@ -35,6 +35,8 @@ export class GcoresTreeDataProvider implements vscode.TreeDataProvider<GcoresNod
         await this.isLogin();
         this.nowAuthorNamesMapping = this.getNowAuthorNamesMapping();
         this.newAuthors = this.getNewAuthors();
+        // when refresh the offsetmapping must clear;
+        explorerNodeManager.offsetMapping.clear();
         this.onDidChangeTreeDataEvent.fire();
     }
 
