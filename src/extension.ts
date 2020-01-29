@@ -4,6 +4,7 @@ import { addBookmark, deleteBookmark } from "./commands/bookmark";
 import { toggleBossKey } from "./commands/boss";
 import { getLatestArticles } from "./commands/latest";
 import { pickArticle } from "./commands/pick";
+import { getSearchArticles } from "./commands/search";
 import { previewArticle } from "./commands/show";
 import { userLogin, userLogout } from "./commands/user";
 import { GcoresNode } from "./explorer/GcoresNode";
@@ -21,6 +22,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
         vscode.commands.registerCommand("gcores.pickOne", () => pickArticle(context)),
         vscode.commands.registerCommand("gcores.latestArticles", () => getLatestArticles(context)),
         vscode.commands.registerCommand("gcores.latestNews", () => getLatestArticles(context, true)),
+        vscode.commands.registerCommand("gcores.searchArticles", () => getSearchArticles(context)),
         vscode.commands.registerCommand("gcores.login", () => userLogin(context)),
         vscode.commands.registerCommand("gcores.logout", () => userLogout(context)),
         vscode.commands.registerCommand("gcores.toggleBossKey", () => toggleBossKey(context)),

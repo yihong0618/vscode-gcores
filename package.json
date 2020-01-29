@@ -28,6 +28,7 @@
 		"onCommand:gcores.pickOne",
 		"onCommand:gcores.latestArticles",
 		"onCommand:gcores.latestNews",
+		"onCommand:gcores.searchArticles",
 		"onView:gcoresExplorer"
 	],
 	"main": "./out/extension.js",
@@ -159,6 +160,11 @@
 			{
 				"command": "gcores.latestArticles",
 				"title": "Latest Articles",
+				"category": "Gcores"
+			},
+			{
+				"command": "gcores.searchArticles",
+				"title": "Search Articles",
 				"category": "Gcores"
 			},
 			{

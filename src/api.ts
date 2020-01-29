@@ -16,6 +16,7 @@ const headers: any = {
 type IApiBaseTemplateFunc = (limit?: number, offset?: number, isNews?: number) => string;
 type IApiTagsOrUsersTemplateFunc = (num: string, limit?: number, offset?: number, isNews?: number) => string;
 type IApiOneDataTemplateFunc = (authorId: string) => string;
+type IApiSearchTemplateFunc = (queryString: string, limit?: number, offset?: number) => string;
 type IRand = (min: number, max: number) => number;
 
 const apiArticlesOrNewsTemplate: IApiBaseTemplateFunc = (limit: number = baseLimit, offset: number = baseOffset, isNews: number = RecentType.Article): string => `https://www.gcores.com/gapi/v1/articles?page[limit]=${limit}&page[offset]=${offset}&sort=-published-at&include=category,user&filter[is-news]=${isNews}&fields[articles]=title,desc,is-published,thumb,app-cover,cover,comments-count,likes-count,bookmarks-count,is-verified,published-at,option-is-official,option-is-focus-showcase,duration,category,user`;
@@ -26,6 +27,7 @@ const apiAuthorInfoTemplate: IApiOneDataTemplateFunc = (authorId: string): strin
 const apiBookmarkTemplate: IApiTagsOrUsersTemplateFunc = (userId: string, limit: number = baseLimit, offset: number = baseOffset): string => `https://www.gcores.com/gapi/v1/users/${userId}/bookmarks?page[limit]=${limit}&page[offset]=${offset}&include=bookmarkable`;
 const apiSingleBookmarkTemplate: (bookmarkId: string) => string = (bookmarkId: string): string => `https://www.gcores.com/gapi/v1/bookmarks/${bookmarkId}`;
 const apitokenCheckTemplate: IApiTagsOrUsersTemplateFunc = (userId: string, limit: number = baseLimit, offset: number = baseOffset): string => `https://www.gcores.com/gapi/v1/users/${userId}/bookmarks?page[limit]=${limit}&page[offset]=${offset}`;
+const apiSearchTemplate: IApiSearchTemplateFunc = (queryString: string, limit?: number, offset?: number): string => `https://www.gcores.com/gapi/v1/search?page[limit]=${limit}&page[offset]=${offset}&include=user,djs,category&type=articles&query=${queryString}&order-by=score`;
 
 // TODO login releated apis
 const loginApi: string = "https://www.gcores.com/gapi/v1/tokens/refresh";
@@ -112,6 +114,14 @@ export async function getAuthorInfo(authorId: string): Promise<AxiosResponse<any
   const apiAuthorInfo: string = apiAuthorInfoTemplate(authorId);
   const { data } = await http
     .get(apiAuthorInfo, {
+    })
+    .catch(errorHandler);
+  return data;
+}
+
+export async function getSearchInfo(queryString: string, limit: number = baseLimit, offset: number = baseOffset): Promise<AxiosResponse<any>> {
+  const { data } = await http
+    .get(encodeURI(apiSearchTemplate(queryString, limit, offset)), {
     })
     .catch(errorHandler);
   return data;
