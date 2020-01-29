@@ -39,6 +39,7 @@ export async function userLogin(context: vscode.ExtensionContext): Promise<void>
             user.tokenData.token = loginData["token"];
             await context.globalState.update(globalStateGcoresUserKey, user);
             vscode.window.showInformationMessage(`Successfully login for ${userName}.`);
+            await gcoresTreeDataProvider.isLogin();
             gcoresTreeDataProvider.refresh();
         }
     } catch (error) {
@@ -55,5 +56,6 @@ export async function userLogout(context: vscode.ExtensionContext): Promise<void
     user = {};
     await context.globalState.update(globalStateGcoresUserKey, user);
     vscode.window.showInformationMessage(`Successfully logout for ${userName}.`);
+    await gcoresTreeDataProvider.isLogin();
     gcoresTreeDataProvider.refresh();
 }

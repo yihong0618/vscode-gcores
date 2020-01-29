@@ -1,4 +1,4 @@
-
+import * as vscode from "vscode";
 import * as TopBookmarks from "./top-bookmarks.json";
 import * as topComments from "./top-comments.json";
 import * as topLikes from "./top-likes.json";
@@ -9,6 +9,7 @@ export const baseAuthorUrl: string = "https://www.gcores.com/users/";
 export const baseImgUrl: string = "https://image.gcores.com/";
 export const baseLimit: number = 50;
 export const baseOffset: number = 0;
+export const baseQuickPicksNum: number = 10;
 
 // add new Category here
 export enum Category {
@@ -23,6 +24,10 @@ export enum Category {
 export enum RecentType {
     News = 1,
     Article = 0,
+}
+
+export interface IQuickItemEx<T> extends vscode.QuickPickItem {
+    value: T;
 }
 
 export interface IArticle {

@@ -32,7 +32,6 @@ export class GcoresTreeDataProvider implements vscode.TreeDataProvider<GcoresNod
     }
 
     public async refresh(): Promise<void> {
-        await this.isLogin();
         this.nowAuthorNamesMapping = this.getNowAuthorNamesMapping();
         this.newAuthors = this.getNewAuthors();
         // when refresh the offsetmapping must clear;
@@ -107,8 +106,8 @@ export class GcoresTreeDataProvider implements vscode.TreeDataProvider<GcoresNod
         }
     }
 
-    private async isLogin(): Promise<void> {
-        const user: any = this.context.globalState.get(globalStateGcoresUserKey);
+    public async isLogin(): Promise<void> {
+        const user: any = await this.context.globalState.get(globalStateGcoresUserKey);
         if (user === undefined || Object.entries(user).length === 0 && user.constructor === Object) {
             this.isIn = false;
             return;

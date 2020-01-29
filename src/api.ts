@@ -58,7 +58,7 @@ function errorCheckHandler(err: AxiosError): boolean {
   return false;
 }
 
-export async function getRecentArticlesData(limit: number = 50, offset: number = 50): Promise<AxiosResponse<any>> {
+export async function getRecentArticlesData(limit: number = baseLimit, offset: number = baseOffset): Promise<AxiosResponse<any>> {
   const { data } = await http
     .get(apiArticlesOrNewsTemplate(limit, offset), {
     })
@@ -66,9 +66,9 @@ export async function getRecentArticlesData(limit: number = 50, offset: number =
   return data;
 }
 
-export async function getRecentNewsData(): Promise<AxiosResponse<any>> {
+export async function getRecentNewsData(limit: number = baseLimit, offset: number = baseOffset): Promise<AxiosResponse<any>> {
   const { data } = await http
-    .get(apiArticlesOrNewsTemplate(baseLimit, baseOffset, RecentType.News), {
+    .get(apiArticlesOrNewsTemplate(limit, offset, RecentType.News), {
     })
     .catch(errorHandler);
   return data;

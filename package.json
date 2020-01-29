@@ -26,6 +26,8 @@
 		"onCommand:gcores.deleteAuthor",
 		"onCommand:gcores.toggleBossKey",
 		"onCommand:gcores.pickOne",
+		"onCommand:gcores.latestArticles",
+		"onCommand:gcores.latestNews",
 		"onView:gcoresExplorer"
 	],
 	"main": "./out/extension.js",
@@ -153,6 +155,16 @@
                     "light": "resources/light/dice.svg",
                     "dark": "resources/dark/dice.svg"
                 }
+			},
+			{
+				"command": "gcores.latestArticles",
+				"title": "Latest Articles",
+				"category": "Gcores"
+			},
+			{
+				"command": "gcores.latestNews",
+				"title": "Latest News",
+				"category": "Gcores"
 			},
 			{
 				"command": "gcores.refreshExplorer",

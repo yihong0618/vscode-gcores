@@ -2,6 +2,7 @@ import * as vscode from "vscode";
 import { addAuthor, deleteAuthor } from "./commands/author";
 import { addBookmark, deleteBookmark } from "./commands/bookmark";
 import { toggleBossKey } from "./commands/boss";
+import { getLatestArticles } from "./commands/latest";
 import { pickArticle } from "./commands/pick";
 import { previewArticle } from "./commands/show";
 import { userLogin, userLogout } from "./commands/user";
@@ -12,11 +13,14 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
 
     gcoresTreeDataProvider.initialize(context);
     gcoresTreeDataProvider.refresh();
+    await gcoresTreeDataProvider.isLogin();
     context.subscriptions.push(
         vscode.window.createTreeView("gcoresExplorer", { treeDataProvider: gcoresTreeDataProvider, showCollapseAll: true }),
         vscode.commands.registerCommand("gcores.refreshExplorer", () => gcoresTreeDataProvider.refresh()),
         vscode.commands.registerCommand("gcores.previewArticle", (node: GcoresNode) => previewArticle(context, node)),
         vscode.commands.registerCommand("gcores.pickOne", () => pickArticle(context)),
+        vscode.commands.registerCommand("gcores.latestArticles", () => getLatestArticles(context)),
+        vscode.commands.registerCommand("gcores.latestNews", () => getLatestArticles(context, true)),
         vscode.commands.registerCommand("gcores.login", () => userLogin(context)),
         vscode.commands.registerCommand("gcores.logout", () => userLogout(context)),
         vscode.commands.registerCommand("gcores.toggleBossKey", () => toggleBossKey(context)),
