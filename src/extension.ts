@@ -3,6 +3,7 @@ import { addAuthor, deleteAuthor } from "./commands/author";
 import { addBookmark, deleteBookmark } from "./commands/bookmark";
 import { toggleBossKey } from "./commands/boss";
 import { getLatestArticles } from "./commands/latest";
+import { addLike } from "./commands/like";
 import { pickArticle } from "./commands/pick";
 import { getSearchArticles } from "./commands/search";
 import { previewArticle } from "./commands/show";
@@ -30,6 +31,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
         vscode.commands.registerCommand("gcores.deleteAuthor", (input: GcoresNode) => deleteAuthor(context, input)),
         vscode.commands.registerCommand("gcores.addBookmark", (node: GcoresNode) => addBookmark(node)),
         vscode.commands.registerCommand("gcores.deleteBookmark", (node: GcoresNode) => deleteBookmark(node)),
+        vscode.commands.registerCommand("gcores.addLike", (node: GcoresNode) => addLike(node)),
     );
 }
 

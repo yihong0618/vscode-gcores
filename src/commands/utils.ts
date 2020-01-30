@@ -1,15 +1,14 @@
-import { commands, ExtensionContext } from "vscode";
 import * as vscode from "vscode";
-import { getRecentArticlesData, getRecentNewsData } from "../api";
+import { commands } from "vscode";
 import { explorerNodeManager } from "../explorer/explorerNodeManager";
 import { GcoresNode } from "../explorer/GcoresNode";
-import { baseQuickPicksNum, IQuickItemEx } from "../shared/shared";
+import { defaultArticle, IQuickItemEx } from "../shared/shared";
 import { previewArticle } from "./show";
 
 interface IWebViewMessage {
     command: {
         action: string,
-        data: string,
+        data: any,
     };
 }
 
@@ -18,6 +17,20 @@ export async function onDidReceiveMessage(message: IWebViewMessage): Promise<voi
         case "Add Author": {
             await commands.executeCommand("gcores.addAuthor",  message.command.data);
             break;
+        }
+        case "Add Bookmark": {
+            const node: GcoresNode = new GcoresNode(Object.assign({}, defaultArticle, {
+                id: message.command.data.nodeId,
+                name: message.command.data.nodeName,
+            }), true);
+            await commands.executeCommand("gcores.addBookmark", node);
+        }
+        case "Add Like": {
+            const node: GcoresNode = new GcoresNode(Object.assign({}, defaultArticle, {
+                id: message.command.data.nodeId,
+                name: message.command.data.nodeName,
+            }), true);
+            await commands.executeCommand("gcores.addLike", node);
         }
         // TODO add more action here
     }

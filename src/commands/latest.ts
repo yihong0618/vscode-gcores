@@ -5,7 +5,7 @@ import { getPickedAndOpen } from "./utils";
 
 export async function getLatestArticles(context: vscode.ExtensionContext, isNews: boolean = false): Promise<void> {
 
-    // first five
+    // latest articles or news
     const apiFunc: any = isNews === false ? getRecentArticlesData : getRecentNewsData;
     const data: any = await apiFunc(baseQuickPicksNum);
     await getPickedAndOpen(context, data);

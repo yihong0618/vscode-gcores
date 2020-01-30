@@ -149,6 +149,11 @@
                 }
             },
 			{
+				"command": "gcores.addLike",
+				"title": "Add Like",
+				"category": "Gcores"
+			},
+			{
 				"command": "gcores.pickOne",
 				"title": "Pick One",
 				"category": "Gcores",

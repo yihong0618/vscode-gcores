@@ -2,6 +2,7 @@ import * as vscode from "vscode";
 import { WebviewPanel } from "vscode";
 import { getOneArticleData } from "../api";
 import { GcoresNode } from "../explorer/GcoresNode";
+import { gcoresTreeDataProvider } from "../explorer/GcoresTreeDataProvider";
 import { baseArticleUrl, baseAuthorUrl, baseImgUrl, globalStateGcoresBossKey } from "../shared/shared";
 import { markdownEngine } from "../webview/markdownEngine";
 import { onDidReceiveMessage } from "./utils";
@@ -21,10 +22,11 @@ const articleStyleMapping: Map<string, IRenderText> = new Map([
     ["blockquote", (toRenderText: string): string => `> ${toRenderText}`],
 ]);
 
-function getWebviewContent(head: string, author: string, info: string, content: string): string {
-    const button: { element: string, script: string, style: string } = {
-        element: `<button id="solve">添加作者</button>`,
-        script: `const button = document.getElementById('solve');
+function getWebviewContent(head: string, author: string, info: string, content: string, node: GcoresNode): string {
+    const isIn: boolean = gcoresTreeDataProvider.isIn;
+    const addAuthorButton: { element: string, script: string, style: string } = {
+        element: `<button id="addAuthorButton">添加作者</button>`,
+        script: `const button = document.getElementById('addAuthorButton');
                 button.onclick = () => vscode.postMessage({
                     command: {
                         action: 'Add Author',
@@ -32,7 +34,7 @@ function getWebviewContent(head: string, author: string, info: string, content: 
                     },
                 });`,
         style: `<style>
-            #solve {
+            #addAuthorButton {
                 display: inline-block;
                 margin: 0.2rem;
                 padding: 0.2rem 0.2rem;
@@ -40,10 +42,62 @@ function getWebviewContent(head: string, author: string, info: string, content: 
                 color: white;
                 background-color: var(--vscode-button-background);
             }
-            #solve:hover {
+            #addAuthorButton:hover {
                 background-color: var(--vscode-button-hoverBackground);
             }
-            #solve:active {
+            #addAuthorButton:active {
+                border: 0;
+            }
+            </style>`,
+    };
+    const addBookmarkButton: { element: string, script: string, style: string } = {
+        element: `<button id="addBookmarkButton">添加书签</button>`,
+        script: `const bookmarkButton = document.getElementById('addBookmarkButton');
+                bookmarkButton.onclick = () => vscode.postMessage({
+                    command: {
+                        action: 'Add Bookmark',
+                        data: {nodeId:'${node.id}', nodeName:'${node.name}'},
+                    },
+                });`,
+        style: `<style>
+            #addBookmarkButton {
+                display: inline-block;
+                margin: 0.2rem;
+                padding: 0.2rem 0.2rem;
+                border: 0;
+                color: white;
+                background-color: var(--vscode-button-background);
+            }
+            #addBookmarkButton:hover {
+                background-color: var(--vscode-button-hoverBackground);
+            }
+            #addBookmarkButton:active {
+                border: 0;
+            }
+            </style>`,
+    };
+    const addLikeButton: { element: string, script: string, style: string } = {
+        element: `<button id="addLikeButton">点赞</button>`,
+        script: `const likeButton = document.getElementById('addLikeButton');
+                likeButton.onclick = () => vscode.postMessage({
+                    command: {
+                        action: 'Add Like',
+                        data: {nodeId:'${node.id}', nodeName:'${node.name}'},
+                    },
+                });`,
+        style: `<style>
+            #addLikeButton {
+                display: inline-block;
+                margin: 0.2rem;
+                padding: 0.2rem 1.0rem;
+                border: 0;
+                color: white;
+                background-color: var(--vscode-button-background);
+            }
+            #addLikeButton:hover {
+                background-color: var(--vscode-button-hoverBackground);
+            }
+            #addLikeButton:active {
                 border: 0;
             }
             </style>`,
@@ -54,22 +108,26 @@ function getWebviewContent(head: string, author: string, info: string, content: 
     <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src https:; script-src vscode-resource: 'unsafe-inline'; style-src vscode-resource: 'unsafe-inline';"/>
         ${markdownEngine.getStyles()}
-        ${button.style}
+        ${addAuthorButton.style}
+        ${addBookmarkButton.style}
+        ${addLikeButton.style}
         <style>
             code { white-space: pre-wrap; }
         </style>
     </head>
     <body>
         ${head}
-        ${author} ${button.element}
+        ${author} ${addAuthorButton.element}
         <hr />
         ${content}
         <hr />
-        ${info}
+        ${info} ${isIn === true ? addLikeButton.element : ""} ${isIn === true ? addBookmarkButton.element : ""}
     </body>
     <script>
     const vscode = acquireVsCodeApi();
-    ${button.script}
+    ${addAuthorButton.script}
+    ${addBookmarkButton.script}
+    ${addLikeButton.script}
     </script>
     </html>
     `;
@@ -161,5 +219,5 @@ export async function previewArticle(context: vscode.ExtensionContext, node: Gco
         retainContextWhenHidden: true,
     });
     panel.webview.onDidReceiveMessage(onDidReceiveMessage);
-    panel.webview.html = getWebviewContent(head, author, info, bodyData);
+    panel.webview.html = getWebviewContent(head, author, info, bodyData, node);
 }

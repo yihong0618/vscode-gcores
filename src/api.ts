@@ -32,6 +32,7 @@ const apiSearchTemplate: IApiSearchTemplateFunc = (queryString: string, limit?: 
 // TODO login releated apis
 const loginApi: string = "https://www.gcores.com/gapi/v1/tokens/refresh";
 const bookmarksApi: string = "https://www.gcores.com/gapi/v1/bookmarks";
+const votesApi: string = "https://www.gcores.com/gapi/v1/votes";
 
 const http: AxiosInstance = axios.create({
   headers,
@@ -225,6 +226,40 @@ export async function deleteBookmarkArticle(bookmarkId: string, token: string): 
   headers["Authorization"] = "Token token=" + token;
   const { status }: any = await axios
   .delete(apiSingleBookmarkTemplate(bookmarkId), {
+    headers,
+  })
+  .catch(errorCheckHandler);
+  // gcors return status seems 201 or 200 maybe others
+  if (Math.floor(status / 100) === 2) {
+    return true;
+  }
+  return false;
+}
+
+export async function addLikeById(userId: string, articleId: string, token: string, voteType: string = "articles"): Promise<boolean> {
+  headers["Authorization"] = "Token token=" + token;
+  const payload: any = {
+      data: {
+        type: "votes",
+        attributes: { "vote-flag": true },
+        relationships: {
+          votable: {
+            data: {
+              type: voteType,
+              id: articleId,
+            },
+          },
+          voter: {
+            data: {
+              type: "users",
+              id: userId,
+            },
+          },
+        },
+      },
+  };
+  const { status }: any = await axios
+  .post(votesApi, payload, {
     headers,
   })
   .catch(errorCheckHandler);

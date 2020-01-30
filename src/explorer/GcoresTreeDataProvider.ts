@@ -11,9 +11,9 @@ export class GcoresTreeDataProvider implements vscode.TreeDataProvider<GcoresNod
     public userId!: string;
     public token!: string;
     public userBookmarks!: string[];
+    public isIn!: boolean;
     // private
     private context!: vscode.ExtensionContext;
-    private isIn!: boolean;
     private nowAuthorNamesMapping!: Map<string, string>;
     private newAuthors!: any;
 
@@ -108,6 +108,7 @@ export class GcoresTreeDataProvider implements vscode.TreeDataProvider<GcoresNod
 
     public async isLogin(): Promise<void> {
         const user: any = await this.context.globalState.get(globalStateGcoresUserKey);
+        // empty object
         if (user === undefined || Object.entries(user).length === 0 && user.constructor === Object) {
             this.isIn = false;
             return;
