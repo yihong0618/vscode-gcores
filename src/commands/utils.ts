@@ -24,6 +24,16 @@ export async function onDidReceiveMessage(message: IWebViewMessage): Promise<voi
                 name: message.command.data.nodeName,
             }), true);
             await commands.executeCommand("gcores.addBookmark", node);
+            break;
+        }
+        case "Delete Bookmark": {
+            const node: GcoresNode = new GcoresNode(Object.assign({}, defaultArticle, {
+                id: message.command.data.nodeId,
+                name: message.command.data.nodeName,
+                bookmarkId: message.command.data.bookmarkId,
+            }), true);
+            await commands.executeCommand("gcores.deleteBookmark", node);
+            break;
         }
         case "Add Like": {
             const node: GcoresNode = new GcoresNode(Object.assign({}, defaultArticle, {
@@ -31,6 +41,16 @@ export async function onDidReceiveMessage(message: IWebViewMessage): Promise<voi
                 name: message.command.data.nodeName,
             }), true);
             await commands.executeCommand("gcores.addLike", node);
+            break;
+        }
+        case "Delete Like": {
+            const node: GcoresNode = new GcoresNode(Object.assign({}, defaultArticle, {
+                id: message.command.data.nodeId,
+                name: message.command.data.nodeName,
+                likeId: message.command.data.likeId,
+            }), true);
+            await commands.executeCommand("gcores.deleteLike", node);
+            break;
         }
         // TODO add more action here
     }

@@ -154,6 +154,11 @@
 				"category": "Gcores"
 			},
 			{
+				"command": "gcores.deleteLike",
+				"title": "Delete Like",
+				"category": "Gcores"
+			},
+			{
 				"command": "gcores.pickOne",
 				"title": "Pick One",
 				"category": "Gcores",

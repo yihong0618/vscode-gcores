@@ -33,6 +33,10 @@ export class GcoresNode {
         return this.data.bookmarkId;
     }
 
+    public get likeId(): string {
+        return this.data.likeId;
+    }
+
     public get isGcoresElement(): boolean {
         return this.isGcoresElementNode;
     }

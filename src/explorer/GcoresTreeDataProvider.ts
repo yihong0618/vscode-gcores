@@ -10,7 +10,6 @@ export class GcoresTreeDataProvider implements vscode.TreeDataProvider<GcoresNod
     // TODO refactor these
     public userId!: string;
     public token!: string;
-    public userBookmarks!: string[];
     public isIn!: boolean;
     // private
     private context!: vscode.ExtensionContext;
@@ -28,7 +27,6 @@ export class GcoresTreeDataProvider implements vscode.TreeDataProvider<GcoresNod
         this.token = "";
         this.nowAuthorNamesMapping = new Map();
         this.newAuthors = {};
-        this.userBookmarks = [];
     }
 
     public async refresh(): Promise<void> {
@@ -44,7 +42,7 @@ export class GcoresTreeDataProvider implements vscode.TreeDataProvider<GcoresNod
         let contextValue: string = "";
         const newAuthorsid: string[] = Object.values(this.newAuthors);
         if (element.isGcoresElement && this.isIn) {
-            if (!this.userBookmarks.includes(element.id)) {
+            if (element.bookmarkId === "") {
                 contextValue = "can-bookmark";
             } else {
                 contextValue = "can-delete-bookmark";
@@ -68,9 +66,9 @@ export class GcoresTreeDataProvider implements vscode.TreeDataProvider<GcoresNod
         } else {
             switch (element.id) {
                 case Category.Recent:
-                    return explorerNodeManager.GetRecentArticlesNodes(element.id);
+                    return explorerNodeManager.GetRecentArticlesNodes(element.id, this.token);
                 case Category.News:
-                    return explorerNodeManager.GetRecentNewsNodes();
+                    return explorerNodeManager.GetRecentNewsNodes(element.id, this.token);
                 case Category.Tag:
                     return explorerNodeManager.GetTagsNodes();
                 case Category.Author:
@@ -86,11 +84,7 @@ export class GcoresTreeDataProvider implements vscode.TreeDataProvider<GcoresNod
                             }), false),
                         ];
                     }
-                    const res: GcoresNode[] = await explorerNodeManager.getBookmarkArticlesNodes(element.id, this.userId, this.token);
-                    res.forEach((node: GcoresNode) => {
-                        this.userBookmarks.push(node.id);
-                    });
-                    return res;
+                    return explorerNodeManager.getBookmarkArticlesNodes(element.id, this.userId, this.token);
                 default:
                     break;
             }

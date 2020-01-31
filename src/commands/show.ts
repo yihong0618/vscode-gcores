@@ -24,15 +24,19 @@ const articleStyleMapping: Map<string, IRenderText> = new Map([
 
 function getWebviewContent(head: string, author: string, info: string, content: string, node: GcoresNode): string {
     const isIn: boolean = gcoresTreeDataProvider.isIn;
+    const isBookmarked: boolean = node.bookmarkId === "";
+    const isLiked: boolean = node.likeId === "";
     const addAuthorButton: { element: string, script: string, style: string } = {
         element: `<button id="addAuthorButton">添加作者</button>`,
         script: `const button = document.getElementById('addAuthorButton');
-                button.onclick = () => vscode.postMessage({
+                button.onclick = () => {vscode.postMessage({
                     command: {
                         action: 'Add Author',
                         data: '${author}',
                     },
-                });`,
+                })
+                document.getElementById("addAuthorButton").disabled = true;
+            };`,
         style: `<style>
             #addAuthorButton {
                 display: inline-block;
@@ -51,14 +55,16 @@ function getWebviewContent(head: string, author: string, info: string, content: 
             </style>`,
     };
     const addBookmarkButton: { element: string, script: string, style: string } = {
-        element: `<button id="addBookmarkButton">添加书签</button>`,
+        element: `<button id="addBookmarkButton">${isBookmarked ? `增加书签` : `取消书签`}</button>`,
         script: `const bookmarkButton = document.getElementById('addBookmarkButton');
-                bookmarkButton.onclick = () => vscode.postMessage({
+                bookmarkButton.onclick = () => {vscode.postMessage({
                     command: {
-                        action: 'Add Bookmark',
-                        data: {nodeId:'${node.id}', nodeName:'${node.name}'},
+                        action: ${isBookmarked ? `'Add Bookmark'` : `'Delete Bookmark'`},
+                        data: {nodeId:'${node.id}', nodeName:'${node.name}', bookmarkId:'${node.bookmarkId}'},
                     },
-                });`,
+                })
+                document.getElementById("addBookmarkButton").disabled = true;
+            };`,
         style: `<style>
             #addBookmarkButton {
                 display: inline-block;
@@ -67,7 +73,7 @@ function getWebviewContent(head: string, author: string, info: string, content: 
                 border: 0;
                 color: white;
                 background-color: var(--vscode-button-background);
-            }
+            };
             #addBookmarkButton:hover {
                 background-color: var(--vscode-button-hoverBackground);
             }
@@ -77,19 +83,22 @@ function getWebviewContent(head: string, author: string, info: string, content: 
             </style>`,
     };
     const addLikeButton: { element: string, script: string, style: string } = {
-        element: `<button id="addLikeButton">点赞</button>`,
+        element: `<button id="addLikeButton">${isLiked ? `增加点赞` : `取消点赞`}</button>`,
         script: `const likeButton = document.getElementById('addLikeButton');
-                likeButton.onclick = () => vscode.postMessage({
+                likeButton.onclick = () => {vscode.postMessage({
                     command: {
-                        action: 'Add Like',
-                        data: {nodeId:'${node.id}', nodeName:'${node.name}'},
+                        action: ${isLiked ? `'Add Like'` : `'Delete Like'`},
+                        data: {nodeId:'${node.id}', nodeName:'${node.name}', likeId:'${node.likeId}'},
                     },
-                });`,
+                })
+                document.getElementById("addLikeButton").disabled = true;
+            }
+                ;`,
         style: `<style>
             #addLikeButton {
                 display: inline-block;
                 margin: 0.2rem;
-                padding: 0.2rem 1.0rem;
+                padding: 0.2rem 0.2rem;
                 border: 0;
                 color: white;
                 background-color: var(--vscode-button-background);
@@ -199,8 +208,12 @@ export async function previewArticle(context: vscode.ExtensionContext, node: Gco
     const authorId: string = authorData.id;
     const authorName: string = authorData.attributes.nickname;
     const dataBlocks: any | undefined = JSON.parse(articleContent);
-    // test if the boss key open
 
+    // vote-id and bookmark-id
+    const voteId: string = articleData.data.meta["vote-id"] || "";
+    const bookmarkId: string = articleData.data.meta["bookmarkId"] || "";
+
+    // test if the boss key open
     let isBoss: boolean = false;
     const bosskeyInfo: any = context.globalState.get(globalStateGcoresBossKey);
     if (bosskeyInfo) {

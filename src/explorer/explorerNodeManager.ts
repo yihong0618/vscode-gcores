@@ -39,8 +39,8 @@ class ExplorerNodeManager implements Disposable {
         ];
     }
 
-    public async GetRecentArticlesNodes(nodeId: string): Promise<GcoresNode[]> {
-        const articlesData: any = await getRecentArticlesData(this.limit, this.offsetMapping.get(nodeId) || 0);
+    public async GetRecentArticlesNodes(nodeId: string, token?: string| undefined): Promise<GcoresNode[]> {
+        const articlesData: any = await getRecentArticlesData(this.limit, this.offsetMapping.get(nodeId) || 0, token);
         const res: GcoresNode[] = [];
         const dataLength: number = articlesData.data.length;
         if (dataLength === 0) {
@@ -59,11 +59,22 @@ class ExplorerNodeManager implements Disposable {
         return res;
     }
 
-    public async GetRecentNewsNodes(): Promise<GcoresNode[]> {
-        const articlesData: any = await getRecentNewsData();
+    public async GetRecentNewsNodes(nodeId: string, token?: string | undefined): Promise<GcoresNode[]> {
+        const articlesData: any = await getRecentNewsData(this.limit, this.offsetMapping.get(nodeId) || 0, token);
         const res: GcoresNode[] = [];
+        const dataLength: number = articlesData.data.length;
+        if (dataLength === 0) {
+            return res;
+        }
         for (const article of articlesData.data) {
             res.push(this.parseToGcoresNode(article));
+        }
+        if (dataLength === baseLimit) {
+            res.push(new GcoresNode(Object.assign({}, defaultArticle, {
+                id: nodeId,
+                name: "更多新闻",
+            }), false));
+            this.offsetMapping.set(nodeId, (this.offsetMapping.get(nodeId) || 0) + baseLimit);
         }
         return res;
     }
@@ -102,8 +113,8 @@ class ExplorerNodeManager implements Disposable {
         return res;
     }
 
-    public async getOneLabelArticlesNodes(nodeId: string, apiFunc: any): Promise<GcoresNode[]> {
-        const articlesData: any = await apiFunc(nodeId, this.limit, this.offsetMapping.get(nodeId) || 0);
+    public async getOneLabelArticlesNodes(nodeId: string, apiFunc: any, token?: string | undefined): Promise<GcoresNode[]> {
+        const articlesData: any = await apiFunc(nodeId, this.limit, this.offsetMapping.get(nodeId) || 0, token);
         const res: GcoresNode[] = [];
         const dataLength: number = articlesData.data.length;
         if (dataLength === 0) {
@@ -157,6 +168,7 @@ class ExplorerNodeManager implements Disposable {
             commentsCount: attributes["comments-count"],
             bookmarksCount: attributes["bookmarks-count"],
             bookmarkId: data.meta["bookmark-id"] || "",
+            likeId: data.meta["vote-id"] || "",
             createdAt: attributes["published-at"].split("T")[0],
         }, true);
     }
