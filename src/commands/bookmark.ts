@@ -12,7 +12,6 @@ export async function addBookmark(node: GcoresNode): Promise<void> {
         return;
     }
     vscode.window.showInformationMessage(`Successfully add bookmark for ${node.name}.`);
-    // add this node to bookmarked node
     gcoresTreeDataProvider.refresh();
 }
 
