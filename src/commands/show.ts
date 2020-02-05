@@ -195,7 +195,7 @@ function parseContent(dataBloks: any | undefined, isBoss: boolean = false): stri
         }
         toRenderText = textFunc(toRenderText);
         // test if the boss key open.
-        result += detailsFlag === true ? `<details>${markdownEngine.render(toRenderText)}</details>` : markdownEngine.render(toRenderText);
+        result += detailsFlag === true ? `<details><summary>查看图片</summary>${markdownEngine.render(toRenderText)}</details>` : markdownEngine.render(toRenderText);
     });
     return result;
 }
