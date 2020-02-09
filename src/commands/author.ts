@@ -45,7 +45,16 @@ export async function addAuthor(context: vscode.ExtensionContext, input: any): P
 export async function deleteAuthor(context: vscode.ExtensionContext, input: any): Promise<void> {
     try {
         const authorName: string | undefined = await new Promise(async (resolve: (res: string | undefined) => void, reject: (e: Error) => void): Promise<void> => {
+            // TODO input from webview or side bar logic are differnet maybe have a better way
             if (input) {
+                if (typeof input === "string") {
+                    const match: RegExpMatchArray | null = input.match(/>(.*)</);
+                    if (match && match[0]) {
+                        return resolve(match[1]);
+                    } else {
+                        return reject(new Error("Something wrong to delete the author"));
+                    }
+                }
                 return resolve(input.data.name);
             }
             const name: string | undefined = await vscode.window.showInputBox({

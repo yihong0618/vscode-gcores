@@ -112,7 +112,6 @@ export const headers: any = {
       "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36",
   };
 
-// TODO maybe move these to shared
 type IApiBaseTemplateFunc = (limit?: number, offset?: number, isNews?: number) => string;
 type IApiTagsOrUsersTemplateFunc = (num: string, limit?: number, offset?: number, isNews?: number) => string;
 type IApiOneDataTemplateFunc = (authorId: string) => string;

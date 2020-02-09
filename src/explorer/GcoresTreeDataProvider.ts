@@ -11,10 +11,11 @@ export class GcoresTreeDataProvider implements vscode.TreeDataProvider<GcoresNod
     public userId!: string;
     public token!: string;
     public isIn!: boolean;
+    public newAuthors!: any;
+
     // private
     private context!: vscode.ExtensionContext;
     private nowAuthorNamesMapping!: Map<string, string>;
-    private newAuthors!: any;
 
     private onDidChangeTreeDataEvent: vscode.EventEmitter<GcoresNode | undefined | null> = new vscode.EventEmitter<GcoresNode | undefined | null>();
     // tslint:disable-next-line:member-ordering

@@ -3,7 +3,7 @@ import { WebviewPanel } from "vscode";
 import { getOneArticleData } from "../api";
 import { GcoresNode } from "../explorer/GcoresNode";
 import { gcoresTreeDataProvider } from "../explorer/GcoresTreeDataProvider";
-import { baseArticleUrl, baseAuthorUrl, baseImgUrl, globalStateGcoresBossKey } from "../shared/shared";
+import { authorNamesMapping, baseArticleUrl, baseAuthorUrl, baseImgUrl, globalStateGcoresBossKey } from "../shared/shared";
 import { markdownEngine } from "../webview/markdownEngine";
 import { onDidReceiveMessage } from "./utils";
 
@@ -22,17 +22,22 @@ const articleStyleMapping: Map<string, IRenderText> = new Map([
     ["blockquote", (toRenderText: string): string => `> ${toRenderText}`],
 ]);
 
-function getWebviewContent(head: string, author: string, info: string, content: string, node: GcoresNode): string {
+function getWebviewContent(head: string, authorRender: string, authorName: string, info: string, content: string, node: GcoresNode): string {
     const isIn: boolean = gcoresTreeDataProvider.isIn;
     const isBookmarked: boolean = node.bookmarkId === "";
     const isLiked: boolean = node.likeId === "";
+    const isOldAuthor: boolean = authorNamesMapping.has(authorName);
+    let newAuthorIn: boolean = false;
+    if (authorName in gcoresTreeDataProvider.newAuthors) {
+        newAuthorIn = true;
+    }
     const addAuthorButton: { element: string, script: string, style: string } = {
-        element: `<button id="addAuthorButton">添加作者</button>`,
+        element: `<button id="addAuthorButton">${!newAuthorIn ? `添加作者` : `取消作者`}</button>`,
         script: `const button = document.getElementById('addAuthorButton');
                 button.onclick = () => {vscode.postMessage({
                     command: {
-                        action: 'Add Author',
-                        data: '${author}',
+                        action: ${!newAuthorIn ? `'Add Author'` : `'Delete Author'`},
+                        data: '${authorRender}',
                     },
                 })
                 document.getElementById("addAuthorButton").disabled = true;
@@ -126,7 +131,7 @@ function getWebviewContent(head: string, author: string, info: string, content: 
     </head>
     <body>
         ${head}
-        ${author} ${addAuthorButton.element}
+        ${authorRender} ${!isOldAuthor === true ? addAuthorButton.element : ""}
         <hr />
         ${content}
         <hr />
@@ -202,16 +207,16 @@ function parseContent(dataBloks: any | undefined, isBoss: boolean = false): stri
 
 export async function previewArticle(context: vscode.ExtensionContext, node: GcoresNode): Promise<void> {
     const articleData: any = await getOneArticleData(node.id);
-    // included[3] is the author data
-    const authorData: any = articleData.included[3];
+    // included[3] or included[2] is the author data, I don't know why!!!
+    let authorData: any = articleData.included[2];
+    if (authorData.type === "articles") {
+        authorData = articleData.included[3];
+    }
     const articleContent: string = articleData.data.attributes.content;
     const authorId: string = authorData.id;
     const authorName: string = authorData.attributes.nickname;
-    const dataBlocks: any | undefined = JSON.parse(articleContent);
 
-    // vote-id and bookmark-id
-    const voteId: string = articleData.data.meta["vote-id"] || "";
-    const bookmarkId: string = articleData.data.meta["bookmarkId"] || "";
+    const dataBlocks: any | undefined = JSON.parse(articleContent);
 
     // test if the boss key open
     let isBoss: boolean = false;
@@ -221,7 +226,7 @@ export async function previewArticle(context: vscode.ExtensionContext, node: Gco
     }
     const bodyData: any = parseContent(dataBlocks, isBoss);
     const head: string = markdownEngine.render(`# [${node.name}](${baseArticleUrl}${node.id})`);
-    const author: string = markdownEngine.renderInline(`作者: [${authorName}](${baseAuthorUrl}${authorId})`);
+    const authorRender: string = markdownEngine.renderInline(`作者: [${authorName}](${baseAuthorUrl}${authorId})`);
     const info: string = markdownEngine.render([
         `| Likes | Comments | Bookmarks |`,
         `| :---: | :------: | :-------: |`,
@@ -232,5 +237,5 @@ export async function previewArticle(context: vscode.ExtensionContext, node: Gco
         retainContextWhenHidden: true,
     });
     panel.webview.onDidReceiveMessage(onDidReceiveMessage);
-    panel.webview.html = getWebviewContent(head, author, info, bodyData, node);
+    panel.webview.html = getWebviewContent(head, authorRender, authorName, info, bodyData, node);
 }

@@ -18,6 +18,10 @@ export async function onDidReceiveMessage(message: IWebViewMessage): Promise<voi
             await commands.executeCommand("gcores.addAuthor",  message.command.data);
             break;
         }
+        case "Delete Author": {
+            await commands.executeCommand("gcores.deleteAuthor",  message.command.data);
+            break;
+        }
         case "Add Bookmark": {
             const node: GcoresNode = new GcoresNode(Object.assign({}, defaultArticle, {
                 id: message.command.data.nodeId,
