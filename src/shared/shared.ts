@@ -10,6 +10,7 @@ export const baseImgUrl: string = "https://image.gcores.com/";
 export const baseLimit: number = 50;
 export const baseOffset: number = 0;
 export const baseQuickPicksNum: number = 10;
+export const webviewTitleSlice: number = 20;
 
 // add new Category here
 export enum Category {

@@ -3,7 +3,7 @@ import { WebviewPanel } from "vscode";
 import { getOneArticleData } from "../api";
 import { GcoresNode } from "../explorer/GcoresNode";
 import { gcoresTreeDataProvider } from "../explorer/GcoresTreeDataProvider";
-import { authorNamesMapping, baseArticleUrl, baseAuthorUrl, baseImgUrl, globalStateGcoresBossKey } from "../shared/shared";
+import { authorNamesMapping, baseArticleUrl, baseAuthorUrl, baseImgUrl, globalStateGcoresBossKey, webviewTitleSlice } from "../shared/shared";
 import { markdownEngine } from "../webview/markdownEngine";
 import { onDidReceiveMessage } from "./utils";
 
@@ -207,11 +207,8 @@ function parseContent(dataBloks: any | undefined, isBoss: boolean = false): stri
 
 export async function previewArticle(context: vscode.ExtensionContext, node: GcoresNode): Promise<void> {
     const articleData: any = await getOneArticleData(node.id);
-    // included[3] or included[2] is the author data, I don't know why!!!
-    let authorData: any = articleData.included[2];
-    if (authorData.type === "articles") {
-        authorData = articleData.included[3];
-    }
+    // find the first users type is the authorData
+    const authorData: any = articleData.included.filter((t: any) => t.type === "users")[0];
     const articleContent: string = articleData.data.attributes.content;
     const authorId: string = authorData.id;
     const authorName: string = authorData.attributes.nickname;
@@ -232,7 +229,9 @@ export async function previewArticle(context: vscode.ExtensionContext, node: Gco
         `| :---: | :------: | :-------: |`,
         `| ${node.likes} | ${node.comments} | ${node.bookmarks} |`,
     ].join("\n"));
-    const panel: WebviewPanel | undefined = vscode.window.createWebviewPanel(node.name, node.name, vscode.ViewColumn.One, {
+    // slice the title on webview show.
+    const title: string = `${node.name.slice(0, webviewTitleSlice)}...`;
+    const panel: WebviewPanel | undefined = vscode.window.createWebviewPanel(node.name, title, vscode.ViewColumn.One, {
         enableScripts: true,
         retainContextWhenHidden: true,
     });
