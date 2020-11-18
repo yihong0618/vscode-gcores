@@ -1,7 +1,4 @@
 import * as vscode from "vscode";
-import * as TopBookmarks from "./top-bookmarks.json";
-import * as topComments from "./top-comments.json";
-import * as topLikes from "./top-likes.json";
 
 // TODO format these
 export const baseArticleUrl: string = "https://www.gcores.com/articles/";
@@ -91,10 +88,10 @@ export const authorNamesMapping: Map<string, string> = new Map([
     ["Dagou", "91206"],
 ]);
 
-export const topNamesMapping: Map<string, any> = new Map([
-    ["点赞TOP100", topLikes],
-    ["收藏TOP100", TopBookmarks],
-    ["评论TOP100", topComments],
+export const topNamesMapping: Map<string, string> = new Map([
+    ["点赞排行", "-likes-count"],
+    ["收藏排行", "-bookmarks-count"],
+    ["评论排行", "-comments-count"],
 ]);
 
 // context global values
@@ -114,12 +111,14 @@ export const headers: any = {
   };
 
 type IApiBaseTemplateFunc = (limit?: number, offset?: number, isNews?: number) => string;
+type IApiBaseHotTemplateFunc = (hotName: string, limit?: number, offset?: number) => string;
 type IApiTagsOrUsersTemplateFunc = (num: string, limit?: number, offset?: number, isNews?: number) => string;
 type IApiOneDataTemplateFunc = (authorId: string) => string;
 type IApiSearchTemplateFunc = (queryString: string, limit?: number, offset?: number) => string;
 export type IRand = (min: number, max: number) => number;
 
 export const apiArticlesOrNewsTemplate: IApiBaseTemplateFunc = (limit: number = baseLimit, offset: number = baseOffset, isNews: number = RecentType.Article): string => `https://www.gcores.com/gapi/v1/articles?page[limit]=${limit}&page[offset]=${offset}&sort=-published-at&include=category,user&filter[is-news]=${isNews}&fields[articles]=title,desc,is-published,thumb,app-cover,cover,comments-count,likes-count,bookmarks-count,is-verified,published-at,option-is-official,option-is-focus-showcase,duration,category,user`;
+export const apiArticlesHotTemplate: IApiBaseHotTemplateFunc = (hotName: string, limit: number = baseLimit, offset: number = baseOffset): string => `https://www.gcores.com/gapi/v1/articles?page[limit]=${limit}&page[offset]=${offset}&sort=${hotName}&include=category,user&fields[articles]=title,desc,is-published,thumb,app-cover,cover,comments-count,likes-count,bookmarks-count,is-verified,published-at,option-is-official,option-is-focus-showcase,duration,category,user`;
 export const apiSingleArticleTemplate: IApiOneDataTemplateFunc = (articleId: string): string => `https://www.gcores.com/gapi/v1/articles/${articleId}?include=category,user,user.role,tags,entities,entries,similarities.user,similarities.djs,similarities.category,collections&preview=1`;
 export const apiArticleTagTemplate: IApiTagsOrUsersTemplateFunc = (tagNum: string, limit: number = baseLimit, offset: number = baseOffset, isNews: number = RecentType.Article): string => `https://www.gcores.com/gapi/v1/categories/${tagNum}/articles?page[limit]=${limit}&page[offset]=${offset}&sort=-published-at&include=category,user&filter[is-news]=${isNews}&fields[articles]=title,desc,is-published,thumb,app-cover,cover,comments-count,likes-count,bookmarks-count,is-verified,published-at,option-is-official,option-is-focus-showcase,duration,category,user`;
 export const apiArticlesByAuthorTemplate: IApiTagsOrUsersTemplateFunc = (authorId: string, limit: number = baseLimit, offset: number = baseOffset, isNews: number = RecentType.Article): string => `https://www.gcores.com/gapi/v1/users/${authorId}/articles?page[limit]=${limit}&page[offset]=${offset}&sort=-published-at&include=category,user&filter[is-news]=${isNews}&fields[articles]=title,desc,is-published,thumb,app-cover,cover,comments-count,likes-count,bookmarks-count,is-verified,published-at,option-is-official,option-is-focus-showcase,duration,category,user`;

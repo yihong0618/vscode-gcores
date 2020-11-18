@@ -1,6 +1,6 @@
 import * as path from "path";
 import * as vscode from "vscode";
-import { checkTokenWithApi, getArticlesDataByAuthor, getArticlesDataByTag } from "../api";
+import { checkTokenWithApi, getArticlesDataByAuthor, getArticlesDataByHot, getArticlesDataByTag } from "../api";
 import { articleTagsMapping, authorNamesMapping, Category, defaultArticle, globalStateGcoresAuthorKey, globalStateGcoresUserKey, topNamesMapping } from "../shared/shared";
 import { explorerNodeManager } from "./explorerNodeManager";
 import { GcoresNode } from "./GcoresNode";
@@ -92,11 +92,11 @@ export class GcoresTreeDataProvider implements vscode.TreeDataProvider<GcoresNod
             if (articleTagsMapping.has(element.id)) {
                 return explorerNodeManager.getOneLabelArticlesNodes(element.id, getArticlesDataByTag.bind(null, articleTagsMapping));
             }
+            if (topNamesMapping.has(element.id)) {
+                return explorerNodeManager.getOneLabelArticlesNodes(element.id, getArticlesDataByHot.bind(null, topNamesMapping));
+            }
             if (this.nowAuthorNamesMapping.has(element.id)) {
                 return explorerNodeManager.getOneLabelArticlesNodes(element.id, getArticlesDataByAuthor.bind(null, this.nowAuthorNamesMapping));
-            }
-            if (topNamesMapping.has(element.id)) {
-                return explorerNodeManager.parseGcoresNodeFromJson(topNamesMapping.get(element.id));
             }
         }
     }

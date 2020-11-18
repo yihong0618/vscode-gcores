@@ -1,6 +1,6 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { window } from "vscode";
-import { apiArticlesByAuthorTemplate, apiArticlesOrNewsTemplate, apiArticleTagTemplate, apiAuthorInfoTemplate, apiBookmarkTemplate, apiSearchTemplate, apiSingleArticleTemplate, apiSingleBookmarkTemplate, apitokenCheckTemplate, baseLimit, baseOffset, bookmarksApi, headers, IRand, loginApi, RecentType, votesApi } from "./shared/shared";
+import { apiArticlesByAuthorTemplate, apiArticlesHotTemplate, apiArticlesOrNewsTemplate, apiArticleTagTemplate, apiAuthorInfoTemplate, apiBookmarkTemplate, apiSearchTemplate, apiSingleArticleTemplate, apiSingleBookmarkTemplate, apitokenCheckTemplate, baseLimit, baseOffset, bookmarksApi, headers, IRand, loginApi, RecentType, votesApi } from "./shared/shared";
 
 function errorHandler(err: AxiosError): Promise<never> {
   const { response, config } = err;
@@ -58,6 +58,21 @@ export async function getArticlesDataByTag(mapping: Map<string, string>, tagName
   }
   const { data } = await axios
     .get(apiArticleTagTemplate(tagNum, limit, offset), {
+    headers})
+    .catch(errorHandler);
+  return data;
+}
+
+export async function getArticlesDataByHot(mapping: Map<string, string>, hotName: string, limit: number, offset: number, token?: string | undefined): Promise<AxiosResponse<any>> {
+  if (token) {
+    headers["Authorization"] = "Token token=" + token;
+  }
+  let nameOfHot: string | undefined = mapping.get(hotName);
+  if ( !nameOfHot ) {
+    nameOfHot = "likes-count";
+  }
+  const { data } = await axios
+    .get(apiArticlesHotTemplate(nameOfHot, limit, offset), {
     headers})
     .catch(errorHandler);
   return data;

@@ -2,23 +2,23 @@
 	"name": "vscode-gcores",
 	"displayName": "vscode-gcores",
 	"description": "use vscode to play with gcores",
-	"version": "0.0.3",
+	"version": "0.1.0",
 	"author": "Hong Yi",
-    "publisher": "zouzou0208",
-    "license": "MIT",
+	"publisher": "zouzou0208",
+	"license": "MIT",
 	"engines": {
 		"vscode": "^1.41.0"
 	},
 	"repository": {
-        "type": "git",
-        "url": "https://github.com/yihong0618/vscode-gcores"
-    },
+		"type": "git",
+		"url": "https://github.com/yihong0618/vscode-gcores"
+	},
 	"categories": [
 		"Other",
 		"Snippets"
 	],
 	"activationEvents": [
-        "onCommand:gcores.refreshExplorer",
+		"onCommand:gcores.refreshExplorer",
 		"onCommand:gcores.previewArticle",
 		"onCommand:gcores.login",
 		"onCommand:gcores.logout",
@@ -52,26 +52,26 @@
 		},
 		"menus": {
 			"view/title": [
-                {
-                    "command": "gcores.login",
-                    "when": "view == gcoresExplorer",
-                    "group": "navigation@0"
-                },
-                {
-                    "command": "gcores.refreshExplorer",
-                    "when": "view == gcoresExplorer",
-                    "group": "navigation@1"
-                },
-                {
-                    "command": "gcores.pickOne",
-                    "when": "view == gcoresExplorer",
-                    "group": "navigation@2"
-                },
-                {
-                    "command": "gcores.toggleBossKey",
-                    "when": "view == gcoresExplorer",
-                    "group": "navigation@3"
-                }
+				{
+					"command": "gcores.login",
+					"when": "view == gcoresExplorer",
+					"group": "navigation@0"
+				},
+				{
+					"command": "gcores.refreshExplorer",
+					"when": "view == gcoresExplorer",
+					"group": "navigation@1"
+				},
+				{
+					"command": "gcores.pickOne",
+					"when": "view == gcoresExplorer",
+					"group": "navigation@2"
+				},
+				{
+					"command": "gcores.toggleBossKey",
+					"when": "view == gcoresExplorer",
+					"group": "navigation@3"
+				}
 			],
 			"view/item/context": [
 				{
@@ -85,10 +85,10 @@
 					"group": "gcores@2"
 				},
 				{
-                    "command": "gcores.addBookmark",
-                    "when": "view == gcoresExplorer && viewItem == can-bookmark",
-                    "group": "inline"
-                }
+					"command": "gcores.addBookmark",
+					"when": "view == gcoresExplorer && viewItem == can-bookmark",
+					"group": "inline"
+				}
 			]
 		},
 		"commands": [
@@ -102,9 +102,9 @@
 				"title": "Login",
 				"category": "Gcores",
 				"icon": {
-                    "light": "resources/light/login.svg",
-                    "dark": "resources/dark/login.svg"
-                }
+					"light": "resources/light/login.svg",
+					"dark": "resources/dark/login.svg"
+				}
 			},
 			{
 				"command": "gcores.logout",
@@ -116,18 +116,18 @@
 				"title": "Add Author",
 				"category": "Gcores",
 				"icon": {
-                    "light": "resources/light/add-author.svg",
-                    "dark": "resources/dark/add-author.svg"
-                }
+					"light": "resources/light/add-author.svg",
+					"dark": "resources/dark/add-author.svg"
+				}
 			},
 			{
 				"command": "gcores.toggleBossKey",
 				"title": "Toggle Boss Key",
 				"category": "Gcores",
 				"icon": {
-                    "light": "resources/light/boss.svg",
-                    "dark": "resources/dark/boss.svg"
-                }
+					"light": "resources/light/boss.svg",
+					"dark": "resources/dark/boss.svg"
+				}
 			},
 			{
 				"command": "gcores.deleteAuthor",
@@ -139,15 +139,15 @@
 				"title": "Delete Bookmark",
 				"category": "Gcores"
 			},
-            {
-                "command": "gcores.addBookmark",
-                "title": "Add Bookmark to This Article",
-                "category": "Gcores",
-                "icon": {
-                    "light": "resources/light/bookmark.svg",
-                    "dark": "resources/dark/bookmark.svg"
-                }
-            },
+			{
+				"command": "gcores.addBookmark",
+				"title": "Add Bookmark to This Article",
+				"category": "Gcores",
+				"icon": {
+					"light": "resources/light/bookmark.svg",
+					"dark": "resources/dark/bookmark.svg"
+				}
+			},
 			{
 				"command": "gcores.addLike",
 				"title": "Add Like",
@@ -163,9 +163,9 @@
 				"title": "Pick One",
 				"category": "Gcores",
 				"icon": {
-                    "light": "resources/light/dice.svg",
-                    "dark": "resources/dark/dice.svg"
-                }
+					"light": "resources/light/dice.svg",
+					"dark": "resources/dark/dice.svg"
+				}
 			},
 			{
 				"command": "gcores.latestArticles",
@@ -187,9 +187,9 @@
 				"title": "Refresh",
 				"category": "Gcores",
 				"icon": {
-                    "light": "resources/light/refresh.svg",
-                    "dark": "resources/dark/refresh.svg"
-                }
+					"light": "resources/light/refresh.svg",
+					"dark": "resources/dark/refresh.svg"
+				}
 			}
 		]
 	},

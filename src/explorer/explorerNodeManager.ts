@@ -172,14 +172,6 @@ class ExplorerNodeManager implements Disposable {
             createdAt: attributes["published-at"].split("T")[0],
         }, true);
     }
-
-    public parseGcoresNodeFromJson(data: any): GcoresNode[] {
-        const res: GcoresNode[] = [];
-        for (const d of data.data) {
-            res.push(new GcoresNode(Object.assign({}, defaultArticle, d, true)));
-        }
-        return res;
-    }
 }
 
 export const explorerNodeManager: ExplorerNodeManager = new ExplorerNodeManager();
