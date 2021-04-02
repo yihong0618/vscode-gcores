@@ -11,7 +11,7 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: macos-latest
+          - os: macOS-latest
             filename: libnative.dylib
           - os: ubuntu-latest
             filename: libnative.so
