@@ -1,0 +1,106 @@
+name: Release
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - os: macos-latest
+            filename: libnative.dylib
+          - os: ubuntu-latest
+            filename: libnative.so
+          - os: windows-latest
+            filename: native.dll
+
+    name: Build for ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Installing needed Ubuntu dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libasound2-dev
+          sudo apt-get install -y libx11-dev
+
+      - name: Install LLVM and Clang
+        if: runner.os == 'Windows'
+        uses: KyleMayes/install-llvm-action@v1.1.1
+        with:
+          version: "11"
+          directory: ${{ runner.temp }}/llvm
+
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - uses: actions/cache@v2.1.4
+        id: cargo-cache
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Build
+        if: runner.os != 'Windows'
+        run: cargo build --release
+
+      - name: Build
+        if: runner.os == 'Windows'
+        run: cargo build --release
+        env:
+          LIBCLANG_PATH: ${{ runner.temp }}/llvm/bin
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: ${{ runner.os }}
+          path: target/release/${{ matrix.filename }}
+
+  release:
+    runs-on: ubuntu-latest
+    name: Release
+    needs: build
+    steps:
+      - uses: actions/checkout@v2
+      - name: download build
+        uses: actions/download-artifact@v2
+        with:
+          path: .artifact
+      - name: Copy file
+        run: |
+          mkdir -p build
+          cp .artifact/macOS/libnative.dylib build/darwin.node
+          cp .artifact/Linux/libnative.so    build/linux.node
+          cp .artifact/Windows/native.dll    build/win32.node
+
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+      - uses: actions/cache@v2.1.4
+        id: yarn-cache
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      # - name: Package
+      #   run: |
+      #     yarn
+      #     yarn dlx vsce package
+      #     echo "VSIX_PATH=$(find . -maxdepth 1 -type f -iname "*.vsix" | head -1)" >> $GITHUB_ENV
+      #     echo "VSIX_NAME=$(basename $(find . -maxdepth 1 -type f -iname "*.vsix" | head -1))" >> $GITHUB_ENV
+
+      # - name: Publish to Visual Studio Marketplace
+      #   run: yarn dlx vsce publish --packagePath ${{ env.VSIX_PATH }} -p ${{ secrets.VSCE_TOKEN }}
+
+      # - name: Publish to Open VSX Registry
+      #   continue-on-error: true
+      #   run: yarn dlx ovsx publish ${{ env.VSIX_PATH }} -p ${{ secrets.OVSX_TOKEN }}

@@ -1,3 +1,5 @@
+import { homedir, platform } from "os";
+import { resolve } from "path";
 import * as vscode from "vscode";
 
 // TODO format these
@@ -17,6 +19,7 @@ export enum Category {
     Author = "作者专题",
     Top = "最热排行",
     Bookmark = "我的收藏",
+    Audios = "近期电台",
 }
 
 export enum RecentType {
@@ -31,6 +34,7 @@ export interface IQuickItemEx<T> extends vscode.QuickPickItem {
 export interface IArticle {
     id: string;
     name: string;
+    type: string;
     authorId: string;
     likesCount: number;
     commentsCount: number;
@@ -43,6 +47,7 @@ export interface IArticle {
 export const defaultArticle: IArticle = {
     id: "",
     name: "",
+    type: "",
     authorId: "",
     likesCount: 0,
     commentsCount: 0,
@@ -128,7 +133,38 @@ export const apiSingleBookmarkTemplate: (bookmarkId: string) => string = (bookma
 export const apitokenCheckTemplate: IApiTagsOrUsersTemplateFunc = (userId: string, limit: number = baseLimit, offset: number = baseOffset): string => `https://www.gcores.com/gapi/v1/users/${userId}/bookmarks?page[limit]=${limit}&page[offset]=${offset}`;
 export const apiSearchTemplate: IApiSearchTemplateFunc = (queryString: string, limit?: number, offset?: number): string => `https://www.gcores.com/gapi/v1/search?page[limit]=${limit}&page[offset]=${offset}&include=user,djs,category&type=articles&query=${queryString}&order-by=score`;
 
+// audios
+export const audioBaseMp3Url: string = "http://alioss.gcores.com/uploads/audio/";
+export const apiAudiosOrNewsTemplate: IApiBaseTemplateFunc = (limit: number = baseLimit, offset: number = baseOffset): string => `https://www.gcores.com/gapi/v1/radios?page[limit]=${limit}&page[offset]=${offset}&sort=-published-at&include=category,user&filter[list-all]=0&fields[radios]=title,desc,is-published,thumb,app-cover,cover,comments-count,likes-count,bookmarks-count,is-verified,published-at,option-is-official,option-is-focus-showcase,duration,category,user`;
+export const apiSingleAudioTemplate: IApiOneDataTemplateFunc = (audioId: string): string => `https://www.gcores.com/gapi/v1/radios/${audioId}?include=category,user,media,djs,albums.album-bundles,user.role,tags,entities,entries,similarities.user,similarities.djs,similarities.category,collections,operational-events.giveaways.winners,operational-events.public-candidates&preview=1`;
+
 // TODO login releated apis
 export const loginApi: string = "https://www.gcores.com/gapi/v1/tokens/refresh";
 export const bookmarksApi: string = "https://www.gcores.com/gapi/v1/bookmarks";
 export const votesApi: string = "https://www.gcores.com/gapi/v1/votes";
+
+// rust
+export type NativePlayer = unknown;
+export interface INativeModule {
+    startKeyboardEvent(callback: (res: number) => void): void;
+
+    kuwoCrypt(msg: string): Buffer;
+
+    playerEmpty(player: NativePlayer): boolean;
+    playerLoad(player: NativePlayer, url: string): boolean;
+    playerNew(): NativePlayer;
+    playerPause(player: NativePlayer): void;
+    playerPlay(player: NativePlayer): boolean;
+    playerPosition(player: NativePlayer): number;
+    playerSetVolume(player: NativePlayer, level: number): void;
+    playerStop(player: NativePlayer): void;
+}
+
+export const PLATFORM: string = platform();
+export const HOME_DIR = vscode.Uri.file(homedir());
+export const GCORES_DIR = vscode.Uri.joinPath(HOME_DIR, ".gcores");
+
+// tslint:disable-next-line
+export const NATIVE: any = require(
+  resolve(__dirname, "..", "..", "build", `${PLATFORM}.node`),
+) as INativeModule;

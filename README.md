@@ -46,6 +46,8 @@
 ![](/docs/bosskey2.png)
 ![](/docs/bosskey1.png)
 
+## 播放音频
+- 最近电台点击播放键即可播放
 
 ### 通过关键字搜索文章
 ![](/docs/search_demo.gif)
@@ -66,3 +68,4 @@
 ## 鸣谢
 
 - 本插件灵感来源于[@jdneo](https://github.com/jdneo)的[vscode-leetcode](https://github.com/jdneo/vscode-leetcode/)开源项目制作。
+- 播放音频解决方案来自[@YXL76](https://github.com/jdneo)的[cloudmusic-vscode](https://github.com/YXL76/cloudmusic-vscode)感谢。

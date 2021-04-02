@@ -6,6 +6,6 @@ import { previewArticle } from "./show";
 
 export async function pickArticle(context: vscode.ExtensionContext): Promise<void> {
     const data: any = await getPickOneInfo();
-    const node: GcoresNode = explorerNodeManager.parseToGcoresNode(data.data[0]);
+    const node: GcoresNode = await explorerNodeManager.parseToGcoresNode(data.data[0]);
     await previewArticle(context, node);
 }

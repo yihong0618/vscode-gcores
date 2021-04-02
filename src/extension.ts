@@ -1,4 +1,5 @@
 import * as vscode from "vscode";
+import { homedir } from "os";
 import { addAuthor, deleteAuthor } from "./commands/author";
 import { addBookmark, deleteBookmark } from "./commands/bookmark";
 import { toggleBossKey } from "./commands/boss";
@@ -7,12 +8,14 @@ import { addLike, deleteLike } from "./commands/like";
 import { pickArticle } from "./commands/pick";
 import { getSearchArticles } from "./commands/search";
 import { previewArticle } from "./commands/show";
+import { playAudio } from "./commands/play";
 import { userLogin, userLogout } from "./commands/user";
 import { GcoresNode } from "./explorer/GcoresNode";
+import { GCORES_DIR } from "./shared/shared"
 import { gcoresTreeDataProvider } from "./explorer/GcoresTreeDataProvider";
 
 export async function activate(context: vscode.ExtensionContext): Promise<void> {
-
+    await vscode.workspace.fs.createDirectory(GCORES_DIR);
     gcoresTreeDataProvider.initialize(context);
     gcoresTreeDataProvider.refresh();
     await gcoresTreeDataProvider.isLogin();
@@ -33,6 +36,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
         vscode.commands.registerCommand("gcores.deleteBookmark", (node: GcoresNode) => deleteBookmark(node)),
         vscode.commands.registerCommand("gcores.addLike", (node: GcoresNode) => addLike(node)),
         vscode.commands.registerCommand("gcores.deleteLike", (node: GcoresNode) => deleteLike(node)),
+        vscode.commands.registerCommand("gcores.playAudio", (node: GcoresNode) => playAudio(node)),
     );
 }
 

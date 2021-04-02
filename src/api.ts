@@ -1,6 +1,7 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
+import { Readable } from "stream"
 import { window } from "vscode";
-import { apiArticlesByAuthorTemplate, apiArticlesHotTemplate, apiArticlesOrNewsTemplate, apiArticleTagTemplate, apiAuthorInfoTemplate, apiBookmarkTemplate, apiSearchTemplate, apiSingleArticleTemplate, apiSingleBookmarkTemplate, apitokenCheckTemplate, baseLimit, baseOffset, bookmarksApi, headers, IRand, loginApi, RecentType, votesApi } from "./shared/shared";
+import { apiArticlesByAuthorTemplate, apiArticlesHotTemplate, apiArticlesOrNewsTemplate, apiArticleTagTemplate, apiAudiosOrNewsTemplate, apiAuthorInfoTemplate, apiBookmarkTemplate, apiSearchTemplate, apiSingleArticleTemplate, apiSingleAudioTemplate, apiSingleBookmarkTemplate, apitokenCheckTemplate, baseLimit, baseOffset, bookmarksApi, headers, IRand, loginApi, RecentType, votesApi } from "./shared/shared";
 
 function errorHandler(err: AxiosError): Promise<never> {
   const { response, config } = err;
@@ -276,4 +277,41 @@ export async function deleteLikeArticle(likeId: string, token: string): Promise<
     return true;
   }
   return false;
+}
+
+// audios apis add date 20210329
+export async function getRecentAudiosData(limit: number = baseLimit, offset: number = baseOffset, token?: string | undefined): Promise<AxiosResponse<any>> {
+  if (token) {
+    headers["Authorization"] = "Token token=" + token;
+  }
+  const { data } = await axios
+    .get(apiAudiosOrNewsTemplate(limit, offset), {
+    headers})
+    .catch(errorHandler);
+  return data;
+}
+
+export async function getOneAudioData(audioId: string, token?: string | undefined): Promise<AxiosResponse<any>> {
+  if (token) {
+    headers["Authorization"] = "Token token=" + token;
+  }
+  const apiSingleArticle: string = apiSingleAudioTemplate(audioId);
+  const { data } = await axios
+    .get(apiSingleArticle, {
+    headers})
+    .catch(errorHandler);
+  return data;
+}
+
+export async function downloadMusic(url: string): Promise<Readable | void> {
+  try {
+    const { data } = await axios.get<Readable>(url, {
+      responseType: "stream",
+      timeout: 8000,
+    });
+    return data;
+  } catch (err) {
+    window.showErrorMessage(err);
+  }
+  return;
 }

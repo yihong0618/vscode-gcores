@@ -4,6 +4,8 @@ import { explorerNodeManager } from "../explorer/explorerNodeManager";
 import { GcoresNode } from "../explorer/GcoresNode";
 import { defaultArticle, IQuickItemEx } from "../shared/shared";
 import { previewArticle } from "./show";
+import type { Readable } from "stream";
+
 
 interface IWebViewMessage {
     command: {
@@ -64,7 +66,7 @@ export async function getPickedAndOpen(context: vscode.ExtensionContext, data: a
     const nodes: GcoresNode[] = [];
     const picks: Array<IQuickItemEx<string>> = [];
     for (const d of data.data) {
-        const toPickNode: GcoresNode = explorerNodeManager.parseToGcoresNode(d);
+        const toPickNode: GcoresNode = await explorerNodeManager.parseToGcoresNode(d);
         nodes.push(toPickNode);
         picks.push(
             {
@@ -80,4 +82,15 @@ export async function getPickedAndOpen(context: vscode.ExtensionContext, data: a
     const value: string = choice.value;
     const pickedNode: GcoresNode = nodes.filter((v: GcoresNode) => v.id === value)[0];
     await previewArticle(context, pickedNode);
+}
+
+
+export function parseMp3Link(data: any): string {
+    const included: any = data.included;
+    for (const i of included) {
+        if (i.type === "medias") {
+            return i.attributes.audio;
+        }
+    }
+    return "";
 }

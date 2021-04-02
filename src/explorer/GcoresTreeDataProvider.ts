@@ -1,7 +1,7 @@
 import * as path from "path";
 import * as vscode from "vscode";
 import { checkTokenWithApi, getArticlesDataByAuthor, getArticlesDataByHot, getArticlesDataByTag } from "../api";
-import { articleTagsMapping, authorNamesMapping, Category, defaultArticle, globalStateGcoresAuthorKey, globalStateGcoresUserKey, topNamesMapping } from "../shared/shared";
+import { articleTagsMapping, authorNamesMapping, Category, defaultArticle, globalStateGcoresAuthorKey, globalStateGcoresUserKey, topNamesMapping, NATIVE } from "../shared/shared";
 import { explorerNodeManager } from "./explorerNodeManager";
 import { GcoresNode } from "./GcoresNode";
 
@@ -12,6 +12,10 @@ export class GcoresTreeDataProvider implements vscode.TreeDataProvider<GcoresNod
     public token!: string;
     public isIn!: boolean;
     public newAuthors!: any;
+
+    // audio relate
+    public playingId: string = "";
+    public player: any = NATIVE.playerNew()
 
     // private
     private context!: vscode.ExtensionContext;
@@ -35,7 +39,7 @@ export class GcoresTreeDataProvider implements vscode.TreeDataProvider<GcoresNod
         this.newAuthors = this.getNewAuthors();
         // when refresh the offsetmapping must clear;
         explorerNodeManager.offsetMapping.clear();
-        this.onDidChangeTreeDataEvent.fire();
+        this.onDidChangeTreeDataEvent.fire(null);
     }
 
     public getTreeItem(element: GcoresNode): vscode.TreeItem | Thenable<vscode.TreeItem> {
@@ -48,6 +52,9 @@ export class GcoresTreeDataProvider implements vscode.TreeDataProvider<GcoresNod
             } else {
                 contextValue = "can-delete-bookmark";
             }
+        }
+        if (element.isGcoresElement && element.type === "radios") {
+            contextValue = "can-play";
         }
         if (!element.isGcoresElement && newAuthorsid.includes(element.authorId)) {
             contextValue = "can-delete";
@@ -86,6 +93,8 @@ export class GcoresTreeDataProvider implements vscode.TreeDataProvider<GcoresNod
                         ];
                     }
                     return explorerNodeManager.getBookmarkArticlesNodes(element.id, this.userId, this.token);
+                case Category.Audios:
+                    return explorerNodeManager.GetRecentAudiosNodes(element.id, this.userId);
                 default:
                     break;
             }

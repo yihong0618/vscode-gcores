@@ -1,12 +1,16 @@
 import { Command } from "vscode";
-import { IArticle } from "../shared/shared";
+import { audioBaseMp3Url, IArticle } from "../shared/shared";
 
 export class GcoresNode {
 
-    constructor(private data: IArticle, private isGcoresElementNode: boolean = true) { }
+    constructor(private data: IArticle, private isGcoresElementNode: boolean = true, public linkData: string = "") {}
 
     public get name(): string {
         return this.data.name;
+    }
+
+    public get type(): string {
+        return this.data.type;
     }
 
     public get id(): string {
@@ -47,7 +51,12 @@ export class GcoresNode {
         }
         return this.data.likesCount >= 100 ||  this.data.commentsCount >= 100 || this.data.bookmarksCount >= 100;
     }
-
+    public get link(): string {
+        if (this.linkData) {
+            return audioBaseMp3Url + this.linkData;
+        }
+        return "";
+    }
     public get previewCommand(): Command {
         return {
             title: "Preview Article",

@@ -88,6 +88,16 @@
 					"command": "gcores.addBookmark",
 					"when": "view == gcoresExplorer && viewItem == can-bookmark",
 					"group": "inline"
+				},
+				{
+					"command": "gcores.playAudio",
+					"when": "view == gcoresExplorer && viewItem == can-play",
+					"group": "inline"
+				},
+				{
+					"command": "gcores.stopAudio",
+					"when": "view == gcoresExplorer && viewItem == can-stop",
+					"group": "inline"
 				}
 			]
 		},
@@ -190,16 +200,28 @@
 					"light": "resources/light/refresh.svg",
 					"dark": "resources/dark/refresh.svg"
 				}
+			},
+			{
+				"command": "gcores.playAudio",
+				"title": "Play gcores audio",
+				"category": "Gcores",
+				"icon": "$(play)"
+			},
+			{
+				"command": "gcores.stopAudio",
+				"title": "Stop gcores audio",
+				"category": "Gcores",
+				"icon": "$(stop)"
 			}
 		]
 	},
 	"scripts": {
-		"vscode:prepublish": "npm run compile",
+		"vscode:prepublish": "yarn run compile",
 		"compile": "tsc -p ./",
 		"watch": "tsc -watch -p ./",
-		"pretest": "npm run compile",
+		"pretest": "yarn run compile",
 		"test": "node ./out/test/runTest.js",
-		"lint": "tslint --project tsconfig.json -e src/*.d.ts -t verbose"
+		"lint": "tslint --fix --project tsconfig.json -e src/*.d.ts -t verbose"
 	},
 	"devDependencies": {
 		"@types/glob": "^7.1.1",
@@ -215,6 +237,7 @@
 	},
 	"dependencies": {
 		"axios": "^0.21.1",
-		"markdown-it": "^10.0.0"
+		"markdown-it": "^10.0.0",
+		"vsce": "^1.87.1"
 	}
 }

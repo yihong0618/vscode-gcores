@@ -1,11 +1,11 @@
 import * as vscode from "vscode";
 import { WebviewPanel } from "vscode";
-import { getOneArticleData } from "../api";
+import { getOneArticleData, getOneAudioData } from "../api";
 import { GcoresNode } from "../explorer/GcoresNode";
 import { gcoresTreeDataProvider } from "../explorer/GcoresTreeDataProvider";
-import { authorNamesMapping, baseArticleUrl, baseAuthorUrl, baseImgUrl, globalStateGcoresBossKey, webviewTitleSlice } from "../shared/shared";
+import { authorNamesMapping, baseArticleUrl, baseAuthorUrl, baseImgUrl, globalStateGcoresBossKey, NATIVE, webviewTitleSlice } from "../shared/shared";
 import { markdownEngine } from "../webview/markdownEngine";
-import { onDidReceiveMessage } from "./utils";
+import { onDidReceiveMessage, parseMp3Link } from "./utils";
 
 type IRenderText = (text: string) => string;
 
@@ -205,8 +205,17 @@ function parseContent(dataBloks: any | undefined, isBoss: boolean = false): stri
     return result;
 }
 
+
 export async function previewArticle(context: vscode.ExtensionContext, node: GcoresNode): Promise<void> {
-    const articleData: any = await getOneArticleData(node.id);
+    let articleData: any;
+    if (node.type === "radios") {
+        articleData = await getOneAudioData(node.id);
+        if (!node.link) {
+            node.linkData = parseMp3Link(articleData);
+        }
+    } else {
+        articleData = await getOneArticleData(node.id);
+    }
     // find the first users type is the authorData
     const authorData: any = articleData.included.filter((t: any) => t.type === "users")[0];
     const articleContent: string = articleData.data.attributes.content;

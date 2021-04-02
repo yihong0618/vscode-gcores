@@ -1,5 +1,5 @@
 import { Disposable } from "vscode";
-import { getArticlesDataByUserBookmark, getRecentArticlesData, getRecentNewsData } from "../api";
+import { getArticlesDataByUserBookmark, getOneAudioData, getRecentArticlesData, getRecentAudiosData, getRecentNewsData } from "../api";
 import { articleTagsMapping, baseLimit, baseOffset, Category, defaultArticle, topNamesMapping } from "../shared/shared";
 import { GcoresNode } from "./GcoresNode";
 
@@ -36,6 +36,10 @@ class ExplorerNodeManager implements Disposable {
                 id: Category.Bookmark,
                 name: Category.Bookmark,
             }), false),
+            new GcoresNode(Object.assign({}, defaultArticle, {
+                id: Category.Audios,
+                name: Category.Audios,
+            }), false),
         ];
     }
 
@@ -47,7 +51,7 @@ class ExplorerNodeManager implements Disposable {
             return res;
         }
         for (const article of articlesData.data) {
-            res.push(this.parseToGcoresNode(article));
+            res.push(await this.parseToGcoresNode(article));
         }
         if (dataLength === baseLimit) {
             res.push(new GcoresNode(Object.assign({}, defaultArticle, {
@@ -67,7 +71,7 @@ class ExplorerNodeManager implements Disposable {
             return res;
         }
         for (const article of articlesData.data) {
-            res.push(this.parseToGcoresNode(article));
+            res.push(await this.parseToGcoresNode(article));
         }
         if (dataLength === baseLimit) {
             res.push(new GcoresNode(Object.assign({}, defaultArticle, {
@@ -121,7 +125,7 @@ class ExplorerNodeManager implements Disposable {
             return res;
         }
         for (const article of articlesData.data) {
-            res.push(this.parseToGcoresNode(article));
+            res.push(await this.parseToGcoresNode(article));
         }
         if (dataLength === baseLimit) {
             res.push(new GcoresNode(Object.assign({}, defaultArticle, {
@@ -142,7 +146,27 @@ class ExplorerNodeManager implements Disposable {
             return res;
         }
         for (const data of articlesData) {
-            res.push(this.parseToGcoresNode(data));
+            res.push(await this.parseToGcoresNode(data));
+        }
+        if (dataLength === baseLimit) {
+            res.push(new GcoresNode(Object.assign({}, defaultArticle, {
+                id: nodeId,
+                name: "更多文章",
+            }), false));
+            this.offsetMapping.set(nodeId, (this.offsetMapping.get(nodeId) || 0) + baseLimit);
+        }
+        return res;
+    }
+
+    public async GetRecentAudiosNodes(nodeId: string, token?: string| undefined): Promise<GcoresNode[]> {
+        const audiosData: any = await getRecentAudiosData(this.limit, this.offsetMapping.get(nodeId) || 0, token);
+        const res: GcoresNode[] = [];
+        const dataLength: number = audiosData.data.length;
+        if (dataLength === 0) {
+            return res;
+        }
+        for (const audio of audiosData.data) {
+            res.push(await this.parseToGcoresNode(audio));
         }
         if (dataLength === baseLimit) {
             res.push(new GcoresNode(Object.assign({}, defaultArticle, {
@@ -158,11 +182,15 @@ class ExplorerNodeManager implements Disposable {
         this.explorerNodeMap.clear();
     }
 
-    public parseToGcoresNode(data: any): GcoresNode {
+    public async parseToGcoresNode(data: any): Promise<GcoresNode> {
         const attributes: any = data.attributes;
+        // maybe use later
+        const linkData: string = "";
+        const type: string = data.type;
         return new GcoresNode({
             id: data.id,
             name: attributes.title,
+            type,
             authorId: data.relationships.user === {} ? data.relationships.user.data.id : "",
             likesCount: attributes["likes-count"],
             commentsCount: attributes["comments-count"],
@@ -170,7 +198,7 @@ class ExplorerNodeManager implements Disposable {
             bookmarkId: data.meta["bookmark-id"] || "",
             likeId: data.meta["vote-id"] || "",
             createdAt: attributes["published-at"].split("T")[0],
-        }, true);
+        }, true, linkData);
     }
 }
 
