@@ -46,4 +46,5 @@ export async function playAudio(node: GcoresNode): Promise<void> {
           gcoresTreeDataProvider.isPlaying = true;
         }
     }
+    gcoresTreeDataProvider.refresh();
 }

@@ -37,6 +37,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
         vscode.commands.registerCommand("gcores.addLike", (node: GcoresNode) => addLike(node)),
         vscode.commands.registerCommand("gcores.deleteLike", (node: GcoresNode) => deleteLike(node)),
         vscode.commands.registerCommand("gcores.playAudio", (node: GcoresNode) => playAudio(node)),
+        vscode.commands.registerCommand("gcores.stopAudio", (node: GcoresNode) => playAudio(node)),
     );
 }
 

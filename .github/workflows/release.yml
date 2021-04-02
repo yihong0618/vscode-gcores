@@ -93,10 +93,9 @@ jobs:
 
       - name: Package
         run: |
-          yarn
-          yarn dlx vsce package
-          echo "VSIX_PATH=$(find . -maxdepth 1 -type f -iname "*.vsix" | head -1)" >> $GITHUB_ENV
-          echo "VSIX_NAME=$(basename $(find . -maxdepth 1 -type f -iname "*.vsix" | head -1))" >> $GITHUB_ENV
+          npm install
+          npm install -g vsce
+          vsce package
 
       - name: Publish to Visual Studio Marketplace
-        run: yarn dlx vsce publish --packagePath ${{ env.VSIX_PATH }} -p ${{ secrets.VSCE_TOKEN }}
+        run: vsce publish -p ${{ secrets.VSCE_TOKEN }}
