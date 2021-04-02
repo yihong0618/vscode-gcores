@@ -98,6 +98,7 @@ jobs:
       - name: Package
         run: |
           npm install
+          npm install -g typescript
           npm install -g vsce
           vsce package
 
