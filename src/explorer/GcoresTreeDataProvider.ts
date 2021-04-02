@@ -1,7 +1,7 @@
 import * as path from "path";
 import * as vscode from "vscode";
 import { checkTokenWithApi, getArticlesDataByAuthor, getArticlesDataByHot, getArticlesDataByTag } from "../api";
-import { articleTagsMapping, authorNamesMapping, Category, defaultArticle, globalStateGcoresAuthorKey, globalStateGcoresUserKey, topNamesMapping, NATIVE } from "../shared/shared";
+import { articleTagsMapping, authorNamesMapping, Category, defaultArticle, globalStateGcoresAuthorKey, globalStateGcoresUserKey, NATIVE, topNamesMapping } from "../shared/shared";
 import { explorerNodeManager } from "./explorerNodeManager";
 import { GcoresNode } from "./GcoresNode";
 
@@ -15,7 +15,8 @@ export class GcoresTreeDataProvider implements vscode.TreeDataProvider<GcoresNod
 
     // audio relate
     public playingId: string = "";
-    public player: any = NATIVE.playerNew()
+    public player: any = NATIVE.playerNew();
+    public isPlaying: boolean = false;
 
     // private
     private context!: vscode.ExtensionContext;
@@ -54,7 +55,11 @@ export class GcoresTreeDataProvider implements vscode.TreeDataProvider<GcoresNod
             }
         }
         if (element.isGcoresElement && element.type === "radios") {
-            contextValue = "can-play";
+            if (element.id === gcoresTreeDataProvider.playingId) {
+                contextValue = "can-stop";
+            } else {
+                contextValue = "can-play";
+            }
         }
         if (!element.isGcoresElement && newAuthorsid.includes(element.authorId)) {
             contextValue = "can-delete";

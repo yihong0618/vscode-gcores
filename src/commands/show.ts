@@ -205,7 +205,6 @@ function parseContent(dataBloks: any | undefined, isBoss: boolean = false): stri
     return result;
 }
 
-
 export async function previewArticle(context: vscode.ExtensionContext, node: GcoresNode): Promise<void> {
     let articleData: any;
     if (node.type === "radios") {

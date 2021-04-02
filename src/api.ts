@@ -1,5 +1,5 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
-import { Readable } from "stream"
+import { Readable } from "stream";
 import { window } from "vscode";
 import { apiArticlesByAuthorTemplate, apiArticlesHotTemplate, apiArticlesOrNewsTemplate, apiArticleTagTemplate, apiAudiosOrNewsTemplate, apiAuthorInfoTemplate, apiBookmarkTemplate, apiSearchTemplate, apiSingleArticleTemplate, apiSingleAudioTemplate, apiSingleBookmarkTemplate, apitokenCheckTemplate, baseLimit, baseOffset, bookmarksApi, headers, IRand, loginApi, RecentType, votesApi } from "./shared/shared";
 

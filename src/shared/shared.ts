@@ -161,8 +161,8 @@ export interface INativeModule {
 }
 
 export const PLATFORM: string = platform();
-export const HOME_DIR = vscode.Uri.file(homedir());
-export const GCORES_DIR = vscode.Uri.joinPath(HOME_DIR, ".gcores");
+export const HOME_DIR: vscode.Uri = vscode.Uri.file(homedir());
+export const GCORES_DIR: vscode.Uri = vscode.Uri.joinPath(HOME_DIR, ".gcores");
 
 // tslint:disable-next-line
 export const NATIVE: any = require(

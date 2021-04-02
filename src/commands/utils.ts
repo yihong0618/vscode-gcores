@@ -1,11 +1,10 @@
+import type { Readable } from "stream";
 import * as vscode from "vscode";
 import { commands } from "vscode";
 import { explorerNodeManager } from "../explorer/explorerNodeManager";
 import { GcoresNode } from "../explorer/GcoresNode";
 import { defaultArticle, IQuickItemEx } from "../shared/shared";
 import { previewArticle } from "./show";
-import type { Readable } from "stream";
-
 
 interface IWebViewMessage {
     command: {
@@ -83,7 +82,6 @@ export async function getPickedAndOpen(context: vscode.ExtensionContext, data: a
     const pickedNode: GcoresNode = nodes.filter((v: GcoresNode) => v.id === value)[0];
     await previewArticle(context, pickedNode);
 }
-
 
 export function parseMp3Link(data: any): string {
     const included: any = data.included;

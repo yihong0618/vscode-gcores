@@ -1,28 +1,28 @@
+import { createWriteStream } from "fs";
 import * as vscode from "vscode";
+import { downloadMusic, getOneAudioData } from "../api";
 import { GcoresNode } from "../explorer/GcoresNode";
 import { gcoresTreeDataProvider } from "../explorer/GcoresTreeDataProvider";
-import { getOneAudioData, downloadMusic } from "../api";
-import { NATIVE, GCORES_DIR } from "../shared/shared";
+import { GCORES_DIR, NATIVE } from "../shared/shared";
 import { parseMp3Link } from "./utils";
-import { createWriteStream } from "fs";
-
 
 export async function playAudio(node: GcoresNode): Promise<void> {
     const playingId: string = gcoresTreeDataProvider.playingId;
     const player: any = gcoresTreeDataProvider.player;
     if (!node.link) {
-        const articleData = await getOneAudioData(node.id);
+        const articleData: any = await getOneAudioData(node.id);
         node.linkData = parseMp3Link(articleData);
     }
     if (playingId !== node.id) {
         gcoresTreeDataProvider.playingId = node.id;
+        gcoresTreeDataProvider.isPlaying = true;
         NATIVE.playerEmpty(player);
         NATIVE.playerSetVolume(player, 85);
-        const data = await downloadMusic(node.link);
-        const tmpUri = vscode.Uri.joinPath(GCORES_DIR, playingId + ".mp3");
+        const data: any = await downloadMusic(node.link);
+        const tmpUri: vscode.Uri = vscode.Uri.joinPath(GCORES_DIR, playingId + ".mp3");
         if (data) {
-            let len = 0;
-            const onData = ({ length }: { length: number }) => {
+            let len: number = 0;
+            const onData: any = ({ length }: { length: number }) => {
               len += length;
               if (len > 256 * 1024) {
                 data.removeListener("data", onData);
@@ -30,14 +30,20 @@ export async function playAudio(node: GcoresNode): Promise<void> {
               }
             };
             data.on("data", onData);
-            data.once("error", (err) => {
+            data.once("error", (err: any) => {
               vscode.window.showErrorMessage(err.message);
             });
-            const file = createWriteStream(tmpUri.fsPath);
+            const file: any = createWriteStream(tmpUri.fsPath);
             data.pipe(file);
           }
         NATIVE.playerPlay(player);
     } else {
-        NATIVE.playerStop(player)
+        if ( gcoresTreeDataProvider.isPlaying ) {
+          NATIVE.playerPause(player);
+          gcoresTreeDataProvider.isPlaying = false;
+        } else {
+          NATIVE.playerPlay(player);
+          gcoresTreeDataProvider.isPlaying = true;
+        }
     }
 }

@@ -1,18 +1,18 @@
-import * as vscode from "vscode";
 import { homedir } from "os";
+import * as vscode from "vscode";
 import { addAuthor, deleteAuthor } from "./commands/author";
 import { addBookmark, deleteBookmark } from "./commands/bookmark";
 import { toggleBossKey } from "./commands/boss";
 import { getLatestArticles } from "./commands/latest";
 import { addLike, deleteLike } from "./commands/like";
 import { pickArticle } from "./commands/pick";
+import { playAudio } from "./commands/play";
 import { getSearchArticles } from "./commands/search";
 import { previewArticle } from "./commands/show";
-import { playAudio } from "./commands/play";
 import { userLogin, userLogout } from "./commands/user";
 import { GcoresNode } from "./explorer/GcoresNode";
-import { GCORES_DIR } from "./shared/shared"
 import { gcoresTreeDataProvider } from "./explorer/GcoresTreeDataProvider";
+import { GCORES_DIR } from "./shared/shared";
 
 export async function activate(context: vscode.ExtensionContext): Promise<void> {
     await vscode.workspace.fs.createDirectory(GCORES_DIR);

@@ -2,7 +2,7 @@
 	"name": "vscode-gcores",
 	"displayName": "vscode-gcores",
 	"description": "use vscode to play with gcores",
-	"version": "0.1.0",
+	"version": "0.2.1",
 	"author": "Hong Yi",
 	"publisher": "zouzou0208",
 	"license": "MIT",
@@ -211,7 +211,7 @@
 				"command": "gcores.stopAudio",
 				"title": "Stop gcores audio",
 				"category": "Gcores",
-				"icon": "$(stop)"
+				"icon": "$(debug-stop)"
 			}
 		]
 	},
