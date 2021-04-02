@@ -80,27 +80,13 @@ jobs:
           cp .artifact/Linux/libnative.so    build/linux.node
           cp .artifact/Windows/native.dll    build/win32.node
 
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-      - uses: actions/cache@v2.1.4
-        id: yarn-cache
+
+      - name: Git new native
+        uses: github-actions-x/commit@v2.6
         with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
-
-      - uses: actions/setup-node@v1
-        with:
-          node-version: '12.x'
-
-      - name: Package
-        run: |
-          npm install
-          npm install -g typescript
-          npm install -g vsce
-          vsce package
-
-      - name: Publish to Visual Studio Marketplace
-        run: vsce publish -p ${{ secrets.VSCE_TOKEN }}
+          github-token: ${{ secrets.G_T_VSCODE }}
+          commit-message: "Add new runs"
+          files: build/darwin.node build/linux.node build/win32.node
+          rebase: 'true'
+          name: yihong0618
+          email: zouzou0208@gmail.com
