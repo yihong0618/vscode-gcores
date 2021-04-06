@@ -1,4 +1,4 @@
-import type { Readable } from "stream";
+import { Readable } from "stream";
 import * as vscode from "vscode";
 import { commands } from "vscode";
 import { explorerNodeManager } from "../explorer/explorerNodeManager";

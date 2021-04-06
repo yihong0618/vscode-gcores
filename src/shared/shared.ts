@@ -1,6 +1,7 @@
 import { homedir, platform } from "os";
 import { resolve } from "path";
 import * as vscode from "vscode";
+import { Utils } from "vscode-uri";
 
 // TODO format these
 export const baseArticleUrl: string = "https://www.gcores.com/articles/";
@@ -20,6 +21,7 @@ export enum Category {
     Top = "最热排行",
     Bookmark = "我的收藏",
     Audios = "近期电台",
+    Rss = "捕蛇者说",
 }
 
 export enum RecentType {
@@ -162,9 +164,12 @@ export interface INativeModule {
 
 export const PLATFORM: string = platform();
 export const HOME_DIR: vscode.Uri = vscode.Uri.file(homedir());
-export const GCORES_DIR: vscode.Uri = vscode.Uri.joinPath(HOME_DIR, ".gcores");
+export const GCORES_DIR: vscode.Uri = Utils.joinPath(HOME_DIR, ".gcores");
 
 // tslint:disable-next-line
 export const NATIVE: any = require(
   resolve(__dirname, "..", "..", "build", `${PLATFORM}.node`),
 ) as INativeModule;
+
+// about Rss
+export const PYTHON_HUNTER_RSS_URL: string = "https://pythonhunter.org/episodes/feed.xml";

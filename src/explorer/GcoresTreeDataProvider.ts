@@ -2,6 +2,7 @@ import * as path from "path";
 import * as vscode from "vscode";
 import { checkTokenWithApi, getArticlesDataByAuthor, getArticlesDataByHot, getArticlesDataByTag } from "../api";
 import { articleTagsMapping, authorNamesMapping, Category, defaultArticle, globalStateGcoresAuthorKey, globalStateGcoresUserKey, NATIVE, topNamesMapping } from "../shared/shared";
+import { PYTHON_HUNTER_RSS_URL } from "../shared/shared";
 import { explorerNodeManager } from "./explorerNodeManager";
 import { GcoresNode } from "./GcoresNode";
 
@@ -100,6 +101,8 @@ export class GcoresTreeDataProvider implements vscode.TreeDataProvider<GcoresNod
                     return explorerNodeManager.getBookmarkArticlesNodes(element.id, this.userId, this.token);
                 case Category.Audios:
                     return explorerNodeManager.GetRecentAudiosNodes(element.id, this.userId);
+                case Category.Rss:
+                    return explorerNodeManager.getRssNodes(PYTHON_HUNTER_RSS_URL);
                 default:
                     break;
             }

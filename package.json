@@ -2,7 +2,7 @@
 	"name": "vscode-gcores",
 	"displayName": "vscode-gcores",
 	"description": "use vscode to play with gcores",
-	"version": "0.1.1",
+	"version": "0.2.3",
 	"author": "Hong Yi",
 	"publisher": "zouzou0208",
 	"license": "MIT",
@@ -229,6 +229,7 @@
 		"@types/mocha": "^5.2.7",
 		"@types/node": "^12.11.7",
 		"@types/vscode": "^1.41.0",
+		"@types/xml2js": "^0.4.8",
 		"glob": "^7.1.5",
 		"mocha": "^6.2.2",
 		"tslint": "^5.20.0",
@@ -238,6 +239,8 @@
 	"dependencies": {
 		"axios": "^0.21.1",
 		"markdown-it": "^10.0.0",
-		"vsce": "^1.87.1"
+		"rss-parser": "^3.12.0",
+		"vsce": "^1.87.1",
+		"vscode-uri": "^3.0.2"
 	}
 }

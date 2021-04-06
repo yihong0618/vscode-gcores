@@ -1,4 +1,5 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
+import * as Parser from "rss-parser";
 import { Readable } from "stream";
 import { window } from "vscode";
 import { apiArticlesByAuthorTemplate, apiArticlesHotTemplate, apiArticlesOrNewsTemplate, apiArticleTagTemplate, apiAudiosOrNewsTemplate, apiAuthorInfoTemplate, apiBookmarkTemplate, apiSearchTemplate, apiSingleArticleTemplate, apiSingleAudioTemplate, apiSingleBookmarkTemplate, apitokenCheckTemplate, baseLimit, baseOffset, bookmarksApi, headers, IRand, loginApi, RecentType, votesApi } from "./shared/shared";
@@ -314,4 +315,15 @@ export async function downloadMusic(url: string): Promise<Readable | void> {
     window.showErrorMessage(err);
   }
   return;
+}
+
+export async function rssGetData(url: string): Promise<any> {
+  const parser: Parser = new Parser({
+    customFields: {
+      feed: ["otherTitle", "extendedDescription"],
+      item: ["enclosure"],
+    },
+  });
+  const feed: any = await parser.parseURL(url);
+  return feed;
 }

@@ -1,5 +1,6 @@
 import { createWriteStream } from "fs";
 import * as vscode from "vscode";
+import { Utils } from "vscode-uri";
 import { downloadMusic, getOneAudioData } from "../api";
 import { GcoresNode } from "../explorer/GcoresNode";
 import { gcoresTreeDataProvider } from "../explorer/GcoresTreeDataProvider";
@@ -19,9 +20,10 @@ export async function playAudio(node: GcoresNode): Promise<void> {
         NATIVE.playerEmpty(player);
         NATIVE.playerSetVolume(player, 85);
         const data: any = await downloadMusic(node.link);
-        const tmpUri: vscode.Uri = vscode.Uri.joinPath(GCORES_DIR, playingId + ".mp3");
+        const tmpUri: vscode.Uri = Utils.joinPath(GCORES_DIR, playingId + ".mp3");
         if (data) {
             let len: number = 0;
+            // tslint:disable-next-line
             const onData: any = ({ length }: { length: number }) => {
               len += length;
               if (len > 256 * 1024) {

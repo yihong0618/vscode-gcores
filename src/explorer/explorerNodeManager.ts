@@ -1,6 +1,7 @@
 import { Disposable } from "vscode";
-import { getArticlesDataByUserBookmark, getOneAudioData, getRecentArticlesData, getRecentAudiosData, getRecentNewsData } from "../api";
-import { articleTagsMapping, baseLimit, baseOffset, Category, defaultArticle, topNamesMapping } from "../shared/shared";
+import { getArticlesDataByUserBookmark, getRecentArticlesData, getRecentAudiosData, getRecentNewsData, rssGetData } from "../api";
+import { parseMp3Link } from "../commands/utils";
+import { articleTagsMapping, baseLimit, Category, defaultArticle, topNamesMapping } from "../shared/shared";
 import { GcoresNode } from "./GcoresNode";
 
 // TODO refactor this after v1.0
@@ -39,6 +40,10 @@ class ExplorerNodeManager implements Disposable {
             new GcoresNode(Object.assign({}, defaultArticle, {
                 id: Category.Audios,
                 name: Category.Audios,
+            }), false),
+            new GcoresNode(Object.assign({}, defaultArticle, {
+                id: Category.Rss,
+                name: Category.Rss,
             }), false),
         ];
     }
@@ -176,6 +181,31 @@ class ExplorerNodeManager implements Disposable {
             this.offsetMapping.set(nodeId, (this.offsetMapping.get(nodeId) || 0) + baseLimit);
         }
         return res;
+    }
+
+    public async getRssNodes(url: string): Promise<GcoresNode[]> {
+        const rssData: any = await rssGetData(url);
+        const res: GcoresNode[] = [];
+        for (const r of rssData.items) {
+            res.push(await this.parseRssToGcoresNode(r));
+        }
+        return res;
+    }
+
+    public async parseRssToGcoresNode(data: any): Promise<GcoresNode> {
+        // maybe use later
+        return new GcoresNode({
+            id: data.title.trim(),
+            name: data.title.trim(),
+            type: "radios",
+            authorId: "",
+            likesCount: 0,
+            commentsCount: 0,
+            bookmarksCount: 0,
+            bookmarkId: "",
+            likeId: "",
+            createdAt: "",
+        }, true, "", data.enclosure.url);
     }
 
     public dispose(): void {

@@ -85,7 +85,7 @@ jobs:
         uses: github-actions-x/commit@v2.6
         with:
           github-token: ${{ secrets.G_T_VSCODE }}
-          commit-message: "Add new runs"
+          commit-message: "build new native"
           files: build/darwin.node build/linux.node build/win32.node
           rebase: 'true'
           name: yihong0618

@@ -3,7 +3,7 @@ import { audioBaseMp3Url, IArticle } from "../shared/shared";
 
 export class GcoresNode {
 
-    constructor(private data: IArticle, private isGcoresElementNode: boolean = true, public linkData: string = "") {}
+    constructor(private data: IArticle, private isGcoresElementNode: boolean = true, public linkData: string = "", public rssMp3Link: string = "") {}
 
     public get name(): string {
         return this.data.name;
@@ -52,6 +52,9 @@ export class GcoresNode {
         return this.data.likesCount >= 100 ||  this.data.commentsCount >= 100 || this.data.bookmarksCount >= 100;
     }
     public get link(): string {
+        if (this.rssMp3Link) {
+            return this.rssMp3Link;
+        }
         if (this.linkData) {
             return audioBaseMp3Url + this.linkData;
         }
