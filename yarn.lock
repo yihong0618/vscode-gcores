@@ -73,6 +73,13 @@
   resolved "https://registry.yarnpkg.com/@types/vscode/-/vscode-1.54.0.tgz#d28e3b3614054b2d6543c29412f60a986cabd9bb"
   integrity sha512-sHHw9HG4bTrnKhLGgmEiOS88OLO/2RQytUN4COX9Djv81zc0FSZsSiYaVyjNidDzUSpXsySKBkZ31lk2/FbdCg==
 
+"@types/xml2js@^0.4.8":
+  version "0.4.9"
+  resolved "https://registry.yarnpkg.com/@types/xml2js/-/xml2js-0.4.9.tgz#a38267d8c2fe121c96922b12ee3bd89a58a6e20e"
+  integrity sha512-CHiCKIihl1pychwR2RNX5mAYmJDACgFVCMT5OArMaO3erzwXVcBqPcusr+Vl8yeeXukxZqtF8mZioqX+mpjjdw==
+  dependencies:
+    "@types/node" "*"
+
 agent-base@6:
   version "6.0.2"
   resolved "https://registry.yarnpkg.com/agent-base/-/agent-base-6.0.2.tgz#49fff58577cfee3f37176feab4c22e00f86d7f77"
@@ -839,9 +846,9 @@ node-environment-flags@1.0.5:
     semver "^5.7.0"
 
 nth-check@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/nth-check/-/nth-check-2.0.0.tgz#1bb4f6dac70072fc313e8c9cd1417b5074c0a125"
-  integrity sha512-i4sc/Kj8htBrAiH1viZ0TgU8Y5XqCaV/FziYK6TBczxmeKm3AEFWqqF3195yKudrarqy7Zu80Ra5dobFjn9X/Q==
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/nth-check/-/nth-check-2.0.1.tgz#2efe162f5c3da06a28959fbd3db75dbeea9f0fc2"
+  integrity sha512-it1vE95zF6dTT9lBsYbxvqh0Soy4SPowchj0UBGj/V6cTPnXXtQOPUbhZ6CmGzAD/rW22LQK6E96pcdJXk4A4w==
   dependencies:
     boolbase "^1.0.0"
 
