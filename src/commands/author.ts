@@ -76,6 +76,6 @@ export async function deleteAuthor(context: vscode.ExtensionContext, input: any)
             gcoresTreeDataProvider.refresh();
         }
     } catch (error) {
-        vscode.window.showInformationMessage("Failed to delete author. Please open the output channel for details");
+        vscode.window.showInformationMessage(error.message);
     }
 }

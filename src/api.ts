@@ -1,4 +1,5 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
+import { Agent, globalAgent } from "https";
 import * as Parser from "rss-parser";
 import { Readable } from "stream";
 import { window } from "vscode";
@@ -306,24 +307,37 @@ export async function getOneAudioData(audioId: string, token?: string | undefine
 
 export async function downloadMusic(url: string): Promise<Readable | void> {
   try {
+    globalAgent.options.rejectUnauthorized = false;
     const { data } = await axios.get<Readable>(url, {
       responseType: "stream",
       timeout: 8000,
+      httpsAgent: new Agent({
+        rejectUnauthorized: false,
+      }),
     });
     return data;
-  } catch (err) {
+  } catch (err: any) {
     window.showErrorMessage(err);
   }
   return;
 }
 
-export async function rssGetData(url: string): Promise<any> {
-  const parser: Parser = new Parser({
-    customFields: {
-      feed: ["otherTitle", "extendedDescription"],
-      item: ["enclosure"],
-    },
-  });
-  const feed: any = await parser.parseURL(url);
-  return feed;
+// rss
+export async function getRssData(url: string): Promise<any> {
+  try {
+    const parser: Parser = new Parser({
+      customFields: {
+        feed: ["otherTitle", "extendedDescription"],
+        item: ["enclosure", "pubDate"],
+      },
+      requestOptions: {
+        rejectUnauthorized: false,
+      },
+    });
+    const feed: any = await parser.parseURL(url);
+    return feed;
+  } catch (err: any) {
+    window.showInformationMessage(err.message);
+    return;
+  }
 }

@@ -21,7 +21,7 @@ export enum Category {
     Top = "最热排行",
     Bookmark = "我的收藏",
     Audios = "近期电台",
-    Rss = "捕蛇者说",
+    Rss = "RSS播客",
 }
 
 export enum RecentType {
@@ -95,6 +95,28 @@ export const authorNamesMapping: Map<string, string> = new Map([
     ["Dagou", "91206"],
 ]);
 
+// add new rss here
+const PYTHON_HUNTER_RSS_URL: string = "https://pythonhunter.org/episodes/feed.xml";
+const BYTETALK_RSS_URL: string = "https://bytetalk.fm/index.xml";
+const GGTALK: string = "https://talkcdn.swift.gg/static/rss.xml";
+const FYFY: string = "https://justinyan.me/feed";
+const STORYFM: string = "https://storyfm.cn/feed/episodes";
+const VISTOPIA: string = "https://api.vistopia.com.cn/rss/program/11.xml";
+const SPITAL: string = "https://thespiral.fm/episodes/feed.xml";
+const CPAITAL: string = "https://crazy.capital/feed"; 
+
+// add new rss here
+export const rssNamesMapping: Map<string, string> = new Map([
+    ["捕蛇者说", PYTHON_HUNTER_RSS_URL],
+    ["ByteTalk", BYTETALK_RSS_URL],
+    ["ggtalk", GGTALK],
+    ["枫言枫语", FYFY],
+    ["故事FM", STORYFM],
+    ["八分", VISTOPIA],
+    ["海螺电台", SPITAL],
+    ["疯投圈", CPAITAL],
+]);
+
 export const topNamesMapping: Map<string, string> = new Map([
     ["点赞排行", "-likes-count"],
     ["收藏排行", "-bookmarks-count"],
@@ -105,6 +127,7 @@ export const topNamesMapping: Map<string, string> = new Map([
 export const globalStateGcoresAuthorKey: string = "gcores.authors";
 export const globalStateGcoresUserKey: string = "gcores.user";
 export const globalStateGcoresBossKey: string = "gcores.boss";
+export const globalStateRssKey: string = "gcores.rss";
 
 // api related
 export const headers: any = {
@@ -170,6 +193,3 @@ export const GCORES_DIR: vscode.Uri = Utils.joinPath(HOME_DIR, ".gcores");
 export const NATIVE: any = require(
   resolve(__dirname, "..", "..", "build", `${PLATFORM}.node`),
 ) as INativeModule;
-
-// about Rss
-export const PYTHON_HUNTER_RSS_URL: string = "https://pythonhunter.org/episodes/feed.xml";

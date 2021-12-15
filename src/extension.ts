@@ -1,4 +1,3 @@
-import { homedir } from "os";
 import * as vscode from "vscode";
 import { addAuthor, deleteAuthor } from "./commands/author";
 import { addBookmark, deleteBookmark } from "./commands/bookmark";
@@ -7,6 +6,7 @@ import { getLatestArticles } from "./commands/latest";
 import { addLike, deleteLike } from "./commands/like";
 import { pickArticle } from "./commands/pick";
 import { playAudio } from "./commands/play";
+import { addRss, deleteRss } from "./commands/rss";
 import { getSearchArticles } from "./commands/search";
 import { previewArticle } from "./commands/show";
 import { userLogin, userLogout } from "./commands/user";
@@ -38,6 +38,8 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
         vscode.commands.registerCommand("gcores.deleteLike", (node: GcoresNode) => deleteLike(node)),
         vscode.commands.registerCommand("gcores.playAudio", (node: GcoresNode) => playAudio(node)),
         vscode.commands.registerCommand("gcores.stopAudio", (node: GcoresNode) => playAudio(node)),
+        vscode.commands.registerCommand("gcores.addRss", (data: string) => addRss(context, data)),
+        vscode.commands.registerCommand("gcores.deleteRss", (data: string) => deleteRss(context, data)),
     );
 }
 

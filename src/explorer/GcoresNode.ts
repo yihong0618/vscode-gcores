@@ -41,6 +41,10 @@ export class GcoresNode {
         return this.data.likeId;
     }
 
+    public get createdAt(): string {
+        return this.data.createdAt;
+    }
+
     public get isGcoresElement(): boolean {
         return this.isGcoresElementNode;
     }

@@ -1,6 +1,5 @@
 import { Disposable } from "vscode";
-import { getArticlesDataByUserBookmark, getRecentArticlesData, getRecentAudiosData, getRecentNewsData, rssGetData } from "../api";
-import { parseMp3Link } from "../commands/utils";
+import { getArticlesDataByUserBookmark, getRecentArticlesData, getRecentAudiosData, getRecentNewsData, getRssData } from "../api";
 import { articleTagsMapping, baseLimit, Category, defaultArticle, topNamesMapping } from "../shared/shared";
 import { GcoresNode } from "./GcoresNode";
 
@@ -142,6 +141,19 @@ class ExplorerNodeManager implements Disposable {
         return res;
     }
 
+    public async getOneLabelRssNodes(url: string): Promise<GcoresNode[]> {
+        const rssData: any = await getRssData(url);
+        const res: GcoresNode[] = [];
+        for (const r of rssData.items) {
+            if (r.enclosure && r.enclosure.url) {
+                res.push(await this.parseRssToGcoresNode(r));
+            }
+        }
+        // sort by date desc
+        res.sort((a: GcoresNode, b: GcoresNode) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+        return res;
+    }
+
     public async getBookmarkArticlesNodes(nodeId: string, userId: string, token: string): Promise<GcoresNode[]> {
         const bookmarkData: any = await getArticlesDataByUserBookmark(userId, token, this.limit, this.offsetMapping.get(nodeId) || 0);
         const articlesData: any = bookmarkData.included.filter((i: any) => i.type === "articles");
@@ -183,11 +195,15 @@ class ExplorerNodeManager implements Disposable {
         return res;
     }
 
-    public async getRssNodes(url: string): Promise<GcoresNode[]> {
-        const rssData: any = await rssGetData(url);
+    public GetRssNodes(mapping: Map<string, string>): GcoresNode[] {
+        // TODO refactor to one function
         const res: GcoresNode[] = [];
-        for (const r of rssData.items) {
-            res.push(await this.parseRssToGcoresNode(r));
+        for (const [rssName, rssUrl] of mapping.entries()) {
+            res.push(new GcoresNode(Object.assign({}, defaultArticle, {
+                id: rssName,
+                name: rssName,
+                authorId: rssUrl,
+            }), false));
         }
         return res;
     }
@@ -204,7 +220,7 @@ class ExplorerNodeManager implements Disposable {
             bookmarksCount: 0,
             bookmarkId: "",
             likeId: "",
-            createdAt: "",
+            createdAt: data.pubDate,
         }, true, "", data.enclosure.url);
     }
 

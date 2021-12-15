@@ -29,6 +29,8 @@
 		"onCommand:gcores.latestArticles",
 		"onCommand:gcores.latestNews",
 		"onCommand:gcores.searchArticles",
+		"onCommand:gcores.addRss",
+		"onCommand:gcores.deleteRss",
 		"onView:gcoresExplorer"
 	],
 	"main": "./out/extension.js",
@@ -76,7 +78,7 @@
 			"view/item/context": [
 				{
 					"command": "gcores.deleteAuthor",
-					"when": "view == gcoresExplorer && viewItem == can-delete",
+					"when": "view == gcoresExplorer && viewItem == can-delete-author",
 					"group": "gcores@1"
 				},
 				{
@@ -98,6 +100,11 @@
 					"command": "gcores.stopAudio",
 					"when": "view == gcoresExplorer && viewItem == can-stop",
 					"group": "inline"
+				},
+				{
+					"command": "gcores.deleteRss",
+					"when": "view == gcoresExplorer && viewItem == can-delete-rss",
+					"group": "gcores@1"
 				}
 			]
 		},
@@ -212,6 +219,16 @@
 				"title": "Stop gcores audio",
 				"category": "Gcores",
 				"icon": "$(debug-stop)"
+			},
+			{
+				"command": "gcores.addRss",
+				"title": "Add RSS podcast",
+				"category": "Gcores"
+			},
+			{
+				"command": "gcores.deleteRss",
+				"title": "Delete RSS podcast",
+				"category": "Gcores"
 			}
 		]
 	},
@@ -237,7 +254,7 @@
 		"vscode-test": "^1.2.2"
 	},
 	"dependencies": {
-		"axios": "^0.21.1",
+		"axios": "^0.21.4",
 		"markdown-it": "^10.0.0",
 		"rss-parser": "^3.12.0",
 		"vsce": "^1.87.1",

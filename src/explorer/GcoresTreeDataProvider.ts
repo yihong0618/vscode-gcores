@@ -1,8 +1,7 @@
 import * as path from "path";
 import * as vscode from "vscode";
 import { checkTokenWithApi, getArticlesDataByAuthor, getArticlesDataByHot, getArticlesDataByTag } from "../api";
-import { articleTagsMapping, authorNamesMapping, Category, defaultArticle, globalStateGcoresAuthorKey, globalStateGcoresUserKey, NATIVE, topNamesMapping } from "../shared/shared";
-import { PYTHON_HUNTER_RSS_URL } from "../shared/shared";
+import { articleTagsMapping, authorNamesMapping, Category, defaultArticle, globalStateGcoresAuthorKey, globalStateGcoresUserKey, globalStateRssKey, NATIVE, rssNamesMapping, topNamesMapping } from "../shared/shared";
 import { explorerNodeManager } from "./explorerNodeManager";
 import { GcoresNode } from "./GcoresNode";
 
@@ -13,6 +12,7 @@ export class GcoresTreeDataProvider implements vscode.TreeDataProvider<GcoresNod
     public token!: string;
     public isIn!: boolean;
     public newAuthors!: any;
+    public newRsses!: any;
 
     // audio relate
     public playingId: string = "";
@@ -22,6 +22,7 @@ export class GcoresTreeDataProvider implements vscode.TreeDataProvider<GcoresNod
     // private
     private context!: vscode.ExtensionContext;
     private nowAuthorNamesMapping!: Map<string, string>;
+    private nowRssNamesMapping!: Map<string, string>;
 
     private onDidChangeTreeDataEvent: vscode.EventEmitter<GcoresNode | undefined | null> = new vscode.EventEmitter<GcoresNode | undefined | null>();
     // tslint:disable-next-line:member-ordering
@@ -33,12 +34,16 @@ export class GcoresTreeDataProvider implements vscode.TreeDataProvider<GcoresNod
         this.userId = "";
         this.token = "";
         this.nowAuthorNamesMapping = new Map();
+        this.nowRssNamesMapping = new Map();
         this.newAuthors = {};
+        this.newRsses = {};
     }
 
     public async refresh(): Promise<void> {
         this.nowAuthorNamesMapping = this.getNowAuthorNamesMapping();
+        this.nowRssNamesMapping = this.getNowRssNamesMapping();
         this.newAuthors = this.getNewAuthors();
+        this.newRsses = this.getNewRss();
         // when refresh the offsetmapping must clear;
         explorerNodeManager.offsetMapping.clear();
         this.onDidChangeTreeDataEvent.fire(null);
@@ -47,7 +52,8 @@ export class GcoresTreeDataProvider implements vscode.TreeDataProvider<GcoresNod
     public getTreeItem(element: GcoresNode): vscode.TreeItem | Thenable<vscode.TreeItem> {
 
         let contextValue: string = "";
-        const newAuthorsid: string[] = Object.values(this.newAuthors);
+        const newAuthorsId: string[] = Object.values(this.newAuthors);
+        const newRssId: string[] = Object.values(this.newRsses);
         if (element.isGcoresElement && this.isIn) {
             if (element.bookmarkId === "") {
                 contextValue = "can-bookmark";
@@ -62,8 +68,12 @@ export class GcoresTreeDataProvider implements vscode.TreeDataProvider<GcoresNod
                 contextValue = "can-play";
             }
         }
-        if (!element.isGcoresElement && newAuthorsid.includes(element.authorId)) {
-            contextValue = "can-delete";
+        if (!element.isGcoresElement && newAuthorsId.includes(element.authorId)) {
+            contextValue = "can-delete-author";
+        }
+        // for rss quick delete
+        if (!element.isGcoresElement && newRssId.includes(element.authorId)) {
+            contextValue = "can-delete-rss";
         }
         return {
             label: element.isGcoresElement ? `${element.name}` : element.name,
@@ -102,7 +112,7 @@ export class GcoresTreeDataProvider implements vscode.TreeDataProvider<GcoresNod
                 case Category.Audios:
                     return explorerNodeManager.GetRecentAudiosNodes(element.id, this.userId);
                 case Category.Rss:
-                    return explorerNodeManager.getRssNodes(PYTHON_HUNTER_RSS_URL);
+                    return explorerNodeManager.GetRssNodes(this.nowRssNamesMapping);
                 default:
                     break;
             }
@@ -114,6 +124,10 @@ export class GcoresTreeDataProvider implements vscode.TreeDataProvider<GcoresNod
             }
             if (this.nowAuthorNamesMapping.has(element.id)) {
                 return explorerNodeManager.getOneLabelArticlesNodes(element.id, getArticlesDataByAuthor.bind(null, this.nowAuthorNamesMapping));
+            }
+            if (this.nowRssNamesMapping.has(element.id)) {
+                // rss use authId for the url for now
+                return explorerNodeManager.getOneLabelRssNodes(element.authorId);
             }
         }
     }
@@ -153,6 +167,18 @@ export class GcoresTreeDataProvider implements vscode.TreeDataProvider<GcoresNod
         return this.context.globalState.get(globalStateGcoresAuthorKey) || {};
     }
 
+    private getNewRss(): any {
+        return this.context.globalState.get(globalStateRssKey) || {};
+    }
+
+    private getNowRssNamesMapping(): Map<string, string> {
+        const newRss: object = this.getNewRss();
+        // empty object
+        if (newRss === undefined || Object.entries(newRss).length === 0 && newRss.constructor === Object) {
+            return rssNamesMapping;
+        }
+        return new Map([...rssNamesMapping, ...Object.entries(newRss)]);
+    }
 }
 
 export const gcoresTreeDataProvider: GcoresTreeDataProvider = new GcoresTreeDataProvider();
