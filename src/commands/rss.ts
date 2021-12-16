@@ -3,18 +3,14 @@ import { getRssData } from "../api";
 import { gcoresTreeDataProvider } from "../explorer/GcoresTreeDataProvider";
 import { globalStateRssKey } from "../shared/shared";
 
-export async function addRss(context: vscode.ExtensionContext, input: any): Promise<void> {
+export async function addRss(context: vscode.ExtensionContext): Promise<void> {
     try {
         const rssUrl: string | undefined = await new Promise(async (resolve: (res: string | undefined) => void, reject: (e: Error) => void): Promise<void> => {
             let name: string | undefined;
-            if (!input) {
-                name = await vscode.window.showInputBox({
-                    prompt: "Please enter rss url",
-                    validateInput: (s: string): string | undefined => s && s.trim() ? undefined : "The input must not be empty",
-                });
-            } else {
-                name = input;
-            }
+            name = await vscode.window.showInputBox({
+                prompt: "Please enter rss url",
+                validateInput: (s: string): string | undefined => s && s.trim() ? undefined : "The input must not be empty",
+            });
             if (!name) {
                 return resolve(undefined);
             } else {
@@ -75,7 +71,7 @@ export async function deleteRss(context: vscode.ExtensionContext, input: any): P
             vscode.window.showInformationMessage(`Successfully delete rss ${rssName}.`);
             gcoresTreeDataProvider.refresh();
         }
-    } catch (error) {
+    } catch (error: any) {
         vscode.window.showInformationMessage(error.message);
     }
 }

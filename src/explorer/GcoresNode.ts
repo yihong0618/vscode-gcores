@@ -79,4 +79,11 @@ export class GcoresNode {
             arguments: [this],
         };
     }
+    public get addRssCommand(): Command {
+        return {
+            title: "Add RSS podcast",
+            command: "gcores.addRss",
+            arguments: [this],
+        };
+    }
 }

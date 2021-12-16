@@ -75,10 +75,19 @@ export class GcoresTreeDataProvider implements vscode.TreeDataProvider<GcoresNod
         if (!element.isGcoresElement && newRssId.includes(element.authorId)) {
             contextValue = "can-delete-rss";
         }
+        // if more command this way make it to a map
+        let command: vscode.Command | undefined;
+        if (element.id === "not login") {
+            command = element.loginCommand;
+        } else if (element.id === "add rss") {
+            command = element.addRssCommand;
+        } else {
+            command = undefined;
+        }
         return {
             label: element.isGcoresElement ? `${element.name}` : element.name,
             collapsibleState: element.isGcoresElement ? vscode.TreeItemCollapsibleState.None : vscode.TreeItemCollapsibleState.Collapsed,
-            command: element.isGcoresElement ? element.previewCommand : element.id === "not login" ? element.loginCommand : undefined,
+            command: element.isGcoresElement ? element.previewCommand : command,
             iconPath: element.isHotElement ? this.context.asAbsolutePath(path.join("resources", "hot.png")) : "",
             contextValue,
         };

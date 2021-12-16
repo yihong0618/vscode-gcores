@@ -99,11 +99,11 @@ export const authorNamesMapping: Map<string, string> = new Map([
 const PYTHON_HUNTER_RSS_URL: string = "https://pythonhunter.org/episodes/feed.xml";
 const BYTETALK_RSS_URL: string = "https://bytetalk.fm/index.xml";
 const GGTALK: string = "https://talkcdn.swift.gg/static/rss.xml";
-const FYFY: string = "https://justinyan.me/feed";
+const FYFY: string = "https://justinyan.me/feed/podcast";
 const STORYFM: string = "https://storyfm.cn/feed/episodes";
 const VISTOPIA: string = "https://api.vistopia.com.cn/rss/program/11.xml";
 const SPITAL: string = "https://thespiral.fm/episodes/feed.xml";
-const CPAITAL: string = "https://crazy.capital/feed"; 
+const CPAITAL: string = "https://crazy.capital/feed";
 
 // add new rss here
 export const rssNamesMapping: Map<string, string> = new Map([
