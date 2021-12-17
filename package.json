@@ -2,7 +2,7 @@
 	"name": "vscode-gcores",
 	"displayName": "vscode-gcores",
 	"description": "use vscode to play with gcores",
-	"version": "0.2.3",
+	"version": "1.0.0",
 	"author": "Hong Yi",
 	"publisher": "zouzou0208",
 	"license": "MIT",
@@ -31,6 +31,7 @@
 		"onCommand:gcores.searchArticles",
 		"onCommand:gcores.addRss",
 		"onCommand:gcores.deleteRss",
+		"onCommand:gcores.clean",
 		"onView:gcoresExplorer"
 	],
 	"main": "./out/extension.js",
@@ -228,6 +229,11 @@
 			{
 				"command": "gcores.deleteRss",
 				"title": "Delete RSS podcast",
+				"category": "Gcores"
+			},
+			{
+				"command": "gcores.clean",
+				"title": "Clean the cache",
 				"category": "Gcores"
 			}
 		]
