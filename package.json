@@ -6,7 +6,7 @@
 	"author": "Hong Yi",
 	"publisher": "zouzou0208",
 	"license": "MIT",
-	"icon": "docs/g.png",
+	"icon": "resources/g.png",
 	"engines": {
 		"vscode": "^1.41.0"
 	},
