@@ -90,4 +90,4 @@ https://user-images.githubusercontent.com/15976103/146485788-5193014c-0f76-4875-
 ## 鸣谢
 
 - 本插件灵感来源于[@jdneo](https://github.com/jdneo)的[vscode-leetcode](https://github.com/jdneo/vscode-leetcode/)开源项目制作。
-- 播放音频解决方案来自[@YXL76](https://github.com/jdneo)的[cloudmusic-vscode](https://github.com/YXL76/cloudmusic-vscode)感谢。
+- 播放音频解决方案来自[@YXL76](https://github.com/YXL76)的[cloudmusic-vscode](https://github.com/YXL76/cloudmusic-vscode)感谢。
