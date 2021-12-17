@@ -207,7 +207,7 @@ class ExplorerNodeManager implements Disposable {
         }
         res.push(new GcoresNode(Object.assign({}, defaultArticle, {
             id: "add rss",
-            name: "Click here to add new rss",
+            name: "➕ New rss",
         }), false));
         return res;
     }
