@@ -2,6 +2,14 @@
 
 > [在 VS Code 中看机核](https://www.gcores.com/articles/119963)
 
+
+## 更新！支持播客播放及订阅
+
+
+https://user-images.githubusercontent.com/15976103/146485788-5193014c-0f76-4875-bf06-be3014aacd49.mp4
+
+
+
 ## 说明
 **vscode-gcores**是一款在用vscode编写代码之余看机核文章的小项目, 数据来源于机核api, 不会对机核网站造成压力, 请大家放心使用, 丝般顺滑. 本插件具备登入功能, 数据保持在vscode本地（已登入用户可以看收藏文章及添加收藏文章或点赞文章）--安装插件后点击类似机核的**G**图标即可使用
 
