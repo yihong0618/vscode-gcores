@@ -316,7 +316,7 @@ export async function downloadMusic(url: string): Promise<Readable | void> {
       }),
     });
     return data;
-  } catch (err: any) {
+  } catch (err) {
     window.showErrorMessage(err);
   }
   return;
@@ -336,7 +336,7 @@ export async function getRssData(url: string): Promise<any> {
     });
     const feed: any = await parser.parseURL(url);
     return feed;
-  } catch (err: any) {
+  } catch (err) {
     window.showInformationMessage(err.message);
     return;
   }

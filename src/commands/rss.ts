@@ -33,7 +33,7 @@ export async function addRss(context: vscode.ExtensionContext): Promise<void> {
             vscode.window.showInformationMessage(`Successfully add rss for ${rssTitleName}.`);
             gcoresTreeDataProvider.refresh();
         }
-    } catch (error: any) {
+    } catch (error) {
         vscode.window.showInformationMessage(error.message);
     }
 }
@@ -71,7 +71,7 @@ export async function deleteRss(context: vscode.ExtensionContext, input: any): P
             vscode.window.showInformationMessage(`Successfully delete rss ${rssName}.`);
             gcoresTreeDataProvider.refresh();
         }
-    } catch (error: any) {
+    } catch (error) {
         vscode.window.showInformationMessage(error.message);
     }
 }
