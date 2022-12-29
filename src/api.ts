@@ -283,24 +283,16 @@ export async function deleteLikeArticle(likeId: string, token: string): Promise<
 
 // audios apis add date 20210329
 export async function getRecentAudiosData(limit: number = baseLimit, offset: number = baseOffset, token?: string | undefined): Promise<AxiosResponse<any>> {
-  if (token) {
-    headers["Authorization"] = "Token token=" + token;
-  }
   const { data } = await axios
-    .get(apiAudiosOrNewsTemplate(limit, offset), {
-    headers})
+    .get(apiAudiosOrNewsTemplate(limit, offset))
     .catch(errorHandler);
   return data;
 }
 
 export async function getOneAudioData(audioId: string, token?: string | undefined): Promise<AxiosResponse<any>> {
-  if (token) {
-    headers["Authorization"] = "Token token=" + token;
-  }
   const apiSingleArticle: string = apiSingleAudioTemplate(audioId);
   const { data } = await axios
-    .get(apiSingleArticle, {
-    headers})
+    .get(apiSingleArticle)
     .catch(errorHandler);
   return data;
 }
