@@ -1,4 +1,4 @@
-import { homedir, platform } from "os";
+import { homedir, platform, arch } from "os";
 import { resolve } from "path";
 import * as vscode from "vscode";
 import { Utils } from "vscode-uri";
@@ -185,11 +185,15 @@ export interface INativeModule {
     playerStop(player: NativePlayer): void;
 }
 
-export const PLATFORM: string = platform();
+let nodeName: string = platform(); 
+if (nodeName === "darwin" && arch() === 'arm64') {
+    nodeName = `${nodeName}_m1`
+}
+
 export const HOME_DIR: vscode.Uri = vscode.Uri.file(homedir());
 export const GCORES_DIR: vscode.Uri = Utils.joinPath(HOME_DIR, ".gcores");
 
 // tslint:disable-next-line
 export const NATIVE: any = require(
-  resolve(__dirname, "..", "..", "build", `${PLATFORM}.node`),
+  resolve(__dirname, "..", "..", "build", `${nodeName}.node`),
 ) as INativeModule;
