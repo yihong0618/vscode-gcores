@@ -255,13 +255,13 @@
 		"@types/vscode": "^1.41.0",
 		"@types/xml2js": "^0.4.8",
 		"glob": "^7.1.5",
-		"mocha": "^10.2.0",
+		"mocha": "^10.8.2",
 		"tslint": "^5.20.0",
 		"typescript": "^3.6.4",
 		"vscode-test": "^1.2.2"
 	},
 	"dependencies": {
-		"axios": "^0.21.4",
+		"axios": "^1.8.2",
 		"markdown-it": "^12.3.2",
 		"rss-parser": "^3.12.0",
 		"vsce": "^2.15.0",
