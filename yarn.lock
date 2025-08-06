@@ -1041,12 +1041,6 @@ rimraf@^2.6.3:
   dependencies:
     glob "^7.1.3"
 
-rimraf@^3.0.0:
-  version "3.0.2"
-  resolved "https://registry.npmjs.org/rimraf/-/rimraf-3.0.2.tgz"
-  dependencies:
-    glob "^7.1.3"
-
 rss-parser@^3.12.0:
   version "3.12.0"
   resolved "https://registry.npmjs.org/rss-parser/-/rss-parser-3.12.0.tgz"
@@ -1168,10 +1162,8 @@ tar-stream@^2.1.4:
     readable-stream "^3.1.1"
 
 tmp@^0.2.1:
-  version "0.2.1"
-  resolved "https://registry.npmjs.org/tmp/-/tmp-0.2.1.tgz"
-  dependencies:
-    rimraf "^3.0.0"
+  version "0.2.4"
+  resolved "https://registry.yarnpkg.com/tmp/-/tmp-0.2.4.tgz#c6db987a2ccc97f812f17137b36af2b6521b0d13"
 
 to-regex-range@^5.0.1:
   version "5.0.1"
