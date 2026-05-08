@@ -261,7 +261,7 @@
 		"vscode-test": "^1.2.2"
 	},
 	"dependencies": {
-		"axios": "^1.15.0",
+		"axios": "^1.15.2",
 		"markdown-it": "^12.3.2",
 		"rss-parser": "^3.12.0",
 		"vsce": "^2.15.0",
