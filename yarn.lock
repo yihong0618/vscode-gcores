@@ -1162,8 +1162,8 @@ tar-stream@^2.1.4:
     readable-stream "^3.1.1"
 
 tmp@^0.2.1:
-  version "0.2.6"
-  resolved "https://registry.yarnpkg.com/tmp/-/tmp-0.2.6.tgz#0dfac10fd09a9319288eb0e8f0ed524604e183b4"
+  version "0.2.7"
+  resolved "https://registry.yarnpkg.com/tmp/-/tmp-0.2.7.tgz#26f4db11d1601ce8012dcb8a798ece1c06a99059"
 
 to-regex-range@^5.0.1:
   version "5.0.1"
